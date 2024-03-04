@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7de586380c060e943a258b6e128970a4, type: 3}
+  m_Name: Shotgun
+  m_EditorClassIdentifier: 
+  DAMAGE_DEFAULT: 10
+  ATTACK_RANGE_DEFAULT: 15
+  ATTACK_SPEED_DEFAULT: 100
+  RELOAD_TIME: 2
+  MAGAZINE_CAPACITY: 5
+  INACCURACY: 1
+  BULLET_SPEED: 50
+  shootSFX: {fileID: 8300000, guid: 14a119ae5aa700b4883ce58efb86ea18, type: 3}
+  reloadSFX: {fileID: 8300000, guid: 4ad9d228bac63624c900f48f1dfd51aa, type: 3}
+  doneReloadSFX: {fileID: 8300000, guid: 1688e5c69ce957245a421063ee8b6bd9, type: 3}
