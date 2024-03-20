@@ -152,6 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f0c472797c889146ae588936aa5aa32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  terrainMaterial: {fileID: 239378781582670930, guid: bcdeae04c4fe82a4fa49148fd6f9b89f, type: 3}
+  edgeMaterial: {fileID: 239378781582670930, guid: bcdeae04c4fe82a4fa49148fd6f9b89f, type: 3}
   waterLevel: 0.4
   scale: 0.1
   size: 100
@@ -163,7 +165,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1214563492}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.1526325, y: 1.6141691, z: 8.81828}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -340,8 +342,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1943725368}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.40658537, y: 0.5571962, z: -0.36092985, w: 0.62765473}
+  m_LocalPosition: {x: -3.1607933, y: 89.51343, z: 52.3181}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
