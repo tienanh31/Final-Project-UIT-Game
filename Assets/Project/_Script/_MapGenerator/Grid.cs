@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class Grid : MonoBehaviour
 {
+    public Button btnRandom;
+
     public GameObject[] treePrefabs;
     public Material terrainMaterial;
     public Material edgeMaterial;
@@ -12,10 +15,35 @@ public class Grid : MonoBehaviour
     public float treeDensity = .05f;
     public int size = 100;
 
-    Cell[,] grid;
+    Cell[,] _grid;
+
+    private List<Mesh> _meshes;
+    private List<GameObject> _gameObjects;
+    private List<Texture2D> _texture2Ds;
 
     void Start()
     {
+        _meshes = new List<Mesh>();
+        _gameObjects = new List<GameObject>();
+        _texture2Ds = new List<Texture2D>();
+
+        RandomMap();
+    }
+
+    private void OnEnable()
+    {
+        btnRandom.onClick.AddListener(RandomMap);
+    }
+
+    private void OnDisable()
+    {
+        btnRandom.onClick.RemoveListener(RandomMap);
+    }
+
+    void RandomMap()
+    {
+        ClearAllMap();
+
         float[,] noiseMap = new float[size, size];
         (float xOffset, float yOffset) = (Random.Range(-10000f, 10000f), Random.Range(-10000f, 10000f));
         for (int y = 0; y < size; y++)
@@ -39,7 +67,7 @@ public class Grid : MonoBehaviour
             }
         }
 
-        grid = new Cell[size, size];
+        _grid = new Cell[size, size];
         for (int y = 0; y < size; y++)
         {
             for (int x = 0; x < size; x++)
@@ -48,14 +76,14 @@ public class Grid : MonoBehaviour
                 noiseValue -= falloffMap[x, y];
                 bool isWater = noiseValue < waterLevel;
                 Cell cell = new Cell(isWater);
-                grid[x, y] = cell;
+                _grid[x, y] = cell;
             }
         }
 
-        DrawTerrainMesh(grid);
-        DrawEdgeMesh(grid);
-        DrawTexture(grid);
-        GenerateTrees(grid);
+        DrawTerrainMesh(_grid);
+        DrawEdgeMesh(_grid);
+        DrawTexture(_grid);
+        GenerateTrees(_grid);
     }
 
     void DrawTerrainMesh(Cell[,] grid)
@@ -99,6 +127,8 @@ public class Grid : MonoBehaviour
         meshFilter.mesh = mesh;
 
         MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
+
+        _meshes.Add(mesh);
     }
 
     void DrawEdgeMesh(Cell[,] grid)
@@ -196,6 +226,9 @@ public class Grid : MonoBehaviour
 
         MeshRenderer meshRenderer = edgeObj.AddComponent<MeshRenderer>();
         meshRenderer.material = edgeMaterial;
+
+        _gameObjects.Add(edgeObj);
+        _meshes.Add(mesh);
     }
 
     void DrawTexture(Cell[,] grid)
@@ -220,6 +253,8 @@ public class Grid : MonoBehaviour
         MeshRenderer meshRenderer = gameObject.GetComponent<MeshRenderer>();
         meshRenderer.material = terrainMaterial;
         meshRenderer.material.mainTexture = texture;
+
+        _texture2Ds.Add(texture);
     }
 
     void GenerateTrees(Cell[,] grid)
@@ -250,10 +285,55 @@ public class Grid : MonoBehaviour
                         tree.transform.position = new Vector3(x, 0, y);
                         tree.transform.rotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
                         tree.transform.localScale = Vector3.one * Random.Range(.1f, .5f);
+
+                        _gameObjects.Add(tree);
                     }
                 }
             }
         }
+    }
+
+    void ClearAllMap()
+    {
+        MeshFilter meshFilter = GetComponent<MeshFilter>();
+        if (meshFilter != null)
+        {
+            DestroyImmediate(meshFilter);
+        }
+
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        if(meshRenderer != null)
+        {
+            DestroyImmediate(meshRenderer);
+        }
+
+        for (int i = _meshes.Count - 1; i >= 0; i--)
+        {
+            if(_meshes[i] != null)
+            {
+                DestroyImmediate(_meshes[i]);
+            }
+            _meshes.RemoveAt(i);
+        }
+
+        for (int i = _gameObjects.Count - 1; i >= 0; i--)
+        {
+            if (_gameObjects[i] != null)
+            {
+                DestroyImmediate(_gameObjects[i].gameObject);
+            }
+            _gameObjects.RemoveAt(i);
+        }
+
+        for (int i = _texture2Ds.Count - 1; i >= 0; i--)
+        {
+            if (_texture2Ds[i] != null)
+            {
+                DestroyImmediate(_texture2Ds[i]);
+            }
+            _texture2Ds.RemoveAt(i);
+        }
+
     }
 
     void OnDrawGizmos()
@@ -263,7 +343,7 @@ public class Grid : MonoBehaviour
         {
             for (int x = 0; x < size; x++)
             {
-                Cell cell = grid[x, y];
+                Cell cell = _grid[x, y];
                 if (cell.isWater)
                     Gizmos.color = Color.blue;
                 else
