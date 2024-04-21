@@ -284,7 +284,7 @@ public class Grid : MonoBehaviour
                         GameObject tree = Instantiate(prefab, transform);
                         tree.transform.position = new Vector3(x, 0, y);
                         tree.transform.rotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
-                        tree.transform.localScale = Vector3.one * Random.Range(.1f, .5f);
+                        tree.transform.localScale = Vector3.one * Random.Range(.1f, .3f);
 
                         _gameObjects.Add(tree);
                     }
