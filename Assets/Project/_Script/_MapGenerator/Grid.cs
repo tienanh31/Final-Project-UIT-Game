@@ -4,16 +4,21 @@ using UnityEngine.UI;
 
 public class Grid : MonoBehaviour
 {
-    public Button btnRandom;
+    [SerializeField] Button btnRandom;
 
-    public GameObject[] treePrefabs;
-    public Material terrainMaterial;
-    public Material edgeMaterial;
-    public float waterLevel = .4f;
-    public float scale = .1f;
-    public float treeNoiseScale = .005f;
-    public float treeDensity = .05f;
-    public int size = 100;
+    [SerializeField] GameObject[] _treePrefabs;
+    [SerializeField] float _treeNoiseScale = .005f;
+    [SerializeField] float _treeDensity = .5f;
+
+    [SerializeField] GameObject[] _grassPrefabs;
+    [SerializeField] float _grassNoiseScale = .01f;
+    [SerializeField] float _grassDensity = .5f;
+
+    [SerializeField] Material _terrainMaterial;
+    [SerializeField] Material _edgeMaterial;
+    [SerializeField] float _waterLevel = .4f;
+    [SerializeField] float _scale = .1f;
+    [SerializeField] int _size = 100;
 
     Cell[,] _grid;
 
@@ -44,38 +49,44 @@ public class Grid : MonoBehaviour
     {
         ClearAllMap();
 
-        float[,] noiseMap = new float[size, size];
+        float[,] noiseMap = new float[_size, _size];
         (float xOffset, float yOffset) = (Random.Range(-10000f, 10000f), Random.Range(-10000f, 10000f));
-        for (int y = 0; y < size; y++)
+        for (int y = 0; y < _size; y++)
         {
-            for (int x = 0; x < size; x++)
+            for (int x = 0; x < _size; x++)
             {
-                float noiseValue = Mathf.PerlinNoise(x * scale + xOffset, y * scale + yOffset);
+                float noiseValue = Mathf.PerlinNoise(x * _scale + xOffset, y * _scale + yOffset);
                 noiseMap[x, y] = noiseValue;
             }
         }
 
-        float[,] falloffMap = new float[size, size];
-        for (int y = 0; y < size; y++)
+        float[,] falloffMap = new float[_size, _size];
+        for (int y = 0; y < _size; y++)
         {
-            for (int x = 0; x < size; x++)
+            for (int x = 0; x < _size; x++)
             {
-                float xv = x / (float)size * 2 - 1;
-                float yv = y / (float)size * 2 - 1;
+                float xv = x / (float)_size * 2 - 1;
+                float yv = y / (float)_size * 2 - 1;
                 float v = Mathf.Max(Mathf.Abs(xv), Mathf.Abs(yv));
                 falloffMap[x, y] = Mathf.Pow(v, 3f) / (Mathf.Pow(v, 3f) + Mathf.Pow(2.2f - 2.2f * v, 3f));
             }
         }
 
-        _grid = new Cell[size, size];
-        for (int y = 0; y < size; y++)
+        _grid = new Cell[_size, _size];
+        for (int y = 0; y < _size; y++)
         {
-            for (int x = 0; x < size; x++)
+            for (int x = 0; x < _size; x++)
             {
                 float noiseValue = noiseMap[x, y];
                 noiseValue -= falloffMap[x, y];
-                bool isWater = noiseValue < waterLevel;
-                Cell cell = new Cell(isWater);
+                bool isWater = noiseValue < _waterLevel;
+                CellType type = CellType.Ground;
+                if (isWater)
+                {
+                    type = CellType.Water;
+                }
+
+                Cell cell = new Cell(type, noiseValue);
                 _grid[x, y] = cell;
             }
         }
@@ -84,6 +95,7 @@ public class Grid : MonoBehaviour
         DrawEdgeMesh(_grid);
         DrawTexture(_grid);
         GenerateTrees(_grid);
+        GenerateGrasses(_grid);
     }
 
     void DrawTerrainMesh(Cell[,] grid)
@@ -92,21 +104,21 @@ public class Grid : MonoBehaviour
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
         List<Vector2> uvs = new List<Vector2>();
-        for (int y = 0; y < size; y++)
+        for (int y = 0; y < _size; y++)
         {
-            for (int x = 0; x < size; x++)
+            for (int x = 0; x < _size; x++)
             {
                 Cell cell = grid[x, y];
-                if (!cell.isWater)
+                if (cell.Type == CellType.Ground)
                 {
                     Vector3 a = new Vector3(x - .5f, 0, y + .5f);
                     Vector3 b = new Vector3(x + .5f, 0, y + .5f);
                     Vector3 c = new Vector3(x - .5f, 0, y - .5f);
                     Vector3 d = new Vector3(x + .5f, 0, y - .5f);
-                    Vector2 uvA = new Vector2(x / (float)size, y / (float)size);
-                    Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);
-                    Vector2 uvC = new Vector2(x / (float)size, (y + 1) / (float)size);
-                    Vector2 uvD = new Vector2((x + 1) / (float)size, (y + 1) / (float)size);
+                    Vector2 uvA = new Vector2(x / (float)_size, y / (float)_size);
+                    Vector2 uvB = new Vector2((x + 1) / (float)_size, y / (float)_size);
+                    Vector2 uvC = new Vector2(x / (float)_size, (y + 1) / (float)_size);
+                    Vector2 uvD = new Vector2((x + 1) / (float)_size, (y + 1) / (float)_size);
                     Vector3[] v = new Vector3[] { a, b, c, b, d, c };
                     Vector2[] uv = new Vector2[] { uvA, uvB, uvC, uvB, uvD, uvC };
                     for (int k = 0; k < 6; k++)
@@ -136,17 +148,17 @@ public class Grid : MonoBehaviour
         Mesh mesh = new Mesh();
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
-        for (int y = 0; y < size; y++)
+        for (int y = 0; y < _size; y++)
         {
-            for (int x = 0; x < size; x++)
+            for (int x = 0; x < _size; x++)
             {
                 Cell cell = grid[x, y];
-                if (!cell.isWater)
+                if (cell.Type == CellType.Ground)
                 {
                     if (x > 0)
                     {
                         Cell left = grid[x - 1, y];
-                        if (left.isWater)
+                        if (left.Type == CellType.Water)
                         {
                             Vector3 a = new Vector3(x - .5f, 0, y + .5f);
                             Vector3 b = new Vector3(x - .5f, 0, y - .5f);
@@ -160,10 +172,10 @@ public class Grid : MonoBehaviour
                             }
                         }
                     }
-                    if (x < size - 1)
+                    if (x < _size - 1)
                     {
                         Cell right = grid[x + 1, y];
-                        if (right.isWater)
+                        if (right.Type == CellType.Water)
                         {
                             Vector3 a = new Vector3(x + .5f, 0, y - .5f);
                             Vector3 b = new Vector3(x + .5f, 0, y + .5f);
@@ -180,7 +192,7 @@ public class Grid : MonoBehaviour
                     if (y > 0)
                     {
                         Cell down = grid[x, y - 1];
-                        if (down.isWater)
+                        if (down.Type == CellType.Water)
                         {
                             Vector3 a = new Vector3(x - .5f, 0, y - .5f);
                             Vector3 b = new Vector3(x + .5f, 0, y - .5f);
@@ -194,10 +206,10 @@ public class Grid : MonoBehaviour
                             }
                         }
                     }
-                    if (y < size - 1)
+                    if (y < _size - 1)
                     {
                         Cell up = grid[x, y + 1];
-                        if (up.isWater)
+                        if (up.Type == CellType.Water)
                         {
                             Vector3 a = new Vector3(x + .5f, 0, y + .5f);
                             Vector3 b = new Vector3(x - .5f, 0, y + .5f);
@@ -225,7 +237,7 @@ public class Grid : MonoBehaviour
         meshFilter.mesh = mesh;
 
         MeshRenderer meshRenderer = edgeObj.AddComponent<MeshRenderer>();
-        meshRenderer.material = edgeMaterial;
+        meshRenderer.material = _edgeMaterial;
 
         _gameObjects.Add(edgeObj);
         _meshes.Add(mesh);
@@ -233,17 +245,17 @@ public class Grid : MonoBehaviour
 
     void DrawTexture(Cell[,] grid)
     {
-        Texture2D texture = new Texture2D(size, size);
-        Color[] colorMap = new Color[size * size];
-        for (int y = 0; y < size; y++)
+        Texture2D texture = new Texture2D(_size, _size);
+        Color[] colorMap = new Color[_size * _size];
+        for (int y = 0; y < _size; y++)
         {
-            for (int x = 0; x < size; x++)
+            for (int x = 0; x < _size; x++)
             {
                 Cell cell = grid[x, y];
-                if (cell.isWater)
-                    colorMap[y * size + x] = Color.blue;
+                if (cell.Type == CellType.Water)
+                    colorMap[y * _size + x] = Color.blue;
                 else
-                    colorMap[y * size + x] = Color.green;
+                    colorMap[y * _size + x] = Color.green;
             }
         }
         texture.filterMode = FilterMode.Point;
@@ -251,7 +263,7 @@ public class Grid : MonoBehaviour
         texture.Apply();
 
         MeshRenderer meshRenderer = gameObject.GetComponent<MeshRenderer>();
-        meshRenderer.material = terrainMaterial;
+        meshRenderer.material = _terrainMaterial;
         meshRenderer.material.mainTexture = texture;
 
         _texture2Ds.Add(texture);
@@ -259,34 +271,62 @@ public class Grid : MonoBehaviour
 
     void GenerateTrees(Cell[,] grid)
     {
-        float[,] noiseMap = new float[size, size];
-        (float xOffset, float yOffset) = (Random.Range(-10000f, 10000f), Random.Range(-10000f, 10000f));
-        for (int y = 0; y < size; y++)
-        {
-            for (int x = 0; x < size; x++)
-            {
-                float noiseValue = Mathf.PerlinNoise(x * treeNoiseScale + xOffset, y * treeNoiseScale + yOffset);
-                noiseMap[x, y] = noiseValue;
-            }
-        }
+        //float[,] noiseMap = new float[_size, _size];
+        //(float xOffset, float yOffset) = (Random.Range(-10000f, 10000f), Random.Range(-10000f, 10000f));
+        //for (int y = 0; y < _size; y++)
+        //{
+        //    for (int x = 0; x < _size; x++)
+        //    {
+        //        float noiseValue = Mathf.PerlinNoise(x * _treeNoiseScale + xOffset, y * _treeNoiseScale + yOffset);
+        //        noiseMap[x, y] = noiseValue;
+        //    }
+        //}
 
-        for (int y = 0; y < size; y++)
+        for (int y = 0; y < _size; y++)
         {
-            for (int x = 0; x < size; x++)
+            for (int x = 0; x < _size; x++)
             {
                 Cell cell = grid[x, y];
-                if (!cell.isWater)
+                if (cell.Type == CellType.Ground)
                 {
-                    float v = Random.Range(0f, treeDensity);
-                    if (noiseMap[x, y] < v)
+                    float v = Random.Range(0f, _treeDensity);
+                    if (grid[x, y].NoiseValue < v)
                     {
-                        GameObject prefab = treePrefabs[Random.Range(0, treePrefabs.Length)];
+                        GameObject prefab = _treePrefabs[Random.Range(0, _treePrefabs.Length)];
                         GameObject tree = Instantiate(prefab, transform);
+
                         tree.transform.position = new Vector3(x, 0, y);
                         tree.transform.rotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
                         tree.transform.localScale = Vector3.one * Random.Range(.1f, .3f);
 
                         _gameObjects.Add(tree);
+                        Debug.Log("Spawn tree");
+                    }
+                }
+            }
+        }
+    }
+
+    void GenerateGrasses(Cell[,] grid)
+    {
+        for (int y = 0; y < _size; y++)
+        {
+            for (int x = 0; x < _size; x++)
+            {
+                Cell cell = grid[x, y];
+                if (cell.Type == CellType.Ground)
+                {
+                    float v = Random.Range(0f, _grassDensity);
+                    if (grid[x, y].NoiseValue < v)
+                    {
+                        GameObject prefab = _grassPrefabs[Random.Range(0, _grassPrefabs.Length)];
+                        GameObject grass = Instantiate(prefab, transform);
+
+                        grass.transform.position = new Vector3(x, 0, y);
+                        grass.transform.rotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
+                        grass.transform.localScale = Vector3.one * Random.Range(.1f, .3f);
+
+                        _gameObjects.Add(grass);
                     }
                 }
             }
@@ -339,12 +379,12 @@ public class Grid : MonoBehaviour
     void OnDrawGizmos()
     {
         if (!Application.isPlaying) return;
-        for (int y = 0; y < size; y++)
+        for (int y = 0; y < _size; y++)
         {
-            for (int x = 0; x < size; x++)
+            for (int x = 0; x < _size; x++)
             {
                 Cell cell = _grid[x, y];
-                if (cell.isWater)
+                if (cell.Type == CellType.Water)
                     Gizmos.color = Color.blue;
                 else
                     Gizmos.color = Color.green;

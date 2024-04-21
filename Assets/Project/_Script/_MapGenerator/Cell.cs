@@ -4,10 +4,24 @@ using UnityEngine;
 
 public class Cell
 {
-    public bool isWater;
+    public CellType Type;
 
-    public Cell(bool isWater)
+    public bool IsContainTree = false;
+
+    public float NoiseValue => _noiseValue;
+
+    private float _noiseValue = 0f;
+
+    public Cell(CellType type, float noiseValue)
     {
-        this.isWater = isWater;
+        Type = type;
+        this._noiseValue = noiseValue;
     }
+
+}
+
+public enum CellType
+{
+    Ground,
+    Water,
 }
