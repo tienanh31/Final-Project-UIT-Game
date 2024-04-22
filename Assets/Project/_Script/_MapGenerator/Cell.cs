@@ -10,14 +10,42 @@ public class Cell
 
     public float NoiseValue => _noiseValue;
 
+    public Vector2Int Id => _id;
+
     private float _noiseValue = 0f;
 
-    public Cell(CellType type, float noiseValue)
+    private Vector2Int _id;
+
+    public Cell(CellType type, float noiseValue, Vector2Int id)
     {
         Type = type;
         this._noiseValue = noiseValue;
+        this._id = id;
     }
 
+    public bool IsNearby(Cell cell)
+    {
+        int sqrt = (_id.x + _id.y) - (cell.Id.x + cell.Id.y);
+
+        if (sqrt < 0)
+        {
+            sqrt = -sqrt;
+        }
+
+        return sqrt == 1;
+    }
+
+    public override bool Equals(object obj)
+    {
+        Cell cell = obj as Cell;
+
+        if (cell == null)
+        {
+            return false;
+        }
+
+        return cell._id == this._id;
+    }
 }
 
 public enum CellType

@@ -86,9 +86,20 @@ public class Grid : MonoBehaviour
                     type = CellType.Water;
                 }
 
-                Cell cell = new Cell(type, noiseValue);
+                Cell cell = new Cell(type, noiseValue, new Vector2Int(x, y));
                 _grid[x, y] = cell;
             }
+        }
+
+        var allGrounds = Utility.FindAllGrounds(_grid);
+        foreach (var element in allGrounds)
+        {
+            string debug = "";
+            foreach (var i in element)
+            {
+                debug += i.Id + "\t";
+            }
+            Debug.Log(debug);
         }
 
         DrawTerrainMesh(_grid);
@@ -300,7 +311,7 @@ public class Grid : MonoBehaviour
                         tree.transform.localScale = Vector3.one * Random.Range(.1f, .3f);
 
                         _gameObjects.Add(tree);
-                        Debug.Log("Spawn tree");
+                        //Debug.Log("Spawn tree");
                     }
                 }
             }
