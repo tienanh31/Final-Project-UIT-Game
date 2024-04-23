@@ -20,7 +20,11 @@ public class Grid : MonoBehaviour
     [SerializeField] float _scale = .1f;
     [SerializeField] int _size = 100;
 
+    [SerializeField] GameObject _startPoint;
+    [SerializeField] GameObject _endPoint;
+
     Cell[,] _grid;
+    List<List<Cell>> _grounds;
 
     private List<Mesh> _meshes;
     private List<GameObject> _gameObjects;
@@ -91,10 +95,25 @@ public class Grid : MonoBehaviour
             }
         }
 
-        var allGrounds = Utility.FindAllGrounds(_grid);
-        foreach (var element in allGrounds)
+        CalculateStartAndEndPoint();
+
+        DrawTerrainMesh(_grid);
+        DrawEdgeMesh(_grid);
+        DrawTexture(_grid);
+        GenerateTrees(_grid);
+        GenerateGrasses(_grid);
+    }
+
+    void CalculateStartAndEndPoint()
+    {
+        _grounds = Utility.FindAllGrounds(_grid);
+        _grounds.Sort((e1, e2) => e1.Count.CompareTo(e2.Count));
+
+        foreach (var element in _grounds)
         {
-            string debug = "";
+            element.Sort((e1, e2) => e1.Compare(e2));
+
+            string debug = $"Size {element.Count}: ";
             foreach (var i in element)
             {
                 debug += i.Id + "\t";
@@ -102,11 +121,27 @@ public class Grid : MonoBehaviour
             Debug.Log(debug);
         }
 
-        DrawTerrainMesh(_grid);
-        DrawEdgeMesh(_grid);
-        DrawTexture(_grid);
-        GenerateTrees(_grid);
-        GenerateGrasses(_grid);
+        int size = _grounds.Count;
+        if (size > 0)
+        {
+            var largestArea = _grounds[size - 1];
+            var n = largestArea.Count;
+
+            var startPoint = largestArea[Random.Range(0, n / 10)];
+            while (startPoint.IsContainTree)
+            {
+                startPoint = largestArea[Random.Range(0, n / 10)];
+            }
+
+            var endPoint = largestArea[Random.Range(n - n / 10, n)];
+            while (endPoint.IsContainTree)
+            {
+                endPoint = largestArea[Random.Range(n - n / 10, n)];
+            }
+
+            _startPoint.transform.position = new Vector3(startPoint.Id.x, 0, startPoint.Id.y);
+            _endPoint.transform.position = new Vector3(endPoint.Id.x, 0, endPoint.Id.y);
+        }
     }
 
     void DrawTerrainMesh(Cell[,] grid)
@@ -311,7 +346,8 @@ public class Grid : MonoBehaviour
                         tree.transform.localScale = Vector3.one * Random.Range(.1f, .3f);
 
                         _gameObjects.Add(tree);
-                        //Debug.Log("Spawn tree");
+
+                        cell.IsContainTree = true;
                     }
                 }
             }

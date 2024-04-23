@@ -46,6 +46,23 @@ public class Cell
 
         return cell._id == this._id;
     }
+
+    public int Compare(Cell cell)
+    {
+        int total1 = _id.x + _id.y;
+        int total2 = cell.Id.x + cell.Id.y;
+
+        if (total1 < total2)
+        {
+            return -1;
+        }
+        else if (total1 == total2)
+        {
+            return 0;
+        }
+
+        return 1;
+    }
 }
 
 public enum CellType
