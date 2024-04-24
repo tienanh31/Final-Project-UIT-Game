@@ -439,5 +439,23 @@ public class Grid : MonoBehaviour
                 Gizmos.DrawCube(pos, Vector3.one);
             }
         }
+
+
+        var largestArea = _grounds[_grounds.Count - 1];
+        // start areas
+        for (int i = 0; i < largestArea.Count / 10; i++)
+        {
+            Gizmos.color = Color.white;
+            Vector3 pos = new Vector3(largestArea[i].Id.x, 0, largestArea[i].Id.y);
+            Gizmos.DrawCube(pos, Vector3.one);
+        }
+
+        // end areas
+        for (int i = largestArea.Count - 1; i > (largestArea.Count - largestArea.Count / 10); i--)
+        {
+            Gizmos.color = Color.black;
+            Vector3 pos = new Vector3(largestArea[i].Id.x, 0, largestArea[i].Id.y);
+            Gizmos.DrawCube(pos, Vector3.one);
+        }
     }
 }
