@@ -30,6 +30,10 @@ public class Grid : MonoBehaviour
     Cell[,] _grid;
     List<List<Cell>> _grounds;
 
+    Cell _startPointCell;
+    Cell _endPointCell;
+    List<Cell> _enemiesPosition;
+
     private List<Mesh> _meshes;
     private List<GameObject> _gameObjects;
     private List<Texture2D> _texture2Ds;
@@ -133,20 +137,20 @@ public class Grid : MonoBehaviour
             var largestArea = _grounds[size - 1];
             var n = largestArea.Count;
 
-            var startPoint = largestArea[Random.Range(0, n / 10)];
-            while (startPoint.IsContainTree)
+            _startPointCell = largestArea[Random.Range(0, n / 10)];
+            while (_startPointCell.IsContainTree)
             {
-                startPoint = largestArea[Random.Range(0, n / 10)];
+                _startPointCell = largestArea[Random.Range(0, n / 10)];
             }
 
-            var endPoint = largestArea[Random.Range(n - n / 10, n)];
-            while (endPoint.IsContainTree)
+            _endPointCell = largestArea[Random.Range(n - n / 10, n)];
+            while (_endPointCell.IsContainTree)
             {
-                endPoint = largestArea[Random.Range(n - n / 10, n)];
+                _endPointCell = largestArea[Random.Range(n - n / 10, n)];
             }
 
-            _startPoint.transform.position = new Vector3(startPoint.Id.x, 0, startPoint.Id.y);
-            _endPoint.transform.position = new Vector3(endPoint.Id.x, 0, endPoint.Id.y);
+            _startPoint.transform.position = new Vector3(_startPointCell.Id.x, 0, _startPointCell.Id.y);
+            _endPoint.transform.position = new Vector3(_endPointCell.Id.x, 0, _endPointCell.Id.y);
         }
     }
 
@@ -324,38 +328,47 @@ public class Grid : MonoBehaviour
     void GenerateEnemies(Cell[,] grid)
     {
         int numEnemies = 5;
+        _enemiesPosition = new List<Cell>();
 
-        // Get enemy at Endpoint
-        int endX = Mathf.RoundToInt(_endPoint.transform.position.x);
-        int endY = Mathf.RoundToInt(_endPoint.transform.position.z);
-        // Create enemy at Endpoint
+        //// Get enemy at Endpoint
+        //int endX = Mathf.RoundToInt(_endPoint.transform.position.x);
+        //int endY = Mathf.RoundToInt(_endPoint.transform.position.z);
+        //// Create enemy at Endpoint
         GameObject enemyPrefab = _enemyPrefabs[Random.Range(0, _enemyPrefabs.Length)];
         GameObject enemy = Instantiate(enemyPrefab, transform);
-        enemy.transform.position = new Vector3(endX, 0f, endY);
+        enemy.transform.position = new Vector3(_endPointCell.Id.x, 0f, _endPointCell.Id.y);
+        _gameObjects.Add(enemy);
 
-        // Create random enemies'pos in map
-        List<Vector2Int> enemyPositions = new List<Vector2Int>();
-        while (enemyPositions.Count < numEnemies)
+        //random enemies'pos in map
+        _enemiesPosition.Add(_endPointCell);
+
+        var largestArea = _grounds[_grounds.Count - 1];
+        int startRandom = largestArea.Count / 10;
+        int endRandom = largestArea.Count - largestArea.Count / 10;
+
+        while (_enemiesPosition.Count < numEnemies)
         {
-            int randomX = Random.Range(0, _size);
-            int randomY = Random.Range(0, _size);
+            var randomCell = largestArea[Random.Range(startRandom, endRandom)];
 
-      
-            if (randomX != endX || randomY != endY)
+            if (_enemiesPosition.FindIndex(e => e.Equals(randomCell)) == -1)
             {
-                if (grid[randomX, randomY].Type == CellType.Ground)
+                if (!randomCell.IsContainTree)
                 {
-                    enemyPositions.Add(new Vector2Int(randomX, randomY));
+                    _enemiesPosition.Add(randomCell);
                 }
             }
         }
 
         // Create random enemies in map 
-        foreach (Vector2Int position in enemyPositions)
+        foreach (var cell in _enemiesPosition)
         {
             GameObject randomEnemyPrefab = _enemyPrefabs[Random.Range(0, _enemyPrefabs.Length)];
             GameObject randomEnemy = Instantiate(randomEnemyPrefab, transform);
-            randomEnemy.transform.position = new Vector3(position.x, 0f, position.y);
+            randomEnemy.transform.position = new Vector3(cell.Id.x, 0f, cell.Id.y);
+
+            _gameObjects.Add(randomEnemy);
+
+            Debug.LogWarning(cell.Id);
         }
     }
 
@@ -426,6 +439,11 @@ public class Grid : MonoBehaviour
 
     void ClearAllMap()
     {
+        if (_enemiesPosition != null)
+        {
+            _enemiesPosition.Clear();
+        }    
+
         MeshFilter meshFilter = GetComponent<MeshFilter>();
         if (meshFilter != null)
         {
