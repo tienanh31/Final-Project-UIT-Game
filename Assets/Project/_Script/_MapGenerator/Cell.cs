@@ -8,6 +8,8 @@ public class Cell
 
     public bool IsContainTree = false;
 
+    public bool IsContainEnemy = false;
+
     public float NoiseValue => _noiseValue;
 
     public Vector2Int Id => _id;

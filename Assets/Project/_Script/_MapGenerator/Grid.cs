@@ -6,6 +6,10 @@ public class Grid : MonoBehaviour
 {
     [SerializeField] Button btnRandom;
 
+    [SerializeField] GameObject[] _enemyPrefabs;
+    [SerializeField] float _enemyNoiseScale = .005f;
+    [SerializeField] float _enemyDensity = .5f;
+
     [SerializeField] GameObject[] _treePrefabs;
     [SerializeField] float _treeNoiseScale = .005f;
     [SerializeField] float _treeDensity = .5f;
@@ -102,6 +106,7 @@ public class Grid : MonoBehaviour
         DrawTexture(_grid);
         GenerateTrees(_grid);
         GenerateGrasses(_grid);
+        GenerateEnemies(_grid);
     }
 
     void CalculateStartAndEndPoint()
@@ -118,6 +123,7 @@ public class Grid : MonoBehaviour
             {
                 debug += i.Id + "\t";
             }
+
             Debug.Log(debug);
         }
 
@@ -315,6 +321,44 @@ public class Grid : MonoBehaviour
         _texture2Ds.Add(texture);
     }
 
+    void GenerateEnemies(Cell[,] grid)
+    {
+        int numEnemies = 5;
+
+        // Get enemy at Endpoint
+        int endX = Mathf.RoundToInt(_endPoint.transform.position.x);
+        int endY = Mathf.RoundToInt(_endPoint.transform.position.z);
+        // Create enemy at Endpoint
+        GameObject enemyPrefab = _enemyPrefabs[Random.Range(0, _enemyPrefabs.Length)];
+        GameObject enemy = Instantiate(enemyPrefab, transform);
+        enemy.transform.position = new Vector3(endX, 0f, endY);
+
+        // Create random enemies'pos in map
+        List<Vector2Int> enemyPositions = new List<Vector2Int>();
+        while (enemyPositions.Count < numEnemies)
+        {
+            int randomX = Random.Range(0, _size);
+            int randomY = Random.Range(0, _size);
+
+      
+            if (randomX != endX || randomY != endY)
+            {
+                if (grid[randomX, randomY].Type == CellType.Ground)
+                {
+                    enemyPositions.Add(new Vector2Int(randomX, randomY));
+                }
+            }
+        }
+
+        // Create random enemies in map 
+        foreach (Vector2Int position in enemyPositions)
+        {
+            GameObject randomEnemyPrefab = _enemyPrefabs[Random.Range(0, _enemyPrefabs.Length)];
+            GameObject randomEnemy = Instantiate(randomEnemyPrefab, transform);
+            randomEnemy.transform.position = new Vector3(position.x, 0f, position.y);
+        }
+    }
+
     void GenerateTrees(Cell[,] grid)
     {
         //float[,] noiseMap = new float[_size, _size];
@@ -439,7 +483,6 @@ public class Grid : MonoBehaviour
                 Gizmos.DrawCube(pos, Vector3.one);
             }
         }
-
 
         var largestArea = _grounds[_grounds.Count - 1];
         // start areas
