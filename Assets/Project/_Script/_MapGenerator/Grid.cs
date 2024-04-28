@@ -7,8 +7,7 @@ public class Grid : MonoBehaviour
     [SerializeField] Button btnRandom;
 
     [SerializeField] GameObject[] _enemyPrefabs;
-    [SerializeField] float _enemyNoiseScale = .005f;
-    [SerializeField] float _enemyDensity = .5f;
+    [SerializeField] int _numbersEnemies = 5;
 
     [SerializeField] GameObject[] _treePrefabs;
     [SerializeField] float _treeNoiseScale = .005f;
@@ -327,7 +326,6 @@ public class Grid : MonoBehaviour
 
     void GenerateEnemies(Cell[,] grid)
     {
-        int numEnemies = 5;
         _enemiesPosition = new List<Cell>();
 
         //// Get enemy at Endpoint
@@ -346,7 +344,7 @@ public class Grid : MonoBehaviour
         int startRandom = largestArea.Count / 10;
         int endRandom = largestArea.Count - largestArea.Count / 10;
 
-        while (_enemiesPosition.Count < numEnemies)
+        while (_enemiesPosition.Count < _numbersEnemies)
         {
             var randomCell = largestArea[Random.Range(startRandom, endRandom)];
 
