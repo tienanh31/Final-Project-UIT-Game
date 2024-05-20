@@ -6,6 +6,7 @@ public class Grid : MonoBehaviour
 {
     [SerializeField] Button btnRandom;
 
+    [SerializeField] bool _isGenerateEnemy = true;
     [SerializeField] GameObject[] _enemyPrefabs;
     [SerializeField] int _numbersEnemies = 5;
 
@@ -109,7 +110,9 @@ public class Grid : MonoBehaviour
         DrawTexture(_grid);
         GenerateTrees(_grid);
         GenerateGrasses(_grid);
-        GenerateEnemies(_grid);
+
+        if (_isGenerateEnemy)
+            GenerateEnemies(_grid);
     }
 
     void CalculateStartAndEndPoint()
@@ -192,6 +195,8 @@ public class Grid : MonoBehaviour
 
         MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
         meshFilter.mesh = mesh;
+
+        var collider = gameObject.AddComponent<MeshCollider>();
 
         MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
 
