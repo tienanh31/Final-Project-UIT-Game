@@ -18,16 +18,16 @@ public class LevelManager : MonoBehaviour
     #region Fields & Properties
     public GameMode currentGameMode;
     public GameMode[] availableGameMode = { GameMode.Sweep, GameMode.Survival };
-    public GameObject characterSpawner;
-    public AudioClip BGM;
-    public AudioClip WinSFX;
-    public AudioClip LoseSFX;
+    //public GameObject characterSpawner;
+    //public AudioClip BGM;
+    //public AudioClip WinSFX;
+    //public AudioClip LoseSFX;
     public bool GamePaused = false;
 
     //to activate the gamelost event only once
     protected bool GameLost = false;
     protected bool GameWon = false;
-    protected AudioSource audioSource;
+    //protected AudioSource audioSource;
 
     // [SerializeField]
     // protected PatrolScope _patrolScope;
@@ -49,14 +49,14 @@ public class LevelManager : MonoBehaviour
     #endregion
 
     #region Methods
-    private void OnDrawGizmos()
-    {
-        if (characterSpawner == null)
-            return;
+    //private void OnDrawGizmos()
+    //{
+    //    if (characterSpawner == null)
+    //        return;
 
-        Gizmos.color = Color.blue;
-        Gizmos.DrawSphere(characterSpawner.transform.position, 0.5f);
-    }
+    //    Gizmos.color = Color.blue;
+    //    Gizmos.DrawSphere(characterSpawner.transform.position, 0.5f);
+    //}
 
     // Start is called before the first frame update
     private void Awake()
@@ -67,38 +67,47 @@ public class LevelManager : MonoBehaviour
             Destroy(gameObject);
 
         damageables = new List<IDamageable>();
-        audioSource = this.GetComponent<AudioSource>();
+        //audioSource = this.GetComponent<AudioSource>();
     }
 
-    protected virtual void Start()
+    public virtual void Initialize()
     {
+        Debug.LogWarning(GameManager.Instance.MapGenerator.StartPointCell);
+        var characterSpawner = GameManager.Instance.MapGenerator.StartPointCell.GetPosition();
+
         character = GameObject.FindObjectOfType<Character>();
         if (character == null)
             switch (GameManager.Instance.SelectedCharacter)
             {
                 case GameConfig.CHARACTER.CHARACTER_1:
-                    character = Character1.Create(null, characterSpawner.transform.position);
+                    character = Character1.Create(null, characterSpawner);
                     break;
 
                 case GameConfig.CHARACTER.CHARACTER_2:
-                    character = Character2.Create(null, characterSpawner.transform.position);
+                    character = Character2.Create(null, characterSpawner);
                     break;
 
                 case GameConfig.CHARACTER.CHARACTER_3:
-                    character = Character3.Create(null, characterSpawner.transform.position);
+                    character = Character3.Create(null, characterSpawner);
                     break;
 
                 case GameConfig.CHARACTER.CHARACTER_4:
-                    character = Character4.Create(null, characterSpawner.transform.position);
+                    character = Character4.Create(null, characterSpawner);
                     break;
 
                 default:
-                    character = Character.Create(null, characterSpawner.transform.position);
+                    character = Character.Create(null, characterSpawner);
                     break;
             }
         character.Initialize();
-        myCamera = Camera.main.gameObject.GetComponent<CameraController>();
+        Debug.LogWarning("Level Manager Init");
+
+        if (myCamera == null)
+        {
+            myCamera = Camera.main.gameObject.GetComponent<CameraController>();
+        }
         myCamera.Initialize();
+
         foreach (var enemy in enemies)
         {
             enemy.Initialize();
@@ -119,9 +128,23 @@ public class LevelManager : MonoBehaviour
         }
         enemiesLeft = possibleEnemyCount;
 
-        audioSource.clip = BGM;
-        audioSource.loop = true;
-        audioSource.Play();
+        //audioSource.clip = BGM;
+        //audioSource.loop = true;
+        //audioSource.Play();
+    }
+
+    public void SpawningEnemies(List<Cell> positions)
+    {
+        for (int i = 0; i < positions.Count; i++)
+        {
+            var enemy = GameManager.Instance.SpawningEnemy(GameConfig.ENEMY.ENEMY_MELEE, positions[i].GetPosition());
+            enemy.Initialize();
+
+            enemies.Add(enemy);
+        }
+
+        possibleEnemyCount = enemies.Count;
+        enemiesLeft = possibleEnemyCount;
     }
 
     protected virtual void Update()
@@ -168,18 +191,18 @@ public class LevelManager : MonoBehaviour
     {
         GameWon = true;
         VictoryScreen.Create();
-        audioSource.loop = false;
-        audioSource.Stop();
-        audioSource.PlayOneShot(WinSFX);
+        //audioSource.loop = false;
+        //audioSource.Stop();
+        //audioSource.PlayOneShot(WinSFX);
     }
 
     public void Lose()
     {
         GameLost = true;
         DefeatScreen.Create();
-        audioSource.loop = false;
-        audioSource.Stop();
-        audioSource.PlayOneShot(LoseSFX);
+        //audioSource.loop = false;
+        //audioSource.Stop();
+        //audioSource.PlayOneShot(LoseSFX);
     }
 
     private void LateUpdate()
@@ -211,15 +234,9 @@ public class LevelManager : MonoBehaviour
 
     virtual public bool WinCondition()
     {
-        switch (currentGameMode)
-        {
-            default:
-                {
-                    if (enemiesLeft == 0)
-                        return true; else
-                        return false;
-                }
-        }
+        return false;
+
+        return enemiesLeft == 0;
     }
 
     virtual public bool LoseCondition()

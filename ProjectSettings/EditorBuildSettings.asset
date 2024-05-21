@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Project/Scenes/Level 3.unity
     guid: 6cfd560743004224d9586008e4893098
+  - enabled: 1
+    path: Assets/Project/Scenes/PlayScene.unity
+    guid: 8fbb85d3e289e2043b943a9208c4e2a5
   m_configObjects: {}

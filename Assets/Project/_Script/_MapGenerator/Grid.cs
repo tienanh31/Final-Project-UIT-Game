@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.AI;
 
 public class Grid : MonoBehaviour
 {
+    [SerializeField] NavMeshSurface _navMesh;
     [SerializeField] Button btnRandom;
 
     [SerializeField] bool _isGenerateEnemy = true;
@@ -30,21 +32,29 @@ public class Grid : MonoBehaviour
     Cell[,] _grid;
     List<List<Cell>> _grounds;
 
-    Cell _startPointCell;
-    Cell _endPointCell;
-    List<Cell> _enemiesPosition;
+    public Cell StartPointCell;
+    public Cell EndPointCell;
+    public List<Cell> EnemiesPosition;
 
     private List<Mesh> _meshes;
     private List<GameObject> _gameObjects;
     private List<Texture2D> _texture2Ds;
 
-    void Start()
+    void Awake()
     {
         _meshes = new List<Mesh>();
         _gameObjects = new List<GameObject>();
         _texture2Ds = new List<Texture2D>();
 
         RandomMap();
+
+        GameManager.Instance.MapGenerator = this;
+
+        if (LevelManager.Instance != null)
+        {
+            LevelManager.Instance.Initialize();
+            LevelManager.Instance.SpawningEnemies(EnemiesPosition);
+        }    
     }
 
     private void OnEnable()
@@ -130,7 +140,7 @@ public class Grid : MonoBehaviour
                 debug += i.Id + "\t";
             }
 
-            Debug.Log(debug);
+            //Debug.Log(debug);
         }
 
         int size = _grounds.Count;
@@ -139,20 +149,20 @@ public class Grid : MonoBehaviour
             var largestArea = _grounds[size - 1];
             var n = largestArea.Count;
 
-            _startPointCell = largestArea[Random.Range(0, n / 10)];
-            while (_startPointCell.IsContainTree)
+            StartPointCell = largestArea[Random.Range(0, n / 10)];
+            while (StartPointCell.IsContainTree)
             {
-                _startPointCell = largestArea[Random.Range(0, n / 10)];
+                StartPointCell = largestArea[Random.Range(0, n / 10)];
             }
 
-            _endPointCell = largestArea[Random.Range(n - n / 10, n)];
-            while (_endPointCell.IsContainTree)
+            EndPointCell = largestArea[Random.Range(n - n / 10, n)];
+            while (EndPointCell.IsContainTree)
             {
-                _endPointCell = largestArea[Random.Range(n - n / 10, n)];
+                EndPointCell = largestArea[Random.Range(n - n / 10, n)];
             }
 
-            _startPoint.transform.position = new Vector3(_startPointCell.Id.x, 0, _startPointCell.Id.y);
-            _endPoint.transform.position = new Vector3(_endPointCell.Id.x, 0, _endPointCell.Id.y);
+            _startPoint.transform.position = new Vector3(StartPointCell.Id.x, 0, StartPointCell.Id.y);
+            _endPoint.transform.position = new Vector3(EndPointCell.Id.x, 0, EndPointCell.Id.y);
         }
     }
 
@@ -199,6 +209,8 @@ public class Grid : MonoBehaviour
         var collider = gameObject.AddComponent<MeshCollider>();
 
         MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
+
+        _navMesh.BuildNavMesh();
 
         _meshes.Add(mesh);
     }
@@ -331,47 +343,47 @@ public class Grid : MonoBehaviour
 
     void GenerateEnemies(Cell[,] grid)
     {
-        _enemiesPosition = new List<Cell>();
+        EnemiesPosition = new List<Cell>();
 
         //// Get enemy at Endpoint
         //int endX = Mathf.RoundToInt(_endPoint.transform.position.x);
         //int endY = Mathf.RoundToInt(_endPoint.transform.position.z);
         //// Create enemy at Endpoint
-        GameObject enemyPrefab = _enemyPrefabs[Random.Range(0, _enemyPrefabs.Length)];
-        GameObject enemy = Instantiate(enemyPrefab, transform);
-        enemy.transform.position = new Vector3(_endPointCell.Id.x, 0f, _endPointCell.Id.y);
-        _gameObjects.Add(enemy);
+        //GameObject enemyPrefab = _enemyPrefabs[Random.Range(0, _enemyPrefabs.Length)];
+        //GameObject enemy = Instantiate(enemyPrefab, transform);
+        //enemy.transform.position = new Vector3(EndPointCell.Id.x, 0f, EndPointCell.Id.y);
+        //_gameObjects.Add(enemy);
 
         //random enemies'pos in map
-        _enemiesPosition.Add(_endPointCell);
+        EnemiesPosition.Add(EndPointCell);
 
         var largestArea = _grounds[_grounds.Count - 1];
         int startRandom = largestArea.Count / 10;
         int endRandom = largestArea.Count - largestArea.Count / 10;
 
-        while (_enemiesPosition.Count < _numbersEnemies)
+        while (EnemiesPosition.Count < _numbersEnemies)
         {
             var randomCell = largestArea[Random.Range(startRandom, endRandom)];
 
-            if (_enemiesPosition.FindIndex(e => e.Equals(randomCell)) == -1)
+            if (EnemiesPosition.FindIndex(e => e.Equals(randomCell)) == -1)
             {
                 if (!randomCell.IsContainTree)
                 {
-                    _enemiesPosition.Add(randomCell);
+                    EnemiesPosition.Add(randomCell);
                 }
             }
         }
 
         // Create random enemies in map 
-        foreach (var cell in _enemiesPosition)
+        foreach (var cell in EnemiesPosition)
         {
-            GameObject randomEnemyPrefab = _enemyPrefabs[Random.Range(0, _enemyPrefabs.Length)];
-            GameObject randomEnemy = Instantiate(randomEnemyPrefab, transform);
-            randomEnemy.transform.position = new Vector3(cell.Id.x, 0f, cell.Id.y);
+            //GameObject randomEnemyPrefab = _enemyPrefabs[Random.Range(0, _enemyPrefabs.Length)];
+            //GameObject randomEnemy = Instantiate(randomEnemyPrefab, transform);
+            //randomEnemy.transform.position = new Vector3(cell.Id.x, 0f, cell.Id.y);
 
-            _gameObjects.Add(randomEnemy);
+            //_gameObjects.Add(randomEnemy);
 
-            Debug.LogWarning(cell.Id);
+            //Debug.LogWarning(cell.Id);
         }
     }
 
@@ -442,9 +454,9 @@ public class Grid : MonoBehaviour
 
     void ClearAllMap()
     {
-        if (_enemiesPosition != null)
+        if (EnemiesPosition != null)
         {
-            _enemiesPosition.Clear();
+            EnemiesPosition.Clear();
         }    
 
         MeshFilter meshFilter = GetComponent<MeshFilter>();

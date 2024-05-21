@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 1507207822386107606}
   - component: {fileID: 5725563880246881380}
   m_Layer: 6
-  m_Name: BetterSuicideAttacker
+  m_Name: ENEMY_SUICIDE
   m_TagString: ENEMY
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

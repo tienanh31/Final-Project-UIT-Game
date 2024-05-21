@@ -7,8 +7,18 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     #region Fields & Properties
+    [SerializeField] Grid _mapGenerator;
 
     public GameConfig.CHARACTER SelectedCharacter = GameConfig.CHARACTER.CHARACTER_DEFAULT;
+
+    public Grid MapGenerator
+    {
+        get => _mapGenerator;
+        set
+        {
+            _mapGenerator = value;
+        }
+    }
 
     public static GameManager Instance { get; protected set; }
     #endregion
@@ -46,5 +56,20 @@ public class GameManager : MonoBehaviour
     public bool IsInPlayScene() => SceneManager.GetActiveScene().buildIndex != 0;
 
     public void QuitGame() => Application.Quit();
+
+    public Enemy SpawningEnemy(GameConfig.ENEMY enemyType, Vector3 position)
+    {
+        Enemy enemy = Instantiate(Resources.Load<Enemy>("_Prefabs/Enemies/" + enemyType.ToString()),
+            position, new Quaternion());
+
+        return enemy;
+    }
+
     #endregion
+}
+
+public class SceneName
+{
+    public const string MainMenu = "Main Menu";
+    public const string PlayScene = "PlayScene";
 }

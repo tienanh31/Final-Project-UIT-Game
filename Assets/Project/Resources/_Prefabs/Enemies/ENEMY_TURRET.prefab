@@ -3002,7 +3002,7 @@ GameObject:
   - component: {fileID: 6515252979655581981}
   - component: {fileID: 6515252979655581982}
   m_Layer: 6
-  m_Name: Super Turret
+  m_Name: ENEMY_TURRET
   m_TagString: ENEMY
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

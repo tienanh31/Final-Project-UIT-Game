@@ -122,7 +122,7 @@ public class MainMenu : MonoBehaviour, IUserInterface
 
     private void Begin()
     {
-        GameManager.Instance.LoadScene(_levelSelecting.value + 1);
+        GameManager.Instance.LoadScene(SceneName.PlayScene);
     }
 
     private void OpenOption()

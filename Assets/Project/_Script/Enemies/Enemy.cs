@@ -42,13 +42,13 @@ public class Enemy: MonoBehaviour, IDamageable
 
 	protected bool _patrolable = true;
 	public bool _initialized = false;
-	protected internal bool isAlerted = false;
+	//protected internal bool isAlerted = false;
 
 	protected Transform target;
 	protected Healthbar healthbar;
 
 	[Header("_~* 	Other ")]
-	[SerializeField] protected AlertType alertType = AlertType.Nearby;
+	//[SerializeField] protected AlertType alertType = AlertType.Nearby;
 	[SerializeField] protected bool movementBehaviour = true;
 
 	[Header("_~* 	Events ")]
@@ -61,6 +61,8 @@ public class Enemy: MonoBehaviour, IDamageable
 		_initialized = true;
 		this.tag = GameConfig.COLLIDABLE_OBJECT.ENEMY.ToString();
 		enemyAgent = GetComponent<NavMeshAgent>();
+		enemyAgent.Warp(transform.position);
+
 		characterRigidbody = GetComponent<Rigidbody>();
 		OnDeathEvent = new UnityEvent<Enemy>();
 		healthbar = GetComponentInChildren<Healthbar>();
@@ -94,72 +96,53 @@ public class Enemy: MonoBehaviour, IDamageable
 		LevelManager.Instance.AddEnemy(this);
 		if (movementBehaviour)
 		{
-			CurrentDestination = path.GetNodePosition(currentPosition);
-			enemyAgent.SetDestination(CurrentDestination);
+			//CurrentDestination = path.GetNodePosition(currentPosition);
+			//enemyAgent.SetDestination(CurrentDestination);
 		}
 	}
 
-	public virtual void Alert(GameObject? gameObject)
-	{
-		isAlerted = true;
-		if (gameObject != null)
-			target = gameObject.transform;
-		else
-			target = Character.Instance.transform;
-	}
+	//public virtual void Alert(GameObject? gameObject)
+	//{
+	//	isAlerted = true;
+	//	if (gameObject != null)
+	//		target = gameObject.transform;
+	//	else
+	//		target = Character.Instance.transform;
+	//}
 
-	public virtual void AlertNearbyEnemies(GameObject? gameObject)
-	{
-		foreach (Collider c in Physics.OverlapSphere(this.transform.position, _detectRange, LayerMask.GetMask("Damageables")))
-		{
-			if (c.gameObject.CompareTag(this.tag) && c.gameObject != this.gameObject)
-			{
-				Enemy enemy = c.gameObject.GetComponent<Enemy>();
-				if (enemy != null && !enemy.isAlerted)
-					enemy.Alert(gameObject);
-			}
-		}
-	}
+	//public virtual void AlertNearbyEnemies(GameObject? gameObject)
+	//{
+	//	foreach (Collider c in Physics.OverlapSphere(this.transform.position, _detectRange, LayerMask.GetMask("Damageables")))
+	//	{
+	//		if (c.gameObject.CompareTag(this.tag) && c.gameObject != this.gameObject)
+	//		{
+	//			Enemy enemy = c.gameObject.GetComponent<Enemy>();
+	//			if (enemy != null && !enemy.isAlerted)
+	//				enemy.Alert(gameObject);
+	//		}
+	//	}
+	//}
 
-	public virtual void AlertSamePathEnemies(GameObject? gameObject)
-	{
-		foreach (Enemy enemy in LevelManager.Instance.enemies)
-			if (enemy != null && enemy.gameObject != this.gameObject && !enemy.isAlerted && enemy.path == this.path)
-			enemy.Alert(gameObject);
-	}
+	//public virtual void AlertSamePathEnemies(GameObject? gameObject)
+	//{
+	//	foreach (Enemy enemy in LevelManager.Instance.enemies)
+	//		if (enemy != null && enemy.gameObject != this.gameObject && !enemy.isAlerted && enemy.path == this.path)
+	//		enemy.Alert(gameObject);
+	//}
 
-	public virtual void AlertAllEnemies(GameObject? gameObject)
-	{
-		foreach (Enemy e in LevelManager.Instance.enemies)
-		{
-			if (e != null && e.gameObject != this.gameObject && !e.IsDead && !e.isAlerted)
-				e.Alert(gameObject);
-		}
-	}
+	//public virtual void AlertAllEnemies(GameObject? gameObject)
+	//{
+	//	foreach (Enemy e in LevelManager.Instance.enemies)
+	//	{
+	//		if (e != null && e.gameObject != this.gameObject && !e.IsDead && !e.isAlerted)
+	//			e.Alert(gameObject);
+	//	}
+	//}
 
 	public virtual void UpdateEnemy()
 	{
-		if (!isAlerted)
-		{
-			target = DetectTarget();
-			if (target != null)
-			{
-				switch (alertType)
-				{
-					case AlertType.SamePath:
-						AlertSamePathEnemies(target.gameObject);
-						break;
-					case AlertType.All:
-						AlertAllEnemies(target.gameObject);
-						break;
-					default:
-						AlertNearbyEnemies(target.gameObject);
-						break;
-				}
-				
-				isAlerted = true;
-			}
-		}
+		target = DetectTarget();
+
 		if (target != null)
 		{
 			if (Vector3.Distance(transform.position, target.position) <= _attackRange)
@@ -178,26 +161,26 @@ public class Enemy: MonoBehaviour, IDamageable
 		else
 		{
 			if (movementBehaviour)
-				MovementBehaviour();
+				//MovementBehaviour();
 			Debug.DrawLine(transform.position, CurrentDestination, Color.blue);
 		}
 	}
 
 	public virtual void TakenDamage(Damage damage)
 	{
-		Alert(damage.damageSource);
-		switch (alertType)
-		{
-			case AlertType.SamePath:
-				AlertSamePathEnemies(damage.damageSource);
-				break;
-			case AlertType.All:
-				AlertAllEnemies(damage.damageSource);
-				break;
-			default:
-				AlertNearbyEnemies(damage.damageSource);
-				break;
-		}
+		//Alert(damage.damageSource);
+		//switch (alertType)
+		//{
+		//	case AlertType.SamePath:
+		//		AlertSamePathEnemies(damage.damageSource);
+		//		break;
+		//	case AlertType.All:
+		//		AlertAllEnemies(damage.damageSource);
+		//		break;
+		//	default:
+		//		AlertNearbyEnemies(damage.damageSource);
+		//		break;
+		//}
 		if (IsDead)
 		{
 			return;
@@ -230,7 +213,7 @@ public class Enemy: MonoBehaviour, IDamageable
 	public virtual void OnDeath(Vector3? DamageDirection = null, float punch = 0.0f)
 	{
 		//Debug.Log("Enemy die");
-		AlertNearbyEnemies(null);
+		//AlertNearbyEnemies(null);
 		LevelManager.Instance.damageables.Remove(this);
 		OnDeathEvent?.Invoke(this);
 		OnDeathEvent?.RemoveAllListeners();

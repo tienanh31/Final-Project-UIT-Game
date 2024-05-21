@@ -419,7 +419,7 @@ GameObject:
   - component: {fileID: 7784886527559084269}
   - component: {fileID: 6084528787708966497}
   m_Layer: 6
-  m_Name: NighttimeEnemy
+  m_Name: ENEMY_NIGHTTIME
   m_TagString: ENEMY
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

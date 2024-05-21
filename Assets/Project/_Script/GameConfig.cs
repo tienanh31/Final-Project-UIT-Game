@@ -59,7 +59,12 @@ public class GameConfig
 	public enum ENEMY
 	{
 		ENEMY_DEFAULT = 0,
-
+		ENEMY_SHIELD = 1,
+		ENEMY_TURRET = 2,
+		ENEMY_MELEE = 3,
+		ENEMY_NIGHTTIME = 4,
+		ENEMY_SUICIDE = 5,
+		ENEMY_ARTILERY = 6,
 	}
 
 	public enum PET

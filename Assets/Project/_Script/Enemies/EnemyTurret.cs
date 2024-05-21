@@ -56,26 +56,26 @@ public class EnemyTurret : Enemy, IDamageable
 
     public override void UpdateEnemy()
     {
-        if (!isAlerted)
-        {
-            target = DetectTarget();
-            if (target != null)
-            {
-                switch (alertType)
-                {
-                    case AlertType.SamePath:
-                        AlertSamePathEnemies(target.gameObject);
-                        break;
-                    case AlertType.All:
-                        AlertAllEnemies(target.gameObject);
-                        break;
-                    default:
-                        AlertNearbyEnemies(target.gameObject);
-                        break;
-                }
-                isAlerted = true;
-            }
-        }
+        //if (!isAlerted)
+        //{
+        //    target = DetectTarget();
+        //    if (target != null)
+        //    {
+        //        switch (alertType)
+        //        {
+        //            case AlertType.SamePath:
+        //                AlertSamePathEnemies(target.gameObject);
+        //                break;
+        //            case AlertType.All:
+        //                AlertAllEnemies(target.gameObject);
+        //                break;
+        //            default:
+        //                AlertNearbyEnemies(target.gameObject);
+        //                break;
+        //        }
+        //        isAlerted = true;
+        //    }
+        //}
         if (target != null)
         {
             Line1.gameObject.SetActive(false);

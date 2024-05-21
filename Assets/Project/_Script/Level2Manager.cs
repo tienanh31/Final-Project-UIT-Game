@@ -9,8 +9,8 @@ public class Level2Manager : LevelManager
         return false;
     }
 
-    protected override void Start()
+    public override void Initialize()
     {
-        base.Start();
+        base.Initialize();
     }
 }

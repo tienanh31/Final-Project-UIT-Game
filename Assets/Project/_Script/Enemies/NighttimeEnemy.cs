@@ -16,16 +16,16 @@ public class NighttimeEnemy : Enemy
         flashlight.range = _detectRange;
     }
 
-    public override void AlertNearbyEnemies(GameObject gameObject)
-    {
-        AlertAllEnemies(gameObject);
-    }
+    //public override void AlertNearbyEnemies(GameObject gameObject)
+    //{
+    //    AlertAllEnemies(gameObject);
+    //}
 
-    public override void Alert(GameObject gameObject)
-    {
-        base.Alert(gameObject);
-        _turningSpeed *= 360;
-    }
+    //public override void Alert(GameObject gameObject)
+    //{
+    //    base.Alert(gameObject);
+    //    _turningSpeed *= 360;
+    //}
 
     protected override Transform DetectTarget()
     {

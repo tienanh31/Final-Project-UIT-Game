@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1287872014273024173}
   - component: {fileID: 3001261552386756129}
   m_Layer: 6
-  m_Name: Better MeleeEnemy
+  m_Name: ENEMY_MELEE
   m_TagString: ENEMY
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
