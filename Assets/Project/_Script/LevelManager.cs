@@ -22,6 +22,8 @@ public class LevelManager : MonoBehaviour
     //public AudioClip BGM;
     //public AudioClip WinSFX;
     //public AudioClip LoseSFX;
+    [SerializeField] GameObject _endingGate;
+
     public bool GamePaused = false;
 
     //to activate the gamelost event only once
@@ -77,6 +79,7 @@ public class LevelManager : MonoBehaviour
 
         character = GameObject.FindObjectOfType<Character>();
         if (character == null)
+        {
             switch (GameManager.Instance.SelectedCharacter)
             {
                 case GameConfig.CHARACTER.CHARACTER_1:
@@ -99,7 +102,10 @@ public class LevelManager : MonoBehaviour
                     character = Character.Create(null, characterSpawner);
                     break;
             }
+        }    
         character.Initialize();
+        character.CollideEndingGate = Win;
+
         Debug.LogWarning("Level Manager Init");
 
         if (myCamera == null)
@@ -131,6 +137,10 @@ public class LevelManager : MonoBehaviour
         //audioSource.clip = BGM;
         //audioSource.loop = true;
         //audioSource.Play();
+
+        _endingGate.transform.position = GameManager.Instance.MapGenerator.EndPointCell.GetPosition();
+        _endingGate.transform.forward = Vector3.Normalize(character.transform.position - _endingGate.transform.position);
+    
     }
 
     public void SpawningEnemies(List<Cell> positions)

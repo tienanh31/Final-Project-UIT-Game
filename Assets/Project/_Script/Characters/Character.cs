@@ -45,6 +45,8 @@ public class Character : MonoBehaviour, IDamageable
 	public bool IsDead { get; protected set; }
 	public bool IsInPatrolScope { get; set; }
 
+	public Action CollideEndingGate;
+
 	protected float _HP;
 	protected float _damage;
 	protected float _moveSpeed;
@@ -401,6 +403,16 @@ public class Character : MonoBehaviour, IDamageable
 			pointer.SetTarget(transform);
 		}
 	}
+
+	private void OnTriggerEnter(Collider collision)
+	{
+		if (collision.gameObject.name == "EndingGate")
+        {
+			Debug.LogWarning("complete");
+			CollideEndingGate?.Invoke();
+
+		}
+    }
 
 	[ExecuteInEditMode]
 	private void ApplyChanges()

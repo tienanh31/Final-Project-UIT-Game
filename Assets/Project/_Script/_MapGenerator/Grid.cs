@@ -26,8 +26,8 @@ public class Grid : MonoBehaviour
     [SerializeField] float _scale = .1f;
     [SerializeField] int _size = 100;
 
-    [SerializeField] GameObject _startPoint;
-    [SerializeField] GameObject _endPoint;
+    //[SerializeField] GameObject _startPoint;
+    //[SerializeField] GameObject _endPoint;
 
     Cell[,] _grid;
     List<List<Cell>> _grounds;
@@ -161,8 +161,6 @@ public class Grid : MonoBehaviour
                 EndPointCell = largestArea[Random.Range(n - n / 10, n)];
             }
 
-            _startPoint.transform.position = new Vector3(StartPointCell.Id.x, 0, StartPointCell.Id.y);
-            _endPoint.transform.position = new Vector3(EndPointCell.Id.x, 0, EndPointCell.Id.y);
         }
     }
 
@@ -389,16 +387,6 @@ public class Grid : MonoBehaviour
 
     void GenerateTrees(Cell[,] grid)
     {
-        //float[,] noiseMap = new float[_size, _size];
-        //(float xOffset, float yOffset) = (Random.Range(-10000f, 10000f), Random.Range(-10000f, 10000f));
-        //for (int y = 0; y < _size; y++)
-        //{
-        //    for (int x = 0; x < _size; x++)
-        //    {
-        //        float noiseValue = Mathf.PerlinNoise(x * _treeNoiseScale + xOffset, y * _treeNoiseScale + yOffset);
-        //        noiseMap[x, y] = noiseValue;
-        //    }
-        //}
 
         for (int y = 0; y < _size; y++)
         {
@@ -408,7 +396,9 @@ public class Grid : MonoBehaviour
                 if (cell.Type == CellType.Ground)
                 {
                     float v = Random.Range(0f, _treeDensity);
-                    if (grid[x, y].NoiseValue < v)
+                    if (grid[x, y].NoiseValue < v 
+                        && grid[x, y] != EndPointCell
+                        && grid[x, y] != StartPointCell)
                     {
                         GameObject prefab = _treePrefabs[Random.Range(0, _treePrefabs.Length)];
                         GameObject tree = Instantiate(prefab, transform);
