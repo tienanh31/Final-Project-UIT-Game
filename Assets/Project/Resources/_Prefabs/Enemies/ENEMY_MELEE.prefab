@@ -123,7 +123,6 @@ MonoBehaviour:
   stoppingDistance: 1
   deleteUponDeath: 1
   _initialized: 0
-  alertType: 1
   movementBehaviour: 1
   OnDeathEvent:
     m_PersistentCalls:
@@ -705,6 +704,10 @@ PrefabInstance:
       propertyPath: OutputAudioMixerGroup
       value: 
       objectReference: {fileID: 24300002, guid: 9bbcafead42b66f48994fd9c0af3485b, type: 2}
+    - target: {fileID: 3883699686172543369, guid: 2f93c5c922b0ca648b9107ffaa41f928, type: 3}
+      propertyPath: soStats
+      value: 
+      objectReference: {fileID: 11400000, guid: bf294800f0341864f85de22ad23a05f3, type: 2}
     - target: {fileID: 3883699686172543369, guid: 2f93c5c922b0ca648b9107ffaa41f928, type: 3}
       propertyPath: _shootSFX
       value: 

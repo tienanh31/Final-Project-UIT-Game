@@ -106,8 +106,6 @@ public class LevelManager : MonoBehaviour
         character.Initialize();
         character.CollideEndingGate = Win;
 
-        Debug.LogWarning("Level Manager Init");
-
         if (myCamera == null)
         {
             myCamera = Camera.main.gameObject.GetComponent<CameraController>();
@@ -147,7 +145,7 @@ public class LevelManager : MonoBehaviour
     {
         for (int i = 0; i < positions.Count; i++)
         {
-            var enemy = GameManager.Instance.SpawningEnemy(GameConfig.ENEMY.ENEMY_MELEE, positions[i].GetPosition());
+            var enemy = GameManager.Instance.SpawningEnemy((GameConfig.ENEMY)i, positions[i].GetPosition());
             enemy.Initialize();
 
             enemies.Add(enemy);
@@ -159,14 +157,14 @@ public class LevelManager : MonoBehaviour
 
     protected virtual void Update()
     {
-        foreach (var enemy in GameObject.FindObjectsOfType<Enemy>())
-        {
-            if (!enemy._initialized)
-            {
-                enemy.Initialize();
-                possibleEnemyCount++;
-            }
-        }
+        //foreach (var enemy in GameObject.FindObjectsOfType<Enemy>())
+        //{
+        //    if (!enemy._initialized)
+        //    {
+        //        enemy.Initialize();
+        //        possibleEnemyCount++;
+        //    }
+        //}
 
         if (!character.IsDead)
         {
@@ -255,7 +253,8 @@ public class LevelManager : MonoBehaviour
         {
             default:
                 {
-                    return character.IsDead;
+                    return character.IsDead 
+                        || character.transform.position.y < GameManager.Instance.MapGenerator.transform.position.y - 1f;
                 }
         }
     }

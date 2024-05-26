@@ -177,7 +177,16 @@ public class Character : MonoBehaviour, IDamageable
 		{
 			_HP -= damage.value;
 			healthbar.HealthUpdate();
-			//Debug.Log($"Character hp: {_HP}");
+
+			if (_HP < 0)
+            {
+				_healthChange?.Invoke(0);
+            }
+			else
+            {
+				_healthChange?.Invoke(_HP);
+			}
+			
 			if (_HP <= 0)
 			{
 				Debug.Log("Character die");
@@ -196,6 +205,8 @@ public class Character : MonoBehaviour, IDamageable
 					SetWorldText($"Picked up {(statBuff).ToString()} HP!");
 					_HP += statBuff;
 					_HP = Mathf.Clamp(_HP, 0, soStats.HP_DEFAULT);
+
+					_healthChange?.Invoke(_HP);
 				}
 				break;
 

@@ -26,7 +26,7 @@ public class MeleeAttack : IWeapon
         Type = GameConfig.WEAPON.SWORD;
         _damage = soStats.DAMAGE_DEFAULT;
         _attackRange = soStats.ATTACK_RANGE_DEFAULT;
-        _delayBetweenAttack = soStats.ATTACK_SPEED_DEFAULT;
+        _delayBetweenAttack =  1f / soStats.ATTACK_SPEED_DEFAULT;
         _shootSFX = soStats.shootSFX;
     }
 

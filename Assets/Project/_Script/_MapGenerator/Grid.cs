@@ -10,7 +10,7 @@ public class Grid : MonoBehaviour
 
     [SerializeField] bool _isGenerateEnemy = true;
     [SerializeField] GameObject[] _enemyPrefabs;
-    [SerializeField] int _numbersEnemies = 5;
+    [SerializeField] int _numbersEnemies = 7;
 
     [SerializeField] GameObject[] _treePrefabs;
     [SerializeField] float _treeNoiseScale = .005f;

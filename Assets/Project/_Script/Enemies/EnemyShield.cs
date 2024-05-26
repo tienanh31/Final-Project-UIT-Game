@@ -18,12 +18,8 @@ public class EnemyShield : Enemy
 
     public override void UpdateEnemy()
     {
-        //if (!isAlerted)
-        //{
-        //    target = DetectTarget();
-        //    if (target != null)
-        //        isAlerted = true;
-        //}
+        target = DetectTarget();
+
         if (target != null)
         {
             Transform targetTransform = target;
@@ -47,7 +43,7 @@ public class EnemyShield : Enemy
         }
         else
         {
-            MovementBehaviour();
+            //MovementBehaviour();
         }
 
         if (!Shield && shieldBroken)
