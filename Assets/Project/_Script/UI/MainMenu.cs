@@ -60,7 +60,7 @@ public class MainMenu : MonoBehaviour, IUserInterface
 
         _levelSelecting.ClearOptions();
         var levels = new List<TMP_Dropdown.OptionData>();
-        Debug.Log(GameManager.Instance.TotalScene());
+        //Debug.Log(GameManager.Instance.TotalScene());
         for (int i = 1; i < GameManager.Instance.TotalScene(); i++)
 		{
             levels.Add(new TMP_Dropdown.OptionData(i.ToString()));

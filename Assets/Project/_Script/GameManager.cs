@@ -24,6 +24,9 @@ public class GameManager : MonoBehaviour
     }
 
     public static GameManager Instance { get; protected set; }
+
+    private int _level = 1;
+
     #endregion
 
     #region Methods
@@ -38,6 +41,14 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(Instance);
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            NextLevel();
+        }
+    }
+
     public void BeginLevel(string levelname)
     {
         SceneManager.LoadScene(levelname);
@@ -46,6 +57,37 @@ public class GameManager : MonoBehaviour
     public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
+    }
+
+    public void LoadPlaySceneWithLevel(int level)
+    {
+        _level = level;
+        if (level <= 10)
+        {
+            EnemyBonusStat.HP_DEFAULT += 10;
+        }
+        else if (level <= 20)
+        {
+            EnemyBonusStat.HP_DEFAULT += 10;
+            EnemyBonusStat.ATTACK_BONUS += 3;
+        }
+        else if (level <= 30)
+        {
+            EnemyBonusStat.HP_DEFAULT += 12;
+            EnemyBonusStat.MOVE_SPEED_DEFAULT += 0.8f;
+        }
+        else
+        {
+            EnemyBonusStat.HP_DEFAULT += 12;
+            EnemyBonusStat.ATTACK_BONUS += 5;
+        }
+
+        LoadScene(SceneName.PlayScene);
+    }
+
+    public void NextLevel()
+    {
+        LoadPlaySceneWithLevel(_level + 1);
     }
 
     public void LoadScene(int id)
@@ -66,6 +108,26 @@ public class GameManager : MonoBehaviour
             position, new Quaternion());
 
         return enemy;
+    }
+
+    public int GetMapType()
+    {
+        if (_level <= 10)
+        {
+            return 0;
+        }
+
+        if (_level <= 20)
+        {
+            return 1;
+        }
+
+        if (_level <= 30)
+        {
+            return 2;
+        }
+
+        return 3;
     }
 
     #endregion

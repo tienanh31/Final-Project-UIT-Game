@@ -89,6 +89,7 @@ public class Enemy: MonoBehaviour, IDamageable
 		{
 			weapon.Initialize();
 			weapon.tag = this.tag;
+			weapon.source = gameObject;
 		}
 
 		healthbar.Start();
@@ -104,6 +105,8 @@ public class Enemy: MonoBehaviour, IDamageable
 		_HP += statBonus.HP_DEFAULT;
 		_moveSpeed += statBonus.MOVE_SPEED_DEFAULT;
 		weapon.AddDamageBonus(statBonus.ATTACK_BONUS);
+
+		Debug.LogWarning($"Enemy HP: {_HP}");
 	}
 
 	//public virtual void Alert(GameObject? gameObject)
@@ -146,7 +149,10 @@ public class Enemy: MonoBehaviour, IDamageable
 
 	public virtual void UpdateEnemy()
 	{
-		target = DetectTarget();
+		if (target == null)
+		{
+			target = DetectTarget();
+		}
 
 		if (target != null)
 		{
@@ -190,6 +196,10 @@ public class Enemy: MonoBehaviour, IDamageable
 		{
 			return;
 		}
+
+		target = damage.damageSource?.transform;
+
+		Debug.LogWarning($"Source damage: {target}");
 
 		if(_HP > 0)
 		{

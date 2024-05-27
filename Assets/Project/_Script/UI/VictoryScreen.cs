@@ -29,15 +29,15 @@ public class VictoryScreen : MonoBehaviour, IUserInterface
     private void OnEnable()
     {
         nextLevel = SceneManager.GetActiveScene().buildIndex + 1;
-        if (nextLevel < SceneManager.sceneCountInBuildSettings &&  SceneManager.GetSceneByBuildIndex(nextLevel) != null)
-        {
-            _nextLevel.gameObject.SetActive(true);
-            Debug.Log($"Next level is {nextLevel}");
-        } else
-        {
-            _nextLevel.gameObject.SetActive(false);
-            Debug.Log($"Could not find the {nextLevel} scene! Scene Count: {SceneManager.sceneCount}");
-        }
+        //if (nextLevel < SceneManager.sceneCountInBuildSettings &&  SceneManager.GetSceneByBuildIndex(nextLevel) != null)
+        //{
+        //    _nextLevel.gameObject.SetActive(true);
+        //    Debug.Log($"Next level is {nextLevel}");
+        //} else
+        //{
+        //    _nextLevel.gameObject.SetActive(false);
+        //    Debug.Log($"Could not find the {nextLevel} scene! Scene Count: {SceneManager.sceneCount}");
+        //}
 
         _mainMenu.onClick.AddListener(BackToMainMenu);
         _nextLevel.onClick.AddListener(NextLevel);
@@ -62,7 +62,9 @@ public class VictoryScreen : MonoBehaviour, IUserInterface
 
     private void NextLevel()
     {
-        GameManager.Instance.LoadScene(nextLevel);
+        //GameManager.Instance.LoadScene(nextLevel);
+
+        GameManager.Instance.NextLevel();
         UIManager.Instance.ResumeGame();
     }
 

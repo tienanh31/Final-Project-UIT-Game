@@ -18,7 +18,10 @@ public class EnemyShield : Enemy
 
     public override void UpdateEnemy()
     {
-        target = DetectTarget();
+        if (target == null)
+        {
+            target = DetectTarget();
+        }
 
         if (target != null)
         {

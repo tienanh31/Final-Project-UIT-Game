@@ -41,6 +41,15 @@ public class Grid : MonoBehaviour
 
     private int _mapType = -1;
 
+    public void SetTexture(int mapType)
+    {
+        if (mapType < _terrainMaterials.Count)
+        {
+            MeshRenderer meshRenderer = gameObject.GetComponent<MeshRenderer>();
+            meshRenderer.material = _terrainMaterials[mapType];
+        }
+    }
+
     void Awake()
     {
         _meshes = new List<Mesh>();
@@ -327,28 +336,36 @@ public class Grid : MonoBehaviour
 
     void DrawTexture(Cell[,] grid)
     {
-        Texture2D texture = new Texture2D(_size, _size);
-        Color[] colorMap = new Color[_size * _size];
-        for (int y = 0; y < _size; y++)
-        {
-            for (int x = 0; x < _size; x++)
-            {
-                Cell cell = grid[x, y];
-                if (cell.Type == CellType.Water)
-                    colorMap[y * _size + x] = Color.blue;
-                else
-                    colorMap[y * _size + x] = Color.green;
-            }
-        }
-        texture.filterMode = FilterMode.Point;
-        texture.SetPixels(colorMap);
-        texture.Apply();
+        //Texture2D texture = new Texture2D(_size, _size);
+        //Color[] colorMap = new Color[_size * _size];
+        //for (int y = 0; y < _size; y++)
+        //{
+        //    for (int x = 0; x < _size; x++)
+        //    {
+        //        Cell cell = grid[x, y];
+        //        if (cell.Type == CellType.Water)
+        //            colorMap[y * _size + x] = Color.blue;
+        //        else
+        //            colorMap[y * _size + x] = Color.green;
+        //    }
+        //}
+        //texture.filterMode = FilterMode.Point;
+        //texture.SetPixels(colorMap);
+        //texture.Apply();
 
         MeshRenderer meshRenderer = gameObject.GetComponent<MeshRenderer>();
-        meshRenderer.material = _terrainMaterials[_mapType];
+
+        if (GameManager.Instance != null)
+        {
+            meshRenderer.material = _terrainMaterials[GameManager.Instance.GetMapType()];
+        }
+        else
+        {
+            meshRenderer.material = _terrainMaterials[_mapType];
+        }
         //meshRenderer.material.mainTexture = texture;
 
-        _texture2Ds.Add(texture);
+        //_texture2Ds.Add(texture);
     }
 
     void GenerateEnemies(Cell[,] grid)
