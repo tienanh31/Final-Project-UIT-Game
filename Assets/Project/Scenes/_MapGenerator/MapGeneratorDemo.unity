@@ -378,11 +378,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f0c472797c889146ae588936aa5aa32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  btnRandom: {fileID: 1725335042}
-  _enemyPrefabs:
-  - {fileID: 4821801245755252634, guid: c20a9140aa09abd4f804b248acb5e821, type: 3}
-  _enemyNoiseScale: 0.01
-  _enemyDensity: 0.5
+  _navMesh: {fileID: 0}
+  _btnRandom: {fileID: 1725335042}
+  _isGenerateEnemy: 1
+  _numbersEnemies: 7
   _treePrefabs:
   - {fileID: 9154215057541871321, guid: 2554008d6447a2540b44e55f0c0b576e, type: 3}
   - {fileID: 2636820298107493410, guid: a2bd798ea40c7e341aa61ad124d95342, type: 3}
@@ -395,13 +394,15 @@ MonoBehaviour:
   - {fileID: 3318689441606926373, guid: d3ee913ed32937344b0587e70dc777a2, type: 3}
   _grassNoiseScale: 0.5
   _grassDensity: 1
-  _terrainMaterial: {fileID: 2100000, guid: 2f984dd1b63fbc24abdd916834492e6e, type: 2}
+  _terrainMaterials:
+  - {fileID: 2100000, guid: 5fe0b106a8899f745965ecd9e7ae496e, type: 2}
+  - {fileID: 2100000, guid: 429b680c4319b2c4c96a0c61cd948989, type: 2}
+  - {fileID: 2100000, guid: e0f470197efe8134badeb6080d344c58, type: 2}
+  - {fileID: 2100000, guid: d907d56840640e24d8ca5ab1d77d4e5d, type: 2}
   _edgeMaterial: {fileID: 2100000, guid: 2f984dd1b63fbc24abdd916834492e6e, type: 2}
   _waterLevel: 0.4
   _scale: 0.1
   _size: 100
-  _startPoint: {fileID: 665486942}
-  _endPoint: {fileID: 755946291}
 --- !u!4 &1214563494
 Transform:
   m_ObjectHideFlags: 0

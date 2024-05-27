@@ -12,10 +12,12 @@ public class Mine : MonoBehaviour
 	#endregion
 
 	#region Methods
-	public static Mine Create(Vector3 position, string tag)
+	public static Mine Create(Vector3 position, string tag, float bonusDame)
 	{
 		Mine mine = Instantiate(Resources.Load<Mine>("_Prefabs/Bullet/Mine"), position, new Quaternion());
 		mine.tag = tag;
+		mine._damage += bonusDame;
+
 		return mine;
 	}
 

@@ -48,7 +48,6 @@ public class Character : MonoBehaviour, IDamageable
 	public Action CollideEndingGate;
 
 	protected float _HP;
-	protected float _damage;
 	protected float _moveSpeed;
 	protected float _skillCooldown;
 
@@ -117,6 +116,16 @@ public class Character : MonoBehaviour, IDamageable
 		maxSpeed = _moveSpeed;
 		//characterRigidbody.drag = drag;
 		healthbar.Start();
+
+
+		// bonus
+		var statBonus = GameManager.Instance.PlayerBonusStat;
+		_HP += statBonus.HP_DEFAULT;
+		_moveSpeed += statBonus.MOVE_SPEED_DEFAULT;
+		foreach (var weapon in weapons)
+        {
+			weapon.AddDamageBonus(statBonus.ATTACK_BONUS);
+        }
 	}
 
 	public virtual void UpdateUI()

@@ -11,6 +11,8 @@ public class MineProducer : IWeapon
 
 	private float currentBulletQuantity, cooldownTimer, delayBetweenThrow;
 	private bool canPlaceMine = true;
+
+	private float _bonusDame = 0;
 	#endregion
 
 	#region Methods
@@ -20,6 +22,12 @@ public class MineProducer : IWeapon
 		currentBulletQuantity = 3;
 		delayBetweenThrow = 60f / _attackSpeed;
 		BulletChange?.Invoke((int)currentBulletQuantity);
+	}
+
+	public override void AddDamageBonus(float dame)
+	{
+		base.AddDamageBonus(dame);
+		_bonusDame += dame;
 	}
 
 	void Update()
@@ -65,7 +73,7 @@ public class MineProducer : IWeapon
 		// spawn mine
 		canPlaceMine = false;
 		
-		Mine mine = Mine.Create(location, this.tag);
+		Mine mine = Mine.Create(location, this.tag, _bonusDame);
 		mine.source = this.source;
 		yield return new WaitForSeconds(delayBetweenThrow);
 

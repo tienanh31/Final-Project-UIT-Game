@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour
     #region Fields & Properties
     [SerializeField] Grid _mapGenerator;
 
+    public SO_CharacterDefault PlayerBonusStat;
+    public SO_CharacterDefault EnemyBonusStat;
+
     public GameConfig.CHARACTER SelectedCharacter = GameConfig.CHARACTER.CHARACTER_DEFAULT;
 
     public Grid MapGenerator

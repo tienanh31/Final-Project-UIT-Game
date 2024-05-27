@@ -144,11 +144,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2377049601946077564}
+  - component: {fileID: 7599778889993836457}
   - component: {fileID: 2377049601946077555}
   - component: {fileID: 2377049601946077554}
   - component: {fileID: 5374890475696699899}
   - component: {fileID: 1071379151}
-  - component: {fileID: 7599778889993836457}
   - component: {fileID: 3824214073835353891}
   m_Layer: 6
   m_Name: Character 2
@@ -179,6 +179,33 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7599778889993836457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377049601946077552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 036265ff5aced554895f1b7e02e29864, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weapons: []
+  soStats: {fileID: 11400000, guid: b01a2edb0617b8b429743c3ff136b214, type: 2}
+  invulnerable: 0
+  worldCanvas: {fileID: 864132232087853552}
+  screenCanvas: {fileID: 145677184695053749}
+  pointer: {fileID: 0}
+  worldText: {fileID: 9017083312280190503}
+  screenText: {fileID: 3371060308334076640}
+  characterRigidbody: {fileID: 0}
+  alignWithCamera: 1
+  acceleration: 50
+  deAcceleration: 50
+  drag: 0
+  dashForce: 50
+  dashTime: 0.1
 --- !u!33 &2377049601946077555
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -258,33 +285,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &7599778889993836457
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2377049601946077552}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 036265ff5aced554895f1b7e02e29864, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weapons: []
-  soStats: {fileID: 11400000, guid: 5705b907a06225a45bf9874b557d61aa, type: 2}
-  invulnerable: 0
-  worldCanvas: {fileID: 864132232087853552}
-  screenCanvas: {fileID: 145677184695053749}
-  pointer: {fileID: 0}
-  worldText: {fileID: 9017083312280190503}
-  screenText: {fileID: 3371060308334076640}
-  characterRigidbody: {fileID: 0}
-  alignWithCamera: 1
-  acceleration: 50
-  deAcceleration: 50
-  drag: 0
-  dashForce: 50
-  dashTime: 0.1
 --- !u!81 &3824214073835353891
 AudioListener:
   m_ObjectHideFlags: 0

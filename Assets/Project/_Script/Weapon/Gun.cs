@@ -56,7 +56,14 @@ public class Gun: IWeapon
 		audioSource = GetComponent<AudioSource>();
 	}
 
-	void Start()
+    public override void AddDamageBonus(float dame)
+    {
+        base.AddDamageBonus(dame);
+
+		_damage += dame;
+    }
+
+    void Start()
 	{
 		BulletChange?.Invoke((int)currentBulletQuantity);
 	}

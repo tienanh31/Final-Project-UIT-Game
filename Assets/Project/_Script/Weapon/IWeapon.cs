@@ -15,6 +15,8 @@ public class IWeapon : MonoBehaviour
 
     public virtual void OnSwapTo() {}
 
+    public virtual void AddDamageBonus(float dame) { }
+
     protected void OnDestroy()
     {
         StopAllCoroutines();

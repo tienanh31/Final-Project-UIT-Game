@@ -33,6 +33,11 @@ public class Gernade : MonoBehaviour
         }
     }
 
+    public void AddBonusDame(float dame)
+    {
+        _damage += dame;
+    }
+
     protected virtual void Explode()
     {
         exploded = true;

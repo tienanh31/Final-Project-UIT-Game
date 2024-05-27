@@ -30,6 +30,12 @@ public class MeleeAttack : IWeapon
         _shootSFX = soStats.shootSFX;
     }
 
+    public override void AddDamageBonus(float dame)
+    {
+        base.AddDamageBonus(dame);
+        _damage += dame;
+    }
+
     public override void AttemptAttack()
     {
         if (attackable)

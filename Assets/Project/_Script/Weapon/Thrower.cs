@@ -24,6 +24,7 @@ public class Thrower : IWeapon
     protected int currentGernadeCount;
     protected AudioSource audioSource;
 
+    private float _bonusDame = 0;
     #endregion
 
     #region Methods
@@ -42,6 +43,13 @@ public class Thrower : IWeapon
 
         currentGernadeCount = _maxGernadeCount;
         BulletChange?.Invoke((int)currentGernadeCount);
+    }
+
+    public override void AddDamageBonus(float dame)
+    {
+        base.AddDamageBonus(dame);
+
+        _bonusDame += dame;
     }
 
     public override int GetCurrentBullet => (int)currentGernadeCount;
@@ -79,7 +87,8 @@ public class Thrower : IWeapon
         currentGernadeCount--;
         BulletChange?.Invoke((int)currentGernadeCount);
 
-        GameObject gernade = Instantiate(gernadePrefab.gameObject, this.transform.position, new Quaternion());
+        var gernade = Instantiate(gernadePrefab, this.transform.position, new Quaternion()) as Gernade;
+        gernade.AddBonusDame(_bonusDame);
         gernade.tag = this.tag;
         gernade.GetComponent<Rigidbody>().velocity = Vector3.zero;
         StartCoroutine(IgnoreCollision(gernade.gameObject));

@@ -35,6 +35,13 @@ public class Shotgun : Gun
         BulletChange?.Invoke((int)currentBulletQuantity);
     }
 
+    public override void AddDamageBonus(float dame)
+    {
+        base.AddDamageBonus(dame);
+
+        _damage += dame;
+    }
+
     void Start()
     {
         BulletChange?.Invoke((int)currentBulletQuantity);

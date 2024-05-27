@@ -6,10 +6,9 @@ using UnityEngine.AI;
 public class Grid : MonoBehaviour
 {
     [SerializeField] NavMeshSurface _navMesh;
-    [SerializeField] Button btnRandom;
+    [SerializeField] Button _btnRandom;
 
     [SerializeField] bool _isGenerateEnemy = true;
-    [SerializeField] GameObject[] _enemyPrefabs;
     [SerializeField] int _numbersEnemies = 7;
 
     [SerializeField] GameObject[] _treePrefabs;
@@ -20,7 +19,7 @@ public class Grid : MonoBehaviour
     [SerializeField] float _grassNoiseScale = .01f;
     [SerializeField] float _grassDensity = .5f;
 
-    [SerializeField] Material _terrainMaterial;
+    [SerializeField] List<Material> _terrainMaterials;
     [SerializeField] Material _edgeMaterial;
     [SerializeField] float _waterLevel = .4f;
     [SerializeField] float _scale = .1f;
@@ -40,6 +39,8 @@ public class Grid : MonoBehaviour
     private List<GameObject> _gameObjects;
     private List<Texture2D> _texture2Ds;
 
+    private int _mapType = -1;
+
     void Awake()
     {
         _meshes = new List<Mesh>();
@@ -48,7 +49,10 @@ public class Grid : MonoBehaviour
 
         RandomMap();
 
-        GameManager.Instance.MapGenerator = this;
+        if (GameManager.Instance)
+        {
+            GameManager.Instance.MapGenerator = this;
+        }
 
         if (LevelManager.Instance != null)
         {
@@ -59,17 +63,22 @@ public class Grid : MonoBehaviour
 
     private void OnEnable()
     {
-        btnRandom.onClick.AddListener(RandomMap);
+        _btnRandom.onClick.AddListener(RandomMap);
     }
 
     private void OnDisable()
     {
-        btnRandom.onClick.RemoveListener(RandomMap);
+        _btnRandom.onClick.RemoveListener(RandomMap);
     }
 
     void RandomMap()
     {
         ClearAllMap();
+        _mapType++;
+        if (_mapType >= _terrainMaterials.Count)
+        {
+            _mapType = 0;
+        }
 
         float[,] noiseMap = new float[_size, _size];
         (float xOffset, float yOffset) = (Random.Range(-10000f, 10000f), Random.Range(-10000f, 10000f));
@@ -208,7 +217,10 @@ public class Grid : MonoBehaviour
 
         MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
 
-        _navMesh.BuildNavMesh();
+        if (_navMesh)
+        {
+            _navMesh.BuildNavMesh();
+        }
 
         _meshes.Add(mesh);
     }
@@ -333,8 +345,8 @@ public class Grid : MonoBehaviour
         texture.Apply();
 
         MeshRenderer meshRenderer = gameObject.GetComponent<MeshRenderer>();
-        meshRenderer.material = _terrainMaterial;
-        meshRenderer.material.mainTexture = texture;
+        meshRenderer.material = _terrainMaterials[_mapType];
+        //meshRenderer.material.mainTexture = texture;
 
         _texture2Ds.Add(texture);
     }

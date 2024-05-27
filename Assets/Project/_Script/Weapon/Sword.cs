@@ -29,6 +29,13 @@ public class Sword : IWeapon
 		delayBetweenSwings = 1f / _attackSpeed; //How many times you can swing each second.
 	}
 
+	public override void AddDamageBonus(float dame)
+	{
+		base.AddDamageBonus(dame);
+
+		_damage += dame;
+	}
+
 	public override void AttemptAttack()
 	{
 		if (isAttackable)

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db53010b6ebfb9749873886aa892431e, type: 3}
-  m_Name: SuicideAttacker
+  m_Name: SO_EnemyMelee
   m_EditorClassIdentifier: 
-  HP_DEFAULT: 50
-  ATTACK_RANGE_DEFAULT: 2.5
-  MOVE_SPEED_DEFAULT: 12
-  DETECT_RANGE: 10
-  TURNING_SPEED: 1800
+  HP_DEFAULT: 125
+  ATTACK_RANGE_DEFAULT: 2
+  MOVE_SPEED_DEFAULT: 11
+  DETECT_RANGE: 8
+  TURNING_SPEED: 360

@@ -16,6 +16,13 @@ public class SuicideBomb : IWeapon
         audioSource = this.GetComponent<AudioSource>();
     }
 
+    public override void AddDamageBonus(float dame)
+    {
+        base.AddDamageBonus(dame);
+
+        _damage += dame;
+    }
+
     public override void AttemptAttack()
     {
         StartCoroutine(Attack());

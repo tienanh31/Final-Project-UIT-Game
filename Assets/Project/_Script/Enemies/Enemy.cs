@@ -99,6 +99,11 @@ public class Enemy: MonoBehaviour, IDamageable
 			//CurrentDestination = path.GetNodePosition(currentPosition);
 			//enemyAgent.SetDestination(CurrentDestination);
 		}
+
+		var statBonus = GameManager.Instance.EnemyBonusStat;
+		_HP += statBonus.HP_DEFAULT;
+		_moveSpeed += statBonus.MOVE_SPEED_DEFAULT;
+		weapon.AddDamageBonus(statBonus.ATTACK_BONUS);
 	}
 
 	//public virtual void Alert(GameObject? gameObject)
