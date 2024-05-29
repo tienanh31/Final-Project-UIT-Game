@@ -10,9 +10,15 @@ public class VictoryScreen : MonoBehaviour, IUserInterface
     [SerializeField] Button _nextLevel;
     [SerializeField] Button _mainMenu;
     [SerializeField] Button _replayLevel;
+    [SerializeField] Button _hP;
+    [SerializeField] Button _moveSpeed;
+    [SerializeField] Button _attack;
 
     public UI Type { get; set; }
     public UI PreviousUI { get; set; }
+
+    private int _buffType = 0;
+
     int nextLevel;
     #endregion
 
@@ -42,6 +48,48 @@ public class VictoryScreen : MonoBehaviour, IUserInterface
         _mainMenu.onClick.AddListener(BackToMainMenu);
         _nextLevel.onClick.AddListener(NextLevel);
         _replayLevel.onClick.AddListener(RestartMap);
+
+        _hP.onClick.AddListener(() => StatBonusHandler(0));
+        _moveSpeed.onClick.AddListener(() => StatBonusHandler(1));
+        _attack.onClick.AddListener(() => StatBonusHandler(2));
+    }
+
+    private void StatBonusHandler(int type)
+    {
+        _buffType = type;
+
+        var color = _hP.image.color;
+        color.a = 0;
+        _hP.image.color = color;
+
+        color = _moveSpeed.image.color;
+        color.a = 0;
+        _moveSpeed.image.color = color;
+
+        color = _attack.image.color;
+        color.a = 0;
+        _attack.image.color = color;
+
+        switch (type)
+        {
+            case 0:
+                color = _hP.image.color;
+                color.a = 1;
+                _hP.image.color = color;
+                break;
+
+            case 1:
+                color = _moveSpeed.image.color;
+                color.a = 1;
+                _moveSpeed.image.color = color;
+                break;
+
+            case 2:
+                color = _attack.image.color;
+                color.a = 1;
+                _attack.image.color = color;
+                break;
+        }
     }
 
     private void BackToMainMenu()
@@ -64,6 +112,7 @@ public class VictoryScreen : MonoBehaviour, IUserInterface
     {
         //GameManager.Instance.LoadScene(nextLevel);
 
+        GameManager.Instance.AddBuffStat(_buffType);
         GameManager.Instance.NextLevel();
         UIManager.Instance.ResumeGame();
     }
@@ -74,6 +123,17 @@ public class VictoryScreen : MonoBehaviour, IUserInterface
         _nextLevel.onClick.RemoveAllListeners();
         _replayLevel.onClick.RemoveAllListeners();
 
+        _hP.onClick.RemoveListener(() => StatBonusHandler(0));
+        _moveSpeed.onClick.RemoveListener(() => StatBonusHandler(1));
+        _attack.onClick.RemoveListener(() => StatBonusHandler(2));
+
         UIManager.Instance.UserInterfaces.Remove(this);
     }
+
+    public class BuffStat
+    {
+        public float HP = 8;
+        public float MOVE_SPEED = 0.9f;
+        public float ATTACK_BONUS = 5f;
+    }    
 }

@@ -94,7 +94,6 @@ public class Character : MonoBehaviour, IDamageable
 		_bulletChange = inGameUI.BulletChange;
 		_weaponChange = inGameUI.WeaponChange;
 
-		_healthChange?.Invoke(_HP);
 
 		foreach (IWeapon w in GetComponentsInChildren<IWeapon>())
 		{
@@ -120,12 +119,14 @@ public class Character : MonoBehaviour, IDamageable
 
 		// bonus
 		var statBonus = GameManager.Instance.PlayerBonusStat;
-		_HP += statBonus.HP_DEFAULT;
-		_moveSpeed += statBonus.MOVE_SPEED_DEFAULT;
+		_HP += statBonus.HP;
+		_moveSpeed += statBonus.MOVE_SPEED;
 		foreach (var weapon in weapons)
         {
 			weapon.AddDamageBonus(statBonus.ATTACK_BONUS);
         }
+
+		_healthChange?.Invoke(_HP);
 	}
 
 	public virtual void UpdateUI()

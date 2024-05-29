@@ -102,8 +102,8 @@ public class Enemy: MonoBehaviour, IDamageable
 		}
 
 		var statBonus = GameManager.Instance.EnemyBonusStat;
-		_HP += statBonus.HP_DEFAULT;
-		_moveSpeed += statBonus.MOVE_SPEED_DEFAULT;
+		_HP += statBonus.HP;
+		_moveSpeed += statBonus.MOVE_SPEED;
 		weapon.AddDamageBonus(statBonus.ATTACK_BONUS);
 
 		Debug.LogWarning($"Enemy HP: {_HP}");

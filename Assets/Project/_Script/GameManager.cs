@@ -9,8 +9,8 @@ public class GameManager : MonoBehaviour
     #region Fields & Properties
     [SerializeField] Grid _mapGenerator;
 
-    public SO_CharacterDefault PlayerBonusStat;
-    public SO_CharacterDefault EnemyBonusStat;
+    public VictoryScreen.BuffStat PlayerBonusStat;
+    public VictoryScreen.BuffStat EnemyBonusStat;
 
     public GameConfig.CHARACTER SelectedCharacter = GameConfig.CHARACTER.CHARACTER_DEFAULT;
 
@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; protected set; }
 
     private int _level = 1;
+    private List<VictoryScreen.BuffStat> _buffStats;
 
     #endregion
 
@@ -39,6 +40,50 @@ public class GameManager : MonoBehaviour
         	Destroy(gameObject);
         }
         DontDestroyOnLoad(Instance);
+
+        PlayerBonusStat = new VictoryScreen.BuffStat()
+        {
+            HP = 0,
+            MOVE_SPEED = 0,
+            ATTACK_BONUS = 0
+        };
+
+        EnemyBonusStat = new VictoryScreen.BuffStat()
+        {
+            HP = 0,
+            MOVE_SPEED = 0,
+            ATTACK_BONUS = 0,
+        };
+
+        _buffStats = new List<VictoryScreen.BuffStat>();
+        _buffStats.Add(
+            new VictoryScreen.BuffStat()
+            {
+                HP = 8,
+                MOVE_SPEED = 0.9f,
+                ATTACK_BONUS = 5f
+            });
+        _buffStats.Add(
+            new VictoryScreen.BuffStat()
+            {
+                HP = 10,
+                MOVE_SPEED = 1f,
+                ATTACK_BONUS = 5.5f
+            });
+        _buffStats.Add(
+            new VictoryScreen.BuffStat()
+            {
+                HP = 12,
+                MOVE_SPEED = 1.2f,
+                ATTACK_BONUS = 6f
+            });
+        _buffStats.Add(
+            new VictoryScreen.BuffStat()
+            {
+                HP = 14,
+                MOVE_SPEED = 1.5f,
+                ATTACK_BONUS = 6.5f
+            });
     }
 
     private void Update()
@@ -54,6 +99,22 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(levelname);
     }
 
+    public void AddBuffStat(int type)
+    {
+        switch(type)
+        {
+            case 0:
+                PlayerBonusStat.HP += _buffStats[GetMapType()].HP;
+                break;
+            case 1:
+                PlayerBonusStat.MOVE_SPEED += _buffStats[GetMapType()].MOVE_SPEED;
+                break;
+            case 2:
+                PlayerBonusStat.ATTACK_BONUS += _buffStats[GetMapType()].ATTACK_BONUS;
+                break;
+        }
+    }
+
     public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
@@ -64,21 +125,21 @@ public class GameManager : MonoBehaviour
         _level = level;
         if (level <= 10)
         {
-            EnemyBonusStat.HP_DEFAULT += 10;
+            EnemyBonusStat.HP += 10;
         }
         else if (level <= 20)
         {
-            EnemyBonusStat.HP_DEFAULT += 10;
+            EnemyBonusStat.HP += 10;
             EnemyBonusStat.ATTACK_BONUS += 3;
         }
         else if (level <= 30)
         {
-            EnemyBonusStat.HP_DEFAULT += 12;
-            EnemyBonusStat.MOVE_SPEED_DEFAULT += 0.8f;
+            EnemyBonusStat.HP += 12;
+            EnemyBonusStat.MOVE_SPEED += 0.8f;
         }
         else
         {
-            EnemyBonusStat.HP_DEFAULT += 12;
+            EnemyBonusStat.HP += 12;
             EnemyBonusStat.ATTACK_BONUS += 5;
         }
 

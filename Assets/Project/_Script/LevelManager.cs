@@ -145,7 +145,8 @@ public class LevelManager : MonoBehaviour
     {
         for (int i = 0; i < positions.Count; i++)
         {
-            var enemy = GameManager.Instance.SpawningEnemy((GameConfig.ENEMY)i, positions[i].GetPosition());
+            var enemy = GameManager.Instance.SpawningEnemy((GameConfig.ENEMY)UnityEngine.Random.Range(0, 5),
+                positions[i].GetPosition());
             enemy.Initialize();
 
             enemies.Add(enemy);
