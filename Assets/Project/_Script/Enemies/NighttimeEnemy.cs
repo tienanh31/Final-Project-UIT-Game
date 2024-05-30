@@ -9,7 +9,7 @@ public class NighttimeEnemy : Enemy
     [SerializeField] protected float DetectAngle;
     [SerializeField] protected Light flashlight;
 
-    public override void Initialize(Path p = null)
+    public override void Initialize(PatrolScope p = null)
     {
         base.Initialize(p);
         flashlight.spotAngle = DetectAngle;

@@ -127,7 +127,7 @@ public class EnemySpawner : MonoBehaviour
             Enemy e = Instantiate(enemySpawnInfo.enemy, transform.position, new Quaternion(0.0f, 0.0f, 0.0f, 0.0f));
             spawnedEnemies.Add(e);
             LevelManager.Instance.AddEnemy(e);
-            e.Initialize(path);
+            e.Initialize();
             e.OnDeathEvent.AddListener(new UnityAction<Enemy>(OnEnemyDeath));
 
             yield return new WaitForSeconds(enemySpawnInfo.delayBetweenSpawn);

@@ -13,7 +13,7 @@ public enum AlertType
 	All
 }
 
-public class Enemy: MonoBehaviour, IDamageable
+public class Enemy : MonoBehaviour, IDamageable
 {
 	#region Fields & Properties
 	[Header("_~* 	Prefabs, Weapons & Stats")]
@@ -35,7 +35,7 @@ public class Enemy: MonoBehaviour, IDamageable
 	[Header("_~* 	Movement & control")]
 	protected float _moveSpeed;
 	protected float _HP;
-	public bool HP { get {return HP; } }
+	public bool HP { get { return HP; } }
 	protected float _detectRange;
 	protected float _attackRange;
 	protected float _turningSpeed;
@@ -53,10 +53,13 @@ public class Enemy: MonoBehaviour, IDamageable
 
 	[Header("_~* 	Events ")]
 	public UnityEvent<Enemy> OnDeathEvent;
+
+	private PatrolScope _patrolScope;
+
 	#endregion
 
 	#region Methods
-	public virtual void Initialize(Path p = null)
+	public virtual void Initialize(PatrolScope patrolScope = null)
 	{
 		_initialized = true;
 		this.tag = GameConfig.COLLIDABLE_OBJECT.ENEMY.ToString();
@@ -78,10 +81,11 @@ public class Enemy: MonoBehaviour, IDamageable
 		enemyAgent.speed = _moveSpeed;
 		enemyAgent.angularSpeed = _turningSpeed;
 		enemyAgent.acceleration = _moveSpeed;
+		enemyAgent.stoppingDistance = 1f;
 
-		if (p != null)
+		if (patrolScope != null)
 		{
-			path = p;
+			_patrolScope = patrolScope;
 		}
 
 		weapon = GetComponentInChildren<IWeapon>();
@@ -106,54 +110,10 @@ public class Enemy: MonoBehaviour, IDamageable
 		_moveSpeed += statBonus.MOVE_SPEED;
 		weapon.AddDamageBonus(statBonus.ATTACK_BONUS);
 
-		Debug.LogWarning($"Enemy HP: {_HP}");
 	}
-
-	//public virtual void Alert(GameObject? gameObject)
-	//{
-	//	isAlerted = true;
-	//	if (gameObject != null)
-	//		target = gameObject.transform;
-	//	else
-	//		target = Character.Instance.transform;
-	//}
-
-	//public virtual void AlertNearbyEnemies(GameObject? gameObject)
-	//{
-	//	foreach (Collider c in Physics.OverlapSphere(this.transform.position, _detectRange, LayerMask.GetMask("Damageables")))
-	//	{
-	//		if (c.gameObject.CompareTag(this.tag) && c.gameObject != this.gameObject)
-	//		{
-	//			Enemy enemy = c.gameObject.GetComponent<Enemy>();
-	//			if (enemy != null && !enemy.isAlerted)
-	//				enemy.Alert(gameObject);
-	//		}
-	//	}
-	//}
-
-	//public virtual void AlertSamePathEnemies(GameObject? gameObject)
-	//{
-	//	foreach (Enemy enemy in LevelManager.Instance.enemies)
-	//		if (enemy != null && enemy.gameObject != this.gameObject && !enemy.isAlerted && enemy.path == this.path)
-	//		enemy.Alert(gameObject);
-	//}
-
-	//public virtual void AlertAllEnemies(GameObject? gameObject)
-	//{
-	//	foreach (Enemy e in LevelManager.Instance.enemies)
-	//	{
-	//		if (e != null && e.gameObject != this.gameObject && !e.IsDead && !e.isAlerted)
-	//			e.Alert(gameObject);
-	//	}
-	//}
 
 	public virtual void UpdateEnemy()
 	{
-		if (target == null)
-		{
-			target = DetectTarget();
-		}
-
 		if (target != null)
 		{
 			if (Vector3.Distance(transform.position, target.position) <= _attackRange)
@@ -167,14 +127,18 @@ public class Enemy: MonoBehaviour, IDamageable
 				enemyAgent.SetDestination(target.position);
 				RotateWeapon(target.position);
 			}
-			Debug.DrawLine(transform.position, target.position, Color.blue);
-		} 
+		}
 		else
 		{
+			target = DetectTarget();
+
 			if (movementBehaviour)
-				//MovementBehaviour();
-			Debug.DrawLine(transform.position, CurrentDestination, Color.blue);
+			{
+				MovementBehaviour();
+			}
+			
 		}
+		Debug.DrawLine(transform.position, enemyAgent.destination, Color.blue);
 	}
 
 	public virtual void TakenDamage(Damage damage)
@@ -201,7 +165,7 @@ public class Enemy: MonoBehaviour, IDamageable
 
 		Debug.LogWarning($"Source damage: {target}");
 
-		if(_HP > 0)
+		if (_HP > 0)
 		{
 			_HP -= damage.value;
 			healthbar.HealthUpdate();
@@ -214,7 +178,7 @@ public class Enemy: MonoBehaviour, IDamageable
 					if (damage.Origin != null)
 					{
 						Vector3 damageDirection = (Vector3)(damage.Origin - this.transform.position);
-						
+
 						enemyAgent.enabled = false;
 						characterRigidbody.isKinematic = false;
 						characterRigidbody.freezeRotation = false;
@@ -295,41 +259,87 @@ public class Enemy: MonoBehaviour, IDamageable
 
 	protected virtual void MovementBehaviour()
 	{
-		if (enemyAgent.remainingDistance <= stoppingDistance)
+		Debug.LogWarning($"Position: {transform.position}, remainning: {enemyAgent.remainingDistance}");
+
+		if (enemyAgent == null)
 		{
-			if (path.GetNode(currentPosition).GetType() == typeof(PatrolScope))
-			{
-				if (_patrolable)
-				{
-					//Debug.Log("Destination reached, starting patrol at " + CurrentDestination.ToString());
-					StartCoroutine(IE_Patrol());
-				}
-			} 
-			else
-			{
-				currentPosition++;
-				if (currentPosition >= path.NodeCount())
-					currentPosition = 0;
-				CurrentDestination = path.GetNodePosition(currentPosition);
-				enemyAgent.SetDestination(CurrentDestination);
-			}
+			return;
 		}
+		if (!_patrolable)
+		{
+			return;
+		}
+
+		if (CurrentDestination == Vector3.zero)
+		{
+			CurrentDestination = _patrolScope.GetRandomDestination(transform.position);
+		}
+
+		enemyAgent.SetDestination(CurrentDestination);
+
+		if (target != null)
+		{
+			if (Vector3.Distance(target.position, transform.position) <= _detectRange)
+			{
+				enemyAgent.SetDestination(transform.position);
+			}
+			else if (target.GetComponent<IDamageable>().IsInPatrolScope)
+			{
+				enemyAgent.SetDestination(target.transform.position);
+			}
+			return;
+		}
+		if (gameObject.GetComponent<SuicideAttacker>())
+			Debug.Log(Vector3.Distance(enemyAgent.destination, CurrentDestination));
+		if (enemyAgent.remainingDistance < 1f)
+		{
+			StartCoroutine(IE_StopAwhile());
+			CurrentDestination = _patrolScope.GetRandomDestination(enemyAgent.destination);
+		}
+		else
+        {
+			int x = Mathf.FloorToInt(enemyAgent.destination.x);
+			int z = Mathf.FloorToInt(enemyAgent.destination.z);
+
+			if (!GameManager.Instance.MapGenerator.IsGround(x, z))
+            {
+				enemyAgent.SetDestination(enemyAgent.transform.position);
+				StartCoroutine(IE_StopAwhile());
+				CurrentDestination = _patrolScope.GetRandomDestination(enemyAgent.destination);
+			}
+        }
 	}
 
-	protected IEnumerator IE_Patrol()
+	protected IEnumerator IE_StopAwhile()
 	{
 		_patrolable = false;
 		yield return new WaitForSeconds(GameConfig.TIME_STOP_AFTER_PATROLLING);
 		_patrolable = true;
-
-		currentPosition++;
-		if (currentPosition >= path.NodeCount())
-			currentPosition = 0;
-		CurrentDestination = path.GetNodePosition(currentPosition);
-		enemyAgent.SetDestination(CurrentDestination);
-		//Debug.Log($"Patrol is over, heading to {CurrentDestination}");
-		//Debug.Log($"Postion: '{CurrentDestination}, Node Index: '{currentPosition}");
 	}
+
+	//protected virtual void MovementBehaviour()
+	//{
+	//	if (enemyAgent.remainingDistance <= stoppingDistance)
+	//	{
+	//		if (path.GetNode(currentPosition).GetType() == typeof(PatrolScope))
+	//		{
+	//			if (_patrolable)
+	//			{
+	//				//Debug.Log("Destination reached, starting patrol at " + CurrentDestination.ToString());
+	//				StartCoroutine(IE_Patrol());
+	//			}
+	//		} 
+	//		else
+	//		{
+	//			currentPosition++;
+	//			if (currentPosition >= path.NodeCount())
+	//				currentPosition = 0;
+	//			CurrentDestination = path.GetNodePosition(currentPosition);
+	//			enemyAgent.SetDestination(CurrentDestination);
+	//		}
+	//	}
+	//}
+
 
 	protected virtual IEnumerator Skill()
 	{
@@ -341,7 +351,12 @@ public class Enemy: MonoBehaviour, IDamageable
 		return _HP;
 	}
 
-	[ExecuteInEditMode]
+    private void OnDestroy()
+    {
+		
+    }
+
+    [ExecuteInEditMode]
 	private void OnDrawGizmos()
 	{
 		if (soStats != null && Selection.Contains(gameObject))

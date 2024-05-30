@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyShield : Enemy
 {
@@ -18,11 +19,6 @@ public class EnemyShield : Enemy
 
     public override void UpdateEnemy()
     {
-        if (target == null)
-        {
-            target = DetectTarget();
-        }
-
         if (target != null)
         {
             Transform targetTransform = target;
@@ -46,7 +42,12 @@ public class EnemyShield : Enemy
         }
         else
         {
-            //MovementBehaviour();
+            target = DetectTarget();
+
+            if (movementBehaviour)
+            {
+                MovementBehaviour();
+            }
         }
 
         if (!Shield && shieldBroken)

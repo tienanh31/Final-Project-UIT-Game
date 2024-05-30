@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.AI;
 
 public class GameManager : MonoBehaviour
 {
     #region Fields & Properties
     [SerializeField] Grid _mapGenerator;
+    [SerializeField] NavMeshSurface _navMesh;
 
+    public NavMeshSurface NavMesh => _navMesh;
     public VictoryScreen.BuffStat PlayerBonusStat;
     public VictoryScreen.BuffStat EnemyBonusStat;
 
@@ -27,6 +30,7 @@ public class GameManager : MonoBehaviour
 
     private int _level = 1;
     private List<VictoryScreen.BuffStat> _buffStats;
+    private MyXMLReader _myXmlData;
 
     #endregion
 
@@ -84,6 +88,9 @@ public class GameManager : MonoBehaviour
                 MOVE_SPEED = 1.5f,
                 ATTACK_BONUS = 6.5f
             });
+
+        _myXmlData = new MyXMLReader();
+        _myXmlData.ReadFile();
     }
 
     private void Update()
@@ -169,6 +176,11 @@ public class GameManager : MonoBehaviour
             position, new Quaternion());
 
         return enemy;
+    }
+
+    public Dictionary<GameConfig.ENEMY, int> GetEnemiesCurrentLevel()
+    {
+        return _myXmlData.GetEnemiesAtLevel(_level);
     }
 
     public int GetMapType()

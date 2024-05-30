@@ -9,7 +9,7 @@ public class Grid : MonoBehaviour
     [SerializeField] Button _btnRandom;
 
     [SerializeField] bool _isGenerateEnemy = true;
-    [SerializeField] int _numbersEnemies = 7;
+    int _numberOfCorners = 7;
 
     [SerializeField] GameObject[] _treePrefabs;
     [SerializeField] float _treeNoiseScale = .005f;
@@ -34,6 +34,7 @@ public class Grid : MonoBehaviour
     public Cell StartPointCell;
     public Cell EndPointCell;
     public List<Cell> EnemiesPosition;
+    private List<PatrolScope> _patrolScopes;
 
     private List<Mesh> _meshes;
     private List<GameObject> _gameObjects;
@@ -48,6 +49,11 @@ public class Grid : MonoBehaviour
             MeshRenderer meshRenderer = gameObject.GetComponent<MeshRenderer>();
             meshRenderer.material = _terrainMaterials[mapType];
         }
+    }
+
+    public bool IsGround(int x, int y)
+    {
+        return _grid[x, y].Type == CellType.Ground;
     }
 
     void Awake()
@@ -66,7 +72,7 @@ public class Grid : MonoBehaviour
         if (LevelManager.Instance != null)
         {
             LevelManager.Instance.Initialize();
-            LevelManager.Instance.SpawningEnemies(EnemiesPosition);
+            LevelManager.Instance.SpawningEnemies(_patrolScopes);
         }    
     }
 
@@ -136,7 +142,7 @@ public class Grid : MonoBehaviour
         DrawTerrainMesh(_grid);
         DrawEdgeMesh(_grid);
         DrawTexture(_grid);
-        GenerateTrees(_grid);
+        //GenerateTrees(_grid);
         GenerateGrasses(_grid);
 
         if (_isGenerateEnemy)
@@ -368,55 +374,85 @@ public class Grid : MonoBehaviour
         //_texture2Ds.Add(texture);
     }
 
+    //void GenerateEnemies(Cell[,] grid)
+    //{
+    //    EnemiesPosition = new List<Cell>();
+
+    //    //random enemies'pos in map
+    //    EnemiesPosition.Add(EndPointCell);
+
+    //    var largestArea = _grounds[_grounds.Count - 1];
+    //    int startRandom = largestArea.Count / 10;
+    //    int endRandom = largestArea.Count - largestArea.Count / 10;
+
+    //    while (EnemiesPosition.Count < _numberOfCorners)
+    //    {
+    //        var randomCell = largestArea[Random.Range(startRandom, endRandom)];
+
+
+    //        if (EnemiesPosition.FindIndex(e => e.Equals(randomCell)) == -1)
+    //        {
+    //            if (!randomCell.IsContainTree
+    //                && !randomCell.IsContainEnemy)
+    //            {
+    //                EnemiesPosition.Add(randomCell);
+    //                randomCell.IsContainEnemy = true;
+    //            }
+    //        }
+    //    }
+
+    //    EnemiesPosition.Sort((e1, e2) => (e1.Distance(StartPointCell)).CompareTo(e2.Distance(StartPointCell)));
+
+    //    // Create random enemies in map 
+    //    //foreach (var cell in EnemiesPosition)
+    //    //{
+    //    //    //GameObject randomEnemyPrefab = _enemyPrefabs[Random.Range(0, _enemyPrefabs.Length)];
+    //    //    //GameObject randomEnemy = Instantiate(randomEnemyPrefab, transform);
+    //    //    //randomEnemy.transform.position = new Vector3(cell.Id.x, 0f, cell.Id.y);
+
+    //    //    //_gameObjects.Add(randomEnemy);
+
+    //    //    //Debug.LogWarning(cell.Id);
+    //    //}
+    //}
+
+    // new version
     void GenerateEnemies(Cell[,] grid)
     {
-        EnemiesPosition = new List<Cell>();
-
-        //// Get enemy at Endpoint
-        //int endX = Mathf.RoundToInt(_endPoint.transform.position.x);
-        //int endY = Mathf.RoundToInt(_endPoint.transform.position.z);
-        //// Create enemy at Endpoint
-        //GameObject enemyPrefab = _enemyPrefabs[Random.Range(0, _enemyPrefabs.Length)];
-        //GameObject enemy = Instantiate(enemyPrefab, transform);
-        //enemy.transform.position = new Vector3(EndPointCell.Id.x, 0f, EndPointCell.Id.y);
-        //_gameObjects.Add(enemy);
-
-        //random enemies'pos in map
-        EnemiesPosition.Add(EndPointCell);
+        _patrolScopes = new List<PatrolScope>();
 
         var largestArea = _grounds[_grounds.Count - 1];
         int startRandom = largestArea.Count / 10;
-        int endRandom = largestArea.Count - largestArea.Count / 10;
+        //int endRandom = largestArea.Count - largestArea.Count / 10;
 
-        while (EnemiesPosition.Count < _numbersEnemies)
+        for (int i = 1; i < 9; i++)
         {
-            var randomCell = largestArea[Random.Range(startRandom, endRandom)];
+            var patrolScope = new PatrolScope();
 
-            if (EnemiesPosition.FindIndex(e => e.Equals(randomCell)) == -1)
+            Vector2 previous = Vector2.zero;
+            while (patrolScope.Corners.Count < _numberOfCorners)
             {
-                if (!randomCell.IsContainTree)
+                var randomCell = largestArea[Random.Range(startRandom * (i - 1), startRandom * i)];
+
+                if (previous == Vector2.zero
+                    || Vector2.Distance(randomCell.GetPosition(), previous) > 3)
                 {
-                    EnemiesPosition.Add(randomCell);
+                    if (!randomCell.IsContainTree
+                        && !randomCell.IsBorder(grid))
+                    {
+                        patrolScope.Corners.Add(randomCell.GetPosition());
+                        previous = randomCell.GetPosition();
+                    }
                 }
             }
-        }
 
-        // Create random enemies in map 
-        foreach (var cell in EnemiesPosition)
-        {
-            //GameObject randomEnemyPrefab = _enemyPrefabs[Random.Range(0, _enemyPrefabs.Length)];
-            //GameObject randomEnemy = Instantiate(randomEnemyPrefab, transform);
-            //randomEnemy.transform.position = new Vector3(cell.Id.x, 0f, cell.Id.y);
-
-            //_gameObjects.Add(randomEnemy);
-
-            //Debug.LogWarning(cell.Id);
-        }
+            patrolScope.Initialize();
+            _patrolScopes.Add(patrolScope);
+        }  
     }
 
     void GenerateTrees(Cell[,] grid)
     {
-
         for (int y = 0; y < _size; y++)
         {
             for (int x = 0; x < _size; x++)

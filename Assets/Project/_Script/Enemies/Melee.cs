@@ -13,7 +13,7 @@ public class Melee : Enemy
 
 	#region Methods
 
-	public override void Initialize(Path p = null)
+	public override void Initialize(PatrolScope p = null)
 	{
 		base.Initialize(p);
 	}

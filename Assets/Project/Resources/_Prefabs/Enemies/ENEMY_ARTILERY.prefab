@@ -206,7 +206,6 @@ MonoBehaviour:
   stoppingDistance: 1
   deleteUponDeath: 1
   _initialized: 0
-  alertType: 1
   movementBehaviour: 1
   OnDeathEvent:
     m_PersistentCalls:
@@ -236,7 +235,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 902212774876899996}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 0.6
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50

@@ -143,6 +143,8 @@ public class LevelManager : MonoBehaviour
 
     public void SpawningEnemies(List<Cell> positions)
     {
+        var enemyTypes = GameManager.Instance.GetEnemiesCurrentLevel();
+
         for (int i = 0; i < positions.Count; i++)
         {
             var enemy = GameManager.Instance.SpawningEnemy((GameConfig.ENEMY)UnityEngine.Random.Range(0, 5),
@@ -156,16 +158,28 @@ public class LevelManager : MonoBehaviour
         enemiesLeft = possibleEnemyCount;
     }
 
+    public void SpawningEnemies(List<PatrolScope> patrolScopes)
+    {
+        var enemyTypes = GameManager.Instance.GetEnemiesCurrentLevel();
+
+        for (int i = 0; i < patrolScopes.Count; i++)
+        {
+            var enemy = GameManager.Instance.SpawningEnemy((GameConfig.ENEMY)UnityEngine.Random.Range(0, 5),
+                patrolScopes[i].Corners[0]);
+            enemy.Initialize(patrolScopes[i]);
+
+            enemies.Add(enemy);
+
+            Debug.Log(patrolScopes[i].Corners.Count);
+        }
+
+
+        possibleEnemyCount = enemies.Count;
+        enemiesLeft = possibleEnemyCount;
+    }
+
     protected virtual void Update()
     {
-        //foreach (var enemy in GameObject.FindObjectsOfType<Enemy>())
-        //{
-        //    if (!enemy._initialized)
-        //    {
-        //        enemy.Initialize();
-        //        possibleEnemyCount++;
-        //    }
-        //}
 
         if (!character.IsDead)
         {

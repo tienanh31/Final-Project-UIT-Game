@@ -67,6 +67,48 @@ public class Cell
 
         return 1;
     }
+
+    public float Distance(Cell cell)
+    {
+        return Vector2.Distance(_id, cell._id);
+    }
+
+    public bool IsBorder(Cell[,] grid)
+    {
+        //top
+        int x = _id.x;
+        int y = _id.y - 1;
+        if (y < 0 || grid[x, y].Type == CellType.Water)
+        {
+            return true;
+        }
+
+        // bot
+        x = _id.x;
+        y = _id.y + 1;
+        if (y >= grid.GetLength(1) || grid[x, y].Type == CellType.Water)
+        {
+            return true;
+        }
+
+        // left
+        x = _id.x - 1;
+        y = _id.y;
+        if (x < 0 || grid[x, y].Type == CellType.Water)
+        {
+            return true;
+        }
+
+        // right
+        x = _id.x + 1;
+        y = _id.y;
+        if (x >= grid.GetLength(0) || grid[x, y].Type == CellType.Water)
+        {
+            return true;
+        }
+
+        return false;
+    }
 }
 
 public enum CellType

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 public class GameConfig
 {
-	public const float TIME_STOP_AFTER_PATROLLING = 5f;
+	public const float TIME_STOP_AFTER_PATROLLING = 2f;
 
 	public const float RATIO_DROP_BUFF = 0.5f;
 	public const float RATIO_DROP_ITEM = 0.0f;
@@ -58,11 +58,12 @@ public class GameConfig
 
 	public enum ENEMY
 	{
-		ENEMY_DEFAULT = 0,
+		ENEMY_MELEE = 0,
+		ENEMY_DEFAULT,
 		ENEMY_SHIELD,
-		ENEMY_MELEE,
 		ENEMY_SUICIDE,
 		ENEMY_ARTILERY,
+		TRAP,
 		ENEMY_TURRET,
 		ENEMY_NIGHTTIME,
 	}

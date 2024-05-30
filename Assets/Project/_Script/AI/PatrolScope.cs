@@ -11,46 +11,47 @@ public class Triangle
     public Vector3 Vertex3;
 }
 
-public class PatrolScope : PathNode
+public class PatrolScope
 {
 	#region Fields & Properties
-	[SerializeField] public List<Transform> _corners = new List<Transform>();
-    public List<Triangle> _triangles;
+	public List<Vector3> Corners = new List<Vector3>();
+    public List<Triangle> Triangles;
 
-	#endregion
+    #endregion
 
-	#region Methods
-	private void Awake()
+    #region Methods
+
+	public void Initialize()
 	{
-        if (_corners.Count >= 2)
+        if (Corners.Count >= 2)
         {
-            _triangles = new List<Triangle>();
-            for (int i = 2; i < _corners.Count; i++)
+            Triangles = new List<Triangle>();
+            for (int i = 2; i < Corners.Count; i++)
             {
-                _triangles.Add(new Triangle()
+                Triangles.Add(new Triangle()
                 {
-                    Vertex1 = _corners[i - 2].position,
-                    Vertex2 = _corners[i - 1].position,
-                    Vertex3 = _corners[i].position
+                    Vertex1 = Corners[i - 2],
+                    Vertex2 = Corners[i - 1],
+                    Vertex3 = Corners[i]
                 });
             }
         }
 	}
 
-    public override Vector3 GetNodePostion()
-    {
-        return GetRandomDestination(this.transform.position);
-    }
+    //public override Vector3 GetNodePostion()
+    //{
+    //    return GetRandomDestination(this.Vector3.position);
+    //}
 
-    public Vector3 GetRandomDestination(Vector3 transformPosition)
+    public Vector3 GetRandomDestination(Vector3 Vector3Position)
 	{
-        Vector3 GenVector = RandomWithinTriangle(_triangles[Random.Range(0, _triangles.Count - 1)]);
+        Vector3 GenVector = RandomWithinTriangle(Triangles[Random.Range(0, Triangles.Count - 1)]);
 
-		while (Vector3.Distance(transformPosition, GenVector) < 2f)
+		while (Vector3.Distance(Vector3Position, GenVector) < 2f)
 		{
-			GenVector = RandomWithinTriangle(_triangles[Random.Range(0, _triangles.Count - 1)]);
+			GenVector = RandomWithinTriangle(Triangles[Random.Range(0, Triangles.Count - 1)]);
 		}
-        GenVector.y = transformPosition.y;
+        GenVector.y = Vector3Position.y;
 		return GenVector;
     }
 
@@ -58,20 +59,20 @@ public class PatrolScope : PathNode
     {
         bool inside = false;
 
-        int polygonLength = _corners.Count;
+        int polygonLength = Corners.Count;
         int i = 0;
         // x, y for tested point.
         float pointX = point.x, pointY = point.z;
         // start / end point for the current polygon segment.
         float startX, startY, endX, endY;
-        endX = _corners[polygonLength - 1].position.x;
-        endY = _corners[polygonLength - 1].position.z;
+        endX = Corners[polygonLength - 1].x;
+        endY = Corners[polygonLength - 1].z;
         while (i < polygonLength)
         {
             startX = endX; startY = endY;
             
-            endX = _corners[i++].position.x;
-            endY = _corners[i++].position.z;
+            endX = Corners[i++].x;
+            endY = Corners[i++].z;
             //
             inside ^= (endY > pointY ^ startY > pointY) /* ? pointY inside [startY;endY] segment ? */
                       && /* if so, test if it is under the segment */
@@ -101,59 +102,59 @@ public class PatrolScope : PathNode
         p3.y = triangle.Vertex3.z;
 
         Vector2 result = (m1 * p1) + (m2 * p2) + (m3 * p3);
-        return new Vector3(result.x, 1f, result.y);
+        return new Vector3(result.x, Corners[0].y, result.y);
     }
 
     [ExecuteInEditMode]
     public void OnDrawGizmos()
     {
-        if (_corners == null || _corners.Count < 2)
+        if (Corners == null || Corners.Count < 2)
 		{
             return;
 		}
 
         Gizmos.color = new Color(1f, 0f, 0f, 0.5f);
-        for (int i = 2; i < _corners.Count; i++)
+        for (int i = 2; i < Corners.Count; i++)
         {
-            Gizmos.DrawLine(_corners[i - 2].position, _corners[i - 1].position);
-            Gizmos.DrawLine(_corners[i - 2].position, _corners[i].position);
-            Gizmos.DrawLine(_corners[i - 1].position, _corners[i].position);
+            Gizmos.DrawLine(Corners[i - 2], Corners[i - 1]);
+            Gizmos.DrawLine(Corners[i - 2], Corners[i]);
+            Gizmos.DrawLine(Corners[i - 1], Corners[i]);
         }
     }
     #endregion
 }
 
-[CustomEditor(typeof(PatrolScope)), CanEditMultipleObjects]
-public class PatrolScopeEditor : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        PatrolScope myTarget = (PatrolScope)target;
+//[CustomEditor(typeof(PatrolScope)), CanEditMultipleObjects]
+//public class PatrolScopeEditor : Editor
+//{
+//    public override void OnInspectorGUI()
+//    {
+//        PatrolScope myTarget = (PatrolScope)target;
 
-        if (GUILayout.Button("GetAllNodes"))
-        {
-            myTarget._corners.Clear();
-            myTarget._corners.AddRange(myTarget.GetComponentsInChildren<Transform>());
-            myTarget._corners.Remove(myTarget.transform);
+//        if (GUILayout.Button("GetAllNodes"))
+//        {
+//            myTarget._corners.Clear();
+//            myTarget._corners.AddRange(myTarget.GetComponentsInChildren<Vector3>());
+//            myTarget._corners.Remove(myTarget.Vector3);
 
-            myTarget._triangles = new List<Triangle>();
-            for (int i = 2; i < myTarget._corners.Count; i++)
-            {
-                myTarget._triangles.Add(new Triangle()
-                {
-                    Vertex1 = myTarget._corners[i - 2].position,
-                    Vertex2 = myTarget._corners[i - 1].position,
-                    Vertex3 = myTarget._corners[i].position
-                });
-            }
-        }
+//            myTarget._triangles = new List<Triangle>();
+//            for (int i = 2; i < myTarget._corners.Count; i++)
+//            {
+//                myTarget._triangles.Add(new Triangle()
+//                {
+//                    Vertex1 = myTarget._corners[i - 2].position,
+//                    Vertex2 = myTarget._corners[i - 1].position,
+//                    Vertex3 = myTarget._corners[i].position
+//                });
+//            }
+//        }
 
-        if (GUILayout.Button("Get Random Point"))
-        {
-            Debug.Log($"Postion: '{myTarget.GetNodePostion()}, Triangle Count: '{myTarget._triangles.Count}");
-        }
+//        if (GUILayout.Button("Get Random Point"))
+//        {
+//            Debug.Log($"Postion: '{myTarget.GetNodePostion()}, Triangle Count: '{myTarget._triangles.Count}");
+//        }
 
-        DrawDefaultInspector();
-    }
-}
+//        DrawDefaultInspector();
+//    }
+//}
 

@@ -14,14 +14,13 @@ public class SuicideAttacker : Enemy
 
 	#region Methods
 
-	public override void Initialize(Path p = null)
+	public override void Initialize(PatrolScope p = null)
 	{
 		base.Initialize(p);
 	}
 
 	public override void UpdateEnemy()
 	{
-		target = DetectTarget();
 		if (target != null)
 		{
 			if (Vector3.Distance(transform.position, target.position)
@@ -40,7 +39,12 @@ public class SuicideAttacker : Enemy
 		} 
 		else
 		{
-			MovementBehaviour();
+			target = DetectTarget();
+
+			if (movementBehaviour)
+			{
+				MovementBehaviour();
+			}
 		}
 	}
 

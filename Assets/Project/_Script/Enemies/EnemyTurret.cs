@@ -22,7 +22,7 @@ public class EnemyTurret : Enemy, IDamageable
     #endregion
 
     #region Methods
-    public override void Initialize(Path p = null)
+    public override void Initialize(PatrolScope patrolScope = null)
     {
         _initialized = true;
         originalRotation = this.transform.rotation;

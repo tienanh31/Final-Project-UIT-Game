@@ -249,7 +249,6 @@ MonoBehaviour:
   _navMesh: {fileID: 1340763486}
   _btnRandom: {fileID: 1725335042}
   _isGenerateEnemy: 1
-  _numbersEnemies: 7
   _treePrefabs:
   - {fileID: 9154215057541871321, guid: 2554008d6447a2540b44e55f0c0b576e, type: 3}
   - {fileID: 2636820298107493410, guid: a2bd798ea40c7e341aa61ad124d95342, type: 3}
@@ -593,6 +592,10 @@ PrefabInstance:
       propertyPath: DataBank
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2056973393869145791, guid: cfa5471d7826a0449949eae0c15fa7ef, type: 3}
+      propertyPath: _navMesh
+      value: 
+      objectReference: {fileID: 1340763486}
     - target: {fileID: 2056973393869145791, guid: cfa5471d7826a0449949eae0c15fa7ef, type: 3}
       propertyPath: _mapGenerator
       value: 
@@ -1038,7 +1041,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1943725368}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &1943725370
 Camera:
   m_ObjectHideFlags: 0

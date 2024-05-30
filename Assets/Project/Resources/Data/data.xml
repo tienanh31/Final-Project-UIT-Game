@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Data>
+	<Level Id = "1">
+		<melee>5</melee>
+		<pistol>0</pistol>
+        <defender>0</defender>
+        <suicide>0</suicide>
+        <rocket>0</rocket>
+        <trap>0</trap>
+	</Level>
+
+    <Level Id = "2">
+		<melee>5</melee>
+		<pistol>3</pistol>
+        <defender>0</defender>
+        <suicide>0</suicide>
+        <rocket>0</rocket>
+        <trap>0</trap>
+	</Level>
+
+    <Level Id = "3"> 
+		<melee>6</melee>
+		<pistol>3</pistol>
+        <defender>0</defender>
+        <suicide>0</suicide>
+        <rocket>0</rocket>
+        <trap>0</trap>
+	</Level>
+
+    <Level Id = "4">
+		<melee>6</melee>
+		<pistol>3</pistol>
+        <defender>0</defender>
+        <suicide>0</suicide>
+        <rocket>0</rocket>
+        <trap>1</trap>
+	</Level>
+	
+    <Level Id = "5">
+		<melee>6</melee>
+		<pistol>4</pistol>
+        <defender>0</defender>
+        <suicide>0</suicide>
+        <rocket>0</rocket>
+        <trap>1</trap>
+	</Level>
+
+    <Level Id = "6">
+		<melee>5</melee>
+		<pistol>5</pistol>
+        <defender>0</defender>
+        <suicide>0</suicide>
+        <rocket>0</rocket>
+        <trap>1</trap>
+	</Level>
+
+    <Level Id = "7">
+		<melee>5</melee>
+		<pistol>6</pistol>
+        <defender>0</defender>
+        <suicide>0</suicide>
+        <rocket>0</rocket>
+        <trap>1</trap>
+	</Level>
+
+    <Level Id = "8">
+		<melee>6</melee>
+		<pistol>6</pistol>
+        <defender>0</defender>
+        <suicide>0</suicide>
+        <rocket>0</rocket>
+        <trap>1</trap>
+	</Level>
+
+    <Level Id = "9">
+		<melee>6</melee>
+		<pistol>6</pistol>
+        <defender>0</defender>
+        <suicide>0</suicide>
+        <rocket>0</rocket>
+        <trap>2</trap>
+	</Level>
+
+    <Level Id = "10">
+		<melee>6</melee>
+		<pistol>6</pistol>
+        <defender>0</defender>
+        <suicide>0</suicide>
+        <rocket>0</rocket>
+        <trap>2</trap>
+	</Level>
+
+</Data>
