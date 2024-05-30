@@ -259,8 +259,6 @@ public class Enemy : MonoBehaviour, IDamageable
 
 	protected virtual void MovementBehaviour()
 	{
-		Debug.LogWarning($"Position: {transform.position}, remainning: {enemyAgent.remainingDistance}");
-
 		if (enemyAgent == null)
 		{
 			return;

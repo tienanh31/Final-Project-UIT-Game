@@ -162,16 +162,39 @@ public class LevelManager : MonoBehaviour
     {
         var enemyTypes = GameManager.Instance.GetEnemiesCurrentLevel();
 
-        for (int i = 0; i < patrolScopes.Count; i++)
+        int total = enemyTypes.Sum(e => e.Value);
+        Debug.Log("Total enemy: " + total);
+
+        foreach (var enemyType in enemyTypes)
         {
-            var enemy = GameManager.Instance.SpawningEnemy((GameConfig.ENEMY)UnityEngine.Random.Range(0, 5),
-                patrolScopes[i].Corners[0]);
-            enemy.Initialize(patrolScopes[i]);
+            int value = enemyType.Value;
+            int size = patrolScopes.Count - 1;
+            while (value > 0)
+            {
+                var enemy = GameManager.Instance.SpawningEnemy(enemyType.Key, patrolScopes[size].Corners[0]);
+                enemy.Initialize(patrolScopes[size]);
 
-            enemies.Add(enemy);
+                enemies.Add(enemy);
 
-            Debug.Log(patrolScopes[i].Corners.Count);
+                value--;
+                size--;
+                if (size < 0)
+                {
+                    size = patrolScopes.Count - 1;
+                }
+            }
         }
+
+        //for (int i = patrolScopes.Count - 1; i >= 0; i--)
+        //{
+        //    var enemy = GameManager.Instance.SpawningEnemy((GameConfig.ENEMY)UnityEngine.Random.Range(0, 5),
+        //        patrolScopes[i].Corners[0]);
+        //    enemy.Initialize(patrolScopes[i]);
+
+        //    enemies.Add(enemy);
+
+        //    Debug.Log(patrolScopes[i].Corners.Count);
+        //}
 
 
         possibleEnemyCount = enemies.Count;

@@ -425,7 +425,7 @@ public class Grid : MonoBehaviour
         int startRandom = largestArea.Count / 10;
         //int endRandom = largestArea.Count - largestArea.Count / 10;
 
-        for (int i = 1; i < 9; i++)
+        for (int i = 1; i <= 10; i++)
         {
             var patrolScope = new PatrolScope();
 
