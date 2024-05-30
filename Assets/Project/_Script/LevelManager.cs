@@ -167,6 +167,11 @@ public class LevelManager : MonoBehaviour
 
         foreach (var enemyType in enemyTypes)
         {
+            if (enemyType.Key == GameConfig.ENEMY.TRAP)
+            {
+                continue;
+            }
+
             int value = enemyType.Value;
             int size = patrolScopes.Count - 1;
             while (value > 0)

@@ -97,7 +97,10 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.N))
         {
-            NextLevel();
+            if (_level < 41)
+            {
+                NextLevel();
+            }
         }
     }
 
@@ -155,6 +158,12 @@ public class GameManager : MonoBehaviour
 
     public void NextLevel()
     {
+        if (_level == 40)
+        {
+            EndingScreen.Create();
+            return;
+        }
+
         LoadPlaySceneWithLevel(_level + 1);
     }
 

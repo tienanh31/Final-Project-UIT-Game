@@ -14,7 +14,8 @@ public enum UI
     IN_GAME,
     OPTION,
     KEY,
-    AUDIO
+    AUDIO,
+    ENDING
 }
 
 public class UIManager : MonoBehaviour
