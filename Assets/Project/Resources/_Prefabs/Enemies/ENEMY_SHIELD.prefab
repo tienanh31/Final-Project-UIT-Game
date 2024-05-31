@@ -79,6 +79,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4180480237279032940, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
+      propertyPath: m_Drag
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4180480237279032940, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
+      propertyPath: m_Mass
+      value: 75
+      objectReference: {fileID: 0}
     - target: {fileID: 4180480237279032941, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
       propertyPath: m_Name
       value: ENEMY_SHIELD

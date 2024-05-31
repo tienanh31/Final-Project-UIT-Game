@@ -35,8 +35,9 @@ public class Character : MonoBehaviour, IDamageable
 	[Header("_~* 	Movement & control")]
 	[SerializeField] protected Rigidbody characterRigidbody;
 	[SerializeField] bool alignWithCamera = true;
-	[SerializeField] float acceleration = 50f, deAcceleration = 50f, drag, dashForce = 50f, dashTime = 0.1f;
+	[SerializeField] float acceleration = 50f, deAcceleration = 50f, drag, dashForce = 50f, dashTime = 0.1f, dashCoolDown = 1f;
 
+	bool _dashable = true;
 	int currentWeapon = 0;
 
 	public float AttackPriority { get; protected set; }
@@ -139,7 +140,10 @@ public class Character : MonoBehaviour, IDamageable
 		KeyboardController();
 		if (Input.GetKeyDown((KeyCode)DataPersistenceManager.Instance.GameData.Keyboard.Keyboards[KeyboardHandler.Dash]))
 		{
-			StartCoroutine(Dash());
+			if (_dashable)
+			{
+				StartCoroutine(Dash());
+			}				
 		}
 		MouseController();
 		UpdateUI();
@@ -361,6 +365,8 @@ public class Character : MonoBehaviour, IDamageable
 
 	IEnumerator Dash()
 	{
+		StartCoroutine(IE_DashCoolDown());
+
 		Vector3 movementInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
 		if (alignWithCamera)
 		{
@@ -377,6 +383,13 @@ public class Character : MonoBehaviour, IDamageable
 		yield return new WaitForSeconds(dashTime);
 		movementEnable = true;
 	}
+
+	IEnumerator IE_DashCoolDown()
+    {
+		_dashable = false;
+		yield return new WaitForSeconds(dashCoolDown);
+		_dashable = true;
+    }
 
 	private void RotateWeapon()
 	{

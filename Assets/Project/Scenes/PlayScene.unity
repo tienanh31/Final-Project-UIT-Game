@@ -270,6 +270,7 @@ MonoBehaviour:
   _waterLevel: 0.4
   _scale: 0.1
   _size: 100
+  MaxNoiseValue: 0
 --- !u!4 &1214563494
 Transform:
   m_ObjectHideFlags: 0

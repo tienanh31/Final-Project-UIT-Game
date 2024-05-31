@@ -3061,8 +3061,6 @@ MonoBehaviour:
   stoppingDistance: 1
   deleteUponDeath: 1
   _initialized: 0
-  alertType: 2
-  movementBehaviour: 1
   OnDeathEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -3080,8 +3078,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6515252979655581983}
   serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 1
+  m_Mass: 75
+  m_Drag: 0.2
   m_AngularDrag: 0.05
   m_UseGravity: 0
   m_IsKinematic: 0

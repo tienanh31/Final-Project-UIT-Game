@@ -152,7 +152,12 @@ public class Enemy : MonoBehaviour, IDamageable
 		{
 			MovementBehaviour();
 		}
-		Debug.DrawLine(transform.position, enemyAgent.destination, Color.blue);
+
+		if (target != null)
+        {
+			Debug.Log($"Distance: {Vector3.Distance(transform.position, target.position)}");
+			Debug.DrawLine(transform.position, enemyAgent.destination, Color.blue);
+		}
 	}
 
 	public virtual void TakenDamage(Damage damage)
@@ -320,15 +325,15 @@ public class Enemy : MonoBehaviour, IDamageable
 		}
 		else
         {
-			int x = Mathf.FloorToInt(enemyAgent.destination.x);
-			int z = Mathf.FloorToInt(enemyAgent.destination.z);
+			//int x = Mathf.FloorToInt(enemyAgent.destination.x);
+			//int z = Mathf.FloorToInt(enemyAgent.destination.z);
 
-			if (!GameManager.Instance.MapGenerator.IsGround(x, z))
-            {
-				enemyAgent.SetDestination(enemyAgent.transform.position);
-				StartCoroutine(IE_StopAwhile());
-				CurrentDestination = _patrolScope.GetRandomDestination(enemyAgent.destination);
-			}
+			//if (!GameManager.Instance.MapGenerator.IsGround(x, z))
+   //         {
+			//	enemyAgent.SetDestination(enemyAgent.transform.position);
+			//	StartCoroutine(IE_StopAwhile());
+			//	CurrentDestination = _patrolScope.GetRandomDestination(enemyAgent.destination);
+			//}
         }
 	}
 

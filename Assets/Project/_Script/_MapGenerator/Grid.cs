@@ -201,6 +201,7 @@ public class Grid : MonoBehaviour
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
         //List<Vector2> uvs = new List<Vector2>();
+        
         for (int y = 0; y < _size; y++)
         {
             for (int x = 0; x < _size; x++)
@@ -212,16 +213,23 @@ public class Grid : MonoBehaviour
                     //Vector3 b = new Vector3(x + .5f, 0, y + .5f);
                     //Vector3 c = new Vector3(x - .5f, 0, y - .5f);
                     //Vector3 d = new Vector3(x + .5f, 0, y - .5f);
-                    Vector3 a = new Vector3(x - 1, 0, y + 1);
-                    Vector3 b = new Vector3(x + 1, 0, y + 1);
-                    Vector3 c = new Vector3(x - 1, 0, y - 1);
-                    Vector3 d = new Vector3(x + 1, 0, y - 1);
+
+                    float height = Mathf.PerlinNoise((x - .5f) * .3f, (y + .5f) * .3f) * .9f;
+                    Vector3 a = new Vector3(x - .5f, height, y + .5f);
+                    height = Mathf.PerlinNoise((x + .5f) * .3f, (y + .5f) * .3f) * .9f;
+                    Vector3 b = new Vector3(x + .5f, height, y + .5f);
+                    height = Mathf.PerlinNoise((x - .5f) * .3f, (y - .5f) * .3f) * .9f;
+                    Vector3 c = new Vector3(x - .5f, height, y - .5f);
+                    height = Mathf.PerlinNoise((x + .5f) * .3f, (y - .5f) * .3f) * .9f;
+                    Vector3 d = new Vector3(x + .5f, height, y - .5f);
+                    Vector3[] v = new Vector3[] { a, b, c, b, d, c };
+
                     //Vector2 uvA = new Vector2(x / (float)_size, y / (float)_size);
                     //Vector2 uvB = new Vector2((x + 1) / (float)_size, y / (float)_size);
                     //Vector2 uvC = new Vector2(x / (float)_size, (y + 1) / (float)_size);
                     //Vector2 uvD = new Vector2((x + 1) / (float)_size, (y + 1) / (float)_size);
-                    Vector3[] v = new Vector3[] { a, b, c, b, d, c };
                     //Vector2[] uv = new Vector2[] { uvA, uvB, uvC, uvB, uvD, uvC };
+
                     for (int k = 0; k < 6; k++)
                     {
                         vertices.Add(v[k]);
