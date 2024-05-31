@@ -49,12 +49,12 @@ public class Enemy : MonoBehaviour, IDamageable
 
 	[Header("_~* 	Other ")]
 	//[SerializeField] protected AlertType alertType = AlertType.Nearby;
-	[SerializeField] protected bool movementBehaviour = true;
+	protected bool movementBehaviour = true;
 
 	[Header("_~* 	Events ")]
 	public UnityEvent<Enemy> OnDeathEvent;
 
-	private PatrolScope _patrolScope;
+	protected PatrolScope _patrolScope;
 
 	#endregion
 
@@ -114,29 +114,43 @@ public class Enemy : MonoBehaviour, IDamageable
 
 	public virtual void UpdateEnemy()
 	{
+		_patrolScope.Debug();
+
 		if (target != null)
 		{
-			if (Vector3.Distance(transform.position, target.position) <= _attackRange)
+			var player = target.GetComponent<Character>();
+			player.IsInPatrolScope = _patrolScope.IsPointInPolygon(player.transform.position);
+
+			float distance = Vector3.Distance(transform.position, target.position);
+			if (distance <= _attackRange)
 			{
 				//stop walking and start attacking.
 				enemyAgent.SetDestination(transform.position);
 				RotateWeapon(target.position);
 				weapon.AttemptAttack();
-			} else
+			}
+			else if (distance <= _detectRange)
+            {
+				enemyAgent.SetDestination(target.position);
+				RotateWeapon(target.position);
+			}
+			else if (target.GetComponent<IDamageable>().IsInPatrolScope)
 			{
 				enemyAgent.SetDestination(target.position);
 				RotateWeapon(target.position);
 			}
-		}
+			else
+			{
+				target = null;
+			}
+        }
 		else
 		{
 			target = DetectTarget();
-
-			if (movementBehaviour)
-			{
-				MovementBehaviour();
-			}
-			
+		}
+		if (movementBehaviour)
+		{
+			MovementBehaviour();
 		}
 		Debug.DrawLine(transform.position, enemyAgent.destination, Color.blue);
 	}
@@ -215,39 +229,47 @@ public class Enemy : MonoBehaviour, IDamageable
 	protected virtual Transform DetectTarget()
 	{
 		Transform target = null;
-		float maxPriority = -9999;
 
-		foreach (Collider c in Physics.OverlapSphere(this.transform.position, _detectRange, LayerMask.GetMask("Damageables")))
-		{
+		var player = LevelManager.Instance.MyCharacter;
+		if (Vector3.Distance(transform.position, player.transform.position) <= _detectRange)
+        {
+			target = player.transform;
+			player.IsInPatrolScope = _patrolScope.IsPointInPolygon(player.transform.position);
+			Debug.Log("Detect target");
+        }
+		//float maxPriority = -9999;
 
-			if (c.gameObject.CompareTag(this.tag)) continue;
-			IDamageable damageable = c.gameObject.GetComponent<IDamageable>();
-			if (damageable == null) continue;
-			if (damageable.IsDead) continue;
+		//foreach (Collider c in Physics.OverlapSphere(this.transform.position, _detectRange, LayerMask.GetMask("Damageables")))
+		//{
 
-			Transform damagableTransform = c.gameObject.transform;
-			RaycastHit[] info = Physics.RaycastAll(this.transform.position, damagableTransform.position - this.transform.position, Vector3.Distance(this.transform.position, damagableTransform.position));
-			bool blocked = false;
-			foreach (RaycastHit hit in info)
-			{
-				//theres an object blocking
-				if (hit.collider.gameObject.GetComponent<IDamageable>() == null)
-				{
-					blocked = true;
-					break;
-				}
-			}
-			if (blocked) continue;
+		//	if (c.gameObject.CompareTag(this.tag)) continue;
+		//	IDamageable damageable = c.gameObject.GetComponent<IDamageable>();
+		//	if (damageable == null) continue;
+		//	if (damageable.IsDead) continue;
 
-			if (Vector3.Distance(damagableTransform.position, this.transform.position) <= _detectRange)
-			{
-				if (damageable.AttackPriority > maxPriority)
-				{
-					target = damagableTransform;
-					maxPriority = damageable.AttackPriority;
-				}
-			}
-		}
+		//	Transform damagableTransform = c.gameObject.transform;
+		//	RaycastHit[] info = Physics.RaycastAll(this.transform.position, damagableTransform.position - this.transform.position, Vector3.Distance(this.transform.position, damagableTransform.position));
+		//	bool blocked = false;
+		//	foreach (RaycastHit hit in info)
+		//	{
+		//		//theres an object blocking
+		//		if (hit.collider.gameObject.GetComponent<IDamageable>() == null)
+		//		{
+		//			blocked = true;
+		//			break;
+		//		}
+		//	}
+		//	if (blocked) continue;
+
+		//	if (Vector3.Distance(damagableTransform.position, this.transform.position) <= _detectRange)
+		//	{
+		//		if (damageable.AttackPriority > maxPriority)
+		//		{
+		//			target = damagableTransform;
+		//			maxPriority = damageable.AttackPriority;
+		//		}
+		//	}
+		//}
 		return target;
 	}
 
@@ -275,20 +297,22 @@ public class Enemy : MonoBehaviour, IDamageable
 
 		enemyAgent.SetDestination(CurrentDestination);
 
-		if (target != null)
-		{
-			if (Vector3.Distance(target.position, transform.position) <= _detectRange)
-			{
-				enemyAgent.SetDestination(transform.position);
-			}
-			else if (target.GetComponent<IDamageable>().IsInPatrolScope)
-			{
-				enemyAgent.SetDestination(target.transform.position);
-			}
-			return;
-		}
-		if (gameObject.GetComponent<SuicideAttacker>())
-			Debug.Log(Vector3.Distance(enemyAgent.destination, CurrentDestination));
+		//if (target != null)
+		//{
+		//	if (Vector3.Distance(target.position, transform.position) <= _attackRange)
+		//	{
+		//		enemyAgent.SetDestination(transform.position);
+		//	}
+		//	else if (target.GetComponent<IDamageable>().IsInPatrolScope)
+		//	{
+		//		enemyAgent.SetDestination(target.transform.position);
+		//	}
+		//	else
+  //          {
+		//		target = null;
+  //          }
+		//	return;
+		//}
 		if (enemyAgent.remainingDistance < 1f)
 		{
 			StartCoroutine(IE_StopAwhile());

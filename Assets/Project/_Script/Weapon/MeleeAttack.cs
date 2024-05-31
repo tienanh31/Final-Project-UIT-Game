@@ -56,7 +56,6 @@ public class MeleeAttack : IWeapon
         RaycastHit[] info = Physics.SphereCastAll(this.transform.position + transform.forward * _attackRange, _attackRange, Vector3.up, 0, layermask);
         foreach (RaycastHit hit in info)
         {
-            Debug.Log(hit.transform.gameObject);
             if (this.tag == hit.transform.tag || transform.parent.gameObject == hit.transform.gameObject)
             {
                 Debug.Log("Skipped: ");

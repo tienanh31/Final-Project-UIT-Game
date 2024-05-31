@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SO_ShieldEnemy
   m_EditorClassIdentifier: 
   HP_DEFAULT: 125
-  ATTACK_RANGE_DEFAULT: 5
+  ATTACK_RANGE_DEFAULT: 6
   MOVE_SPEED_DEFAULT: 6
-  DETECT_RANGE: 8
+  DETECT_RANGE: 14
   TURNING_SPEED: 100

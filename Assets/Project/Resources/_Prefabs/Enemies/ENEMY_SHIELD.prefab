@@ -8,8 +8,20 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 179549275727554784, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
+      propertyPath: m_Height
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 179549275727554784, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
       propertyPath: m_Radius
       value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 179549275727554784, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 179549275727554784, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
+      propertyPath: m_BaseOffset
+      value: 0.85
       objectReference: {fileID: 0}
     - target: {fileID: 857433392673631869, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
       propertyPath: m_TagString
@@ -132,7 +144,6 @@ MonoBehaviour:
   stoppingDistance: 1
   deleteUponDeath: 1
   _initialized: 0
-  movementBehaviour: 1
   OnDeathEvent:
     m_PersistentCalls:
       m_Calls: []

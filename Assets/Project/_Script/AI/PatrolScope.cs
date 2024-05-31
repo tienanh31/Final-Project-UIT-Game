@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using Unity.VisualScripting;
-using UnityEditor;
 
 public class Triangle
 {
@@ -55,30 +53,31 @@ public class PatrolScope
 		return GenVector;
     }
 
-    public bool IsPointInPolygon(Vector3 point)
+    public bool IsPointInPolygon(Vector3 p)
     {
-        bool inside = false;
-
-        int polygonLength = Corners.Count;
-        int i = 0;
-        // x, y for tested point.
-        float pointX = point.x, pointY = point.z;
-        // start / end point for the current polygon segment.
-        float startX, startY, endX, endY;
-        endX = Corners[polygonLength - 1].x;
-        endY = Corners[polygonLength - 1].z;
-        while (i < polygonLength)
+        for (int i = 0; i < Triangles.Count; i++)
         {
-            startX = endX; startY = endY;
-            
-            endX = Corners[i++].x;
-            endY = Corners[i++].z;
-            //
-            inside ^= (endY > pointY ^ startY > pointY) /* ? pointY inside [startY;endY] segment ? */
-                      && /* if so, test if it is under the segment */
-                      ((pointX - endX) < (pointY - endY) * (startX - endX) / (startY - endY));
+            Vector3 A = Triangles[i].Vertex1;
+            Vector3 B = Triangles[i].Vertex2;
+            Vector3 C = Triangles[i].Vertex3;
+
+            double s1 = C.z - A.z;
+            double s2 = C.x - A.x;
+            double s3 = B.z - A.z;
+            double s4 = p.z - A.z;
+
+            double w1 = (A.x * s1 + s4 * s2 - p.x * s1) / (s3 * s2 - (B.x - A.x) * s1);
+            double w2 = (s4 - w1 * s3) / s1;
+
+            bool result = w1 >= 0 && w2 >= 0 && (w1 + w2) <= 1;
+
+            if (result)
+            {
+                return result;
+            }
         }
-        return inside;
+
+        return false;
     }
 
     private Vector3 RandomWithinTriangle(Triangle triangle)
@@ -103,6 +102,22 @@ public class PatrolScope
 
         Vector2 result = (m1 * p1) + (m2 * p2) + (m3 * p3);
         return new Vector3(result.x, Corners[0].y, result.y);
+    }
+
+    public void Debug()
+    {
+        if (Corners == null || Corners.Count < 2)
+        {
+            return;
+        }
+
+        Gizmos.color = new Color(1f, 0f, 0f, 0.5f);
+        for (int i = 2; i < Corners.Count; i++)
+        {
+            UnityEngine.Debug.DrawLine(Corners[i - 2], Corners[i - 1]);
+            UnityEngine.Debug.DrawLine(Corners[i - 2], Corners[i]);
+            UnityEngine.Debug.DrawLine(Corners[i - 1], Corners[i]);
+        }
     }
 
     [ExecuteInEditMode]

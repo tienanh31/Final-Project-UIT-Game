@@ -23,29 +23,42 @@ public class SuicideAttacker : Enemy
 	{
 		if (target != null)
 		{
-			if (Vector3.Distance(transform.position, target.position)
-			< _attackRange)
+			var player = target.GetComponent<Character>();
+			player.IsInPatrolScope = _patrolScope.IsPointInPolygon(player.transform.position);
+
+			float distance = Vector3.Distance(transform.position, target.position);
+			if (distance <= _attackRange)
 			{
+				//stop walking and start attacking.
 				RotateWeapon(target.position);
 				Explode();
-			} 
-			else
+			}
+			else if (distance <= _detectRange)
 			{
 				enemyAgent.SetDestination(target.position);
 				RotateWeapon(target.position);
 			}
-
-			return;
-		} 
+			else if (target.GetComponent<IDamageable>().IsInPatrolScope)
+			{
+				enemyAgent.SetDestination(target.position);
+				RotateWeapon(target.position);
+			}
+			else
+			{
+				target = null;
+			}
+		}
 		else
 		{
 			target = DetectTarget();
-
-			if (movementBehaviour)
-			{
-				MovementBehaviour();
-			}
 		}
+		if (movementBehaviour)
+		{
+			MovementBehaviour();
+		}
+
+		_patrolScope.Debug();
+		Debug.DrawLine(transform.position, enemyAgent.destination, Color.blue);
 	}
 
 	private void Explode()

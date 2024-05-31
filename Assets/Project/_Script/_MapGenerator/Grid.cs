@@ -34,6 +34,9 @@ public class Grid : MonoBehaviour
     public Cell StartPointCell;
     public Cell EndPointCell;
     public List<Cell> EnemiesPosition;
+
+    public float MaxNoiseValue = 0f;
+
     private List<PatrolScope> _patrolScopes;
 
     private List<Mesh> _meshes;
@@ -101,8 +104,12 @@ public class Grid : MonoBehaviour
         {
             for (int x = 0; x < _size; x++)
             {
-                float noiseValue = Mathf.PerlinNoise(x * _scale + xOffset, y * _scale + yOffset);
+                float noiseValue = Mathf.PerlinNoise(x * _scale + xOffset, y * _scale + yOffset) * 2f;
                 noiseMap[x, y] = noiseValue;
+                if (noiseValue > MaxNoiseValue)
+                {
+                    MaxNoiseValue = noiseValue;
+                }
             }
         }
 
@@ -193,7 +200,7 @@ public class Grid : MonoBehaviour
         Mesh mesh = new Mesh();
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
-        List<Vector2> uvs = new List<Vector2>();
+        //List<Vector2> uvs = new List<Vector2>();
         for (int y = 0; y < _size; y++)
         {
             for (int x = 0; x < _size; x++)
@@ -201,28 +208,34 @@ public class Grid : MonoBehaviour
                 Cell cell = grid[x, y];
                 if (cell.Type == CellType.Ground)
                 {
-                    Vector3 a = new Vector3(x - .5f, 0, y + .5f);
-                    Vector3 b = new Vector3(x + .5f, 0, y + .5f);
-                    Vector3 c = new Vector3(x - .5f, 0, y - .5f);
-                    Vector3 d = new Vector3(x + .5f, 0, y - .5f);
-                    Vector2 uvA = new Vector2(x / (float)_size, y / (float)_size);
-                    Vector2 uvB = new Vector2((x + 1) / (float)_size, y / (float)_size);
-                    Vector2 uvC = new Vector2(x / (float)_size, (y + 1) / (float)_size);
-                    Vector2 uvD = new Vector2((x + 1) / (float)_size, (y + 1) / (float)_size);
+                    //Vector3 a = new Vector3(x - .5f, 0, y + .5f);
+                    //Vector3 b = new Vector3(x + .5f, 0, y + .5f);
+                    //Vector3 c = new Vector3(x - .5f, 0, y - .5f);
+                    //Vector3 d = new Vector3(x + .5f, 0, y - .5f);
+                    Vector3 a = new Vector3(x - 1, 0, y + 1);
+                    Vector3 b = new Vector3(x + 1, 0, y + 1);
+                    Vector3 c = new Vector3(x - 1, 0, y - 1);
+                    Vector3 d = new Vector3(x + 1, 0, y - 1);
+                    //Vector2 uvA = new Vector2(x / (float)_size, y / (float)_size);
+                    //Vector2 uvB = new Vector2((x + 1) / (float)_size, y / (float)_size);
+                    //Vector2 uvC = new Vector2(x / (float)_size, (y + 1) / (float)_size);
+                    //Vector2 uvD = new Vector2((x + 1) / (float)_size, (y + 1) / (float)_size);
                     Vector3[] v = new Vector3[] { a, b, c, b, d, c };
-                    Vector2[] uv = new Vector2[] { uvA, uvB, uvC, uvB, uvD, uvC };
+                    //Vector2[] uv = new Vector2[] { uvA, uvB, uvC, uvB, uvD, uvC };
                     for (int k = 0; k < 6; k++)
                     {
                         vertices.Add(v[k]);
                         triangles.Add(triangles.Count);
-                        uvs.Add(uv[k]);
+                        //uvs.Add(uv[k]);
                     }
+
                 }
             }
         }
+
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
-        mesh.uv = uvs.ToArray();
+        //mesh.uv = uvs.ToArray();
         mesh.RecalculateNormals();
 
         MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();

@@ -47,6 +47,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField] CameraController myCamera;
     public List<IDamageable> damageables;
 
+    public Character MyCharacter => character;
+
     protected float possibleEnemyCount, enemiesLeft;
     #endregion
 
@@ -76,6 +78,7 @@ public class LevelManager : MonoBehaviour
     {
         Debug.LogWarning(GameManager.Instance.MapGenerator.StartPointCell);
         var characterSpawner = GameManager.Instance.MapGenerator.StartPointCell.GetPosition();
+        characterSpawner.y = GameManager.Instance.MapGenerator.MaxNoiseValue;
 
         character = GameObject.FindObjectOfType<Character>();
         if (character == null)

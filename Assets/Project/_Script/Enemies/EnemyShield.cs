@@ -19,35 +19,47 @@ public class EnemyShield : Enemy
 
     public override void UpdateEnemy()
     {
+        _patrolScope.Debug();
         if (target != null)
         {
-            Transform targetTransform = target;
-            if (Vector3.Distance(transform.position, targetTransform.position)
-            <= _attackRange)
+            var player = target.GetComponent<Character>();
+            player.IsInPatrolScope = _patrolScope.IsPointInPolygon(player.transform.position);
+
+            float distance = Vector3.Distance(transform.position, target.position);
+            if (distance <= _attackRange)
             {
                 //stop walking and start attacking.
                 enemyAgent.SetDestination(transform.position);
-                RotateWeapon(targetTransform.position);
+                RotateWeapon(target.position);
+
                 if (canUseSkill && !Shield)
                 {
                     StartCoroutine(Skill());
                 }
                 weapon.AttemptAttack();
             }
+            else if (distance <= _detectRange)
+            {
+                enemyAgent.SetDestination(target.position);
+                RotateWeapon(target.position);
+            }
+            else if (target.GetComponent<IDamageable>().IsInPatrolScope)
+            {
+                enemyAgent.SetDestination(target.position);
+                RotateWeapon(target.position);
+            }
             else
             {
-                enemyAgent.SetDestination(targetTransform.position);
-                RotateWeapon(targetTransform.position);
+                target = null;
             }
         }
         else
         {
             target = DetectTarget();
-
-            if (movementBehaviour)
-            {
-                MovementBehaviour();
-            }
+        }
+        if (movementBehaviour)
+        {
+            MovementBehaviour();
         }
 
         if (!Shield && shieldBroken)
@@ -55,6 +67,8 @@ public class EnemyShield : Enemy
             shieldBroken = true;
             StartCoroutine(SkillCooldown());
         }
+
+        Debug.DrawLine(transform.position, enemyAgent.destination, Color.blue);
     }
 
     public override void TakenDamage(Damage damage)
