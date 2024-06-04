@@ -52,7 +52,7 @@ public class Character : MonoBehaviour, IDamageable
 	protected float _moveSpeed;
 	protected float _skillCooldown;
 
-	float speedX, speedZ, maxSpeed;
+	float speedX, speedZ;
 	protected private Vector3 mousePos;
 	Coroutine textCoroutine;
 	bool movementEnable = true;
@@ -113,7 +113,6 @@ public class Character : MonoBehaviour, IDamageable
 
 		speedX = 0;
 		speedZ = 0;
-		maxSpeed = _moveSpeed;
 		//characterRigidbody.drag = drag;
 		healthbar.Start();
 
@@ -209,7 +208,59 @@ public class Character : MonoBehaviour, IDamageable
 		}
 	}
 
-	public void TakenBuff(GameConfig.BUFF buff, float statBuff)
+	public void TakenDamage(float damage)
+	{
+		if (_HP > 0 && !invulnerable)
+		{
+			_HP -= damage;
+			healthbar.HealthUpdate();
+
+			if (_HP < 0)
+			{
+				_healthChange?.Invoke(0);
+			}
+			else
+			{
+				_healthChange?.Invoke(_HP);
+			}
+
+			if (_HP <= 0)
+			{
+				Debug.Log("Character die");
+				OnDeath();
+			}
+		}
+	}
+
+	#region Effect
+	[HideInInspector] public bool IsSlow = false;
+
+    public void TakenStunEffect(float time)
+    {
+
+    }
+
+	public void TakenSlowEffect(float ratio)
+	{
+		IsSlow = true;
+		StartCoroutine(IE_Slow(ratio));
+	}
+
+	IEnumerator IE_Slow(float ratio)
+    {
+		var originSpeed = _moveSpeed;
+
+		_moveSpeed -= _moveSpeed * ratio;
+		while (IsSlow)
+        {
+			yield return null;
+        }
+
+		_moveSpeed = originSpeed;
+		Debug.LogWarning("IE_Slow end");
+	}
+    #endregion
+    public void TakenBuff(GameConfig.BUFF buff, float statBuff)
 	{
 		switch(buff)
 		{
@@ -273,7 +324,7 @@ public class Character : MonoBehaviour, IDamageable
 				// else
 				// 	speedX += deAcceleration * Input.GetAxisRaw("Horizontal") * Time.deltaTime;
 				speedX += acceleration * Input.GetAxisRaw("Horizontal") * Time.deltaTime;
-				speedX = Mathf.Clamp(speedX, -maxSpeed * Mathf.Abs(movementInput.x), maxSpeed * Mathf.Abs(movementInput.x));
+				speedX = Mathf.Clamp(speedX, -_moveSpeed * Mathf.Abs(movementInput.x), _moveSpeed * Mathf.Abs(movementInput.x));
 			}
 			else
 				speedX = Mathf.MoveTowards(speedX, 0, deAcceleration * Time.deltaTime);
@@ -284,7 +335,7 @@ public class Character : MonoBehaviour, IDamageable
 				// else
 				// 	speedZ += deAcceleration * Input.GetAxisRaw("Vertical") * Time.deltaTime;
 				speedZ += acceleration * Input.GetAxisRaw("Vertical") * Time.deltaTime;
-				speedZ = Mathf.Clamp(speedZ, -maxSpeed * Mathf.Abs(movementInput.z), maxSpeed * Mathf.Abs(movementInput.z));
+				speedZ = Mathf.Clamp(speedZ, -_moveSpeed * Mathf.Abs(movementInput.z), _moveSpeed * Mathf.Abs(movementInput.z));
 			}
 			else
 				speedZ = Mathf.MoveTowards(speedZ, 0, deAcceleration * Time.deltaTime);

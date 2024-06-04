@@ -76,7 +76,6 @@ public class LevelManager : MonoBehaviour
 
     public virtual void Initialize()
     {
-        Debug.LogWarning(GameManager.Instance.MapGenerator.StartPointCell);
         var characterSpawner = GameManager.Instance.MapGenerator.StartPointCell.GetPosition();
         characterSpawner.y = GameManager.Instance.MapGenerator.MaxNoiseValue;
 

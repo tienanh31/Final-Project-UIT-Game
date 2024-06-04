@@ -209,19 +209,19 @@ public class Grid : MonoBehaviour
                 Cell cell = grid[x, y];
                 if (cell.Type == CellType.Ground)
                 {
-                    //Vector3 a = new Vector3(x - .5f, 0, y + .5f);
-                    //Vector3 b = new Vector3(x + .5f, 0, y + .5f);
-                    //Vector3 c = new Vector3(x - .5f, 0, y - .5f);
-                    //Vector3 d = new Vector3(x + .5f, 0, y - .5f);
+                    Vector3 a = new Vector3(x - .5f, 0, y + .5f);
+                    Vector3 b = new Vector3(x + .5f, 0, y + .5f);
+                    Vector3 c = new Vector3(x - .5f, 0, y - .5f);
+                    Vector3 d = new Vector3(x + .5f, 0, y - .5f);
 
-                    float height = Mathf.PerlinNoise((x - .5f) * .3f, (y + .5f) * .3f) * .9f;
-                    Vector3 a = new Vector3(x - .5f, height, y + .5f);
-                    height = Mathf.PerlinNoise((x + .5f) * .3f, (y + .5f) * .3f) * .9f;
-                    Vector3 b = new Vector3(x + .5f, height, y + .5f);
-                    height = Mathf.PerlinNoise((x - .5f) * .3f, (y - .5f) * .3f) * .9f;
-                    Vector3 c = new Vector3(x - .5f, height, y - .5f);
-                    height = Mathf.PerlinNoise((x + .5f) * .3f, (y - .5f) * .3f) * .9f;
-                    Vector3 d = new Vector3(x + .5f, height, y - .5f);
+                    //float height = Mathf.PerlinNoise((x - .5f) * .3f, (y + .5f) * .3f) * .9f;
+                    //Vector3 a = new Vector3(x - .5f, height, y + .5f);
+                    //height = Mathf.PerlinNoise((x + .5f) * .3f, (y + .5f) * .3f) * .9f;
+                    //Vector3 b = new Vector3(x + .5f, height, y + .5f);
+                    //height = Mathf.PerlinNoise((x - .5f) * .3f, (y - .5f) * .3f) * .9f;
+                    //Vector3 c = new Vector3(x - .5f, height, y - .5f);
+                    //height = Mathf.PerlinNoise((x + .5f) * .3f, (y - .5f) * .3f) * .9f;
+                    //Vector3 d = new Vector3(x + .5f, height, y - .5f);
                     Vector3[] v = new Vector3[] { a, b, c, b, d, c };
 
                     //Vector2 uvA = new Vector2(x / (float)_size, y / (float)_size);

@@ -26,7 +26,7 @@ public class MyXMLReader
         Dictionary<GameConfig.ENEMY, int> enemies = new Dictionary<GameConfig.ENEMY, int>();
 
         var levelData = FindLevelWithId(level);
-        Debug.LogWarning(levelData.Name);
+        
         if (levelData != null)
         {
             int count = 0;
