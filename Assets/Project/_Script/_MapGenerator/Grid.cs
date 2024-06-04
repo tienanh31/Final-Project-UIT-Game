@@ -149,7 +149,7 @@ public class Grid : MonoBehaviour
         DrawTerrainMesh(_grid);
         DrawEdgeMesh(_grid);
         DrawTexture(_grid);
-        //GenerateTrees(_grid);
+        GenerateTrees(_grid);
         GenerateGrasses(_grid);
 
         if (_isGenerateEnemy)
