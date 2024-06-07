@@ -22,9 +22,9 @@ public class Mud : Trap
         Debug.LogWarning("In");
     }
 
-    protected override void TriggerStay()
+    protected override void TriggerStay(Character character)
     {
-        base.TriggerStay();
+        base.TriggerStay(character);
     }
 
     protected override void TriggerExit(Character character)

@@ -21,23 +21,24 @@ public class Trap : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        var character = other.GetComponent<Character>();
+        if (character)
         {
-            var character = other.GetComponent<Character>();
             TriggerEnter(character);
         }
     }
 
-    protected virtual void TriggerStay()
+    protected virtual void TriggerStay(Character character)
     {
 
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Player"))
+        var character = other.GetComponent<Character>();
+        if (character)
         {
-            TriggerStay();
+            TriggerStay(character);
         }
     }
 
@@ -48,9 +49,9 @@ public class Trap : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        var character = other.GetComponent<Character>();
+        if (character)
         {
-            var character = other.GetComponent<Character>();
             TriggerExit(character);
         }
     }

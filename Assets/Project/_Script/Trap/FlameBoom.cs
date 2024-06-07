@@ -1,9 +1,8 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class FireCarpet : Trap
+public class FlameBoom : Trap
 {
-    private bool _isTargetOut = false;
 
     public override void Initialize()
     {
@@ -14,9 +13,11 @@ public class FireCarpet : Trap
     {
         base.TriggerEnter(character);
 
-        _isTargetOut = false;
-        StartCoroutine(IE_Damage(character));
-        Debug.LogWarning("In");
+        character.TakenDamage(_damage);
+        var flameExplosion = Flame.Create(character.transform);
+        flameExplosion.Explosion(character);
+
+        Destroy(gameObject);
     }
 
     protected override void TriggerStay(Character character)
@@ -27,16 +28,6 @@ public class FireCarpet : Trap
     protected override void TriggerExit(Character character)
     {
         base.TriggerExit(character);
-        _isTargetOut = true;
-        Debug.LogWarning("Out");
     }
 
-    IEnumerator IE_Damage(Character character)
-    {
-        while (!_isTargetOut)
-        {
-            character.TakenDamage(_damage);
-            yield return new WaitForSeconds(_resetTime);
-        }
-    }
 }

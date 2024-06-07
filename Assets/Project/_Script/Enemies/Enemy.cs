@@ -155,7 +155,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
 		if (target != null)
         {
-			Debug.Log($"Distance: {Vector3.Distance(transform.position, target.position)}");
+			//Debug.Log($"Distance: {Vector3.Distance(transform.position, target.position)}");
 			Debug.DrawLine(transform.position, enemyAgent.destination, Color.blue);
 		}
 	}
