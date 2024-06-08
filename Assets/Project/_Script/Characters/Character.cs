@@ -237,8 +237,17 @@ public class Character : MonoBehaviour, IDamageable
 
     public void TakenStunEffect(float time)
     {
-
+		Debug.Log("stun");
+		StartCoroutine(IE_Stun(time));
     }
+
+	IEnumerator IE_Stun(float time)
+    {
+		movementEnable = false;
+		yield return new WaitForSeconds(time);
+		movementEnable = true;
+    }
+
 
 	public void TakenSlowEffect(float ratio)
 	{
@@ -259,6 +268,12 @@ public class Character : MonoBehaviour, IDamageable
 		_moveSpeed = originSpeed;
 		Debug.LogWarning("IE_Slow end");
 	}
+
+	public void Repel(Vector3 force)
+    {
+		Debug.Log("repel");
+		characterRigidbody.AddForce(force, ForceMode.Impulse);
+    }
     #endregion
     public void TakenBuff(GameConfig.BUFF buff, float statBuff)
 	{
