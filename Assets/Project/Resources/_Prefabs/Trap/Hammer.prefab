@@ -101,6 +101,7 @@ MonoBehaviour:
   _maxAngle: 90
   _direction: {fileID: 4314374050429085528}
   _repelForce: 1000
+  _isXDirection: 0
 --- !u!1 &5709819106660628446
 GameObject:
   m_ObjectHideFlags: 0

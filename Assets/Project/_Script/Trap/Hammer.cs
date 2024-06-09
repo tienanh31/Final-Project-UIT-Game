@@ -9,10 +9,20 @@ public class Hammer : Trap
     [SerializeField] Transform _direction;
     [SerializeField] float _repelForce = 2000f;
 
+    public bool _isXDirection = true;
+
     private bool _attackable = true;
 
     private void Start()
     {
+        if (!_isXDirection)
+        {
+            Vector3 angle = transform.eulerAngles;
+            angle.y = 90;
+            transform.eulerAngles = angle;
+
+
+        }
         StartCoroutine(IE_Rotate());
     }
 
@@ -51,7 +61,14 @@ public class Hammer : Trap
         float direction = 1;
         while (true)
         {
-            transform.RotateAround(_pivot.position, new Vector3(0, 0, direction), _rotateSpeed * Time.deltaTime);
+            Vector3 axis = new Vector3(0, 0, direction);
+            if (!_isXDirection)
+            {
+                axis.z = 0;
+                axis.x = direction;
+            }
+
+            transform.RotateAround(_pivot.position, axis, _rotateSpeed * Time.deltaTime);
 
             var angle = transform.eulerAngles.z;
             if (angle > 180)
