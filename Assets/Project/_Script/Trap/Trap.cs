@@ -7,7 +7,6 @@ public class Trap : MonoBehaviour
     [SerializeField] protected float _damage = 20f;
     [SerializeField] protected float _resetTime = 0f;
     [SerializeField] protected float _stunTime = 0f;
-    [SerializeField] protected bool _isSlow = false;
 
     public virtual void Initialize()
     {
