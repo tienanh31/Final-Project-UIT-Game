@@ -76,6 +76,8 @@ public class LevelManager : MonoBehaviour
 
     public virtual void Initialize()
     {
+        _endingGate.SetActive(false);
+
         var characterSpawner = GameManager.Instance.MapGenerator.StartPointCell.GetPosition();
         characterSpawner.y = GameManager.Instance.MapGenerator.MaxNoiseValue;
 
@@ -171,6 +173,7 @@ public class LevelManager : MonoBehaviour
         {
             if (enemyType.Key == GameConfig.ENEMY.TRAP)
             {
+                SpawningTrap(enemyType.Value);
                 continue;
             }
 
@@ -206,6 +209,26 @@ public class LevelManager : MonoBehaviour
 
         possibleEnemyCount = enemies.Count;
         enemiesLeft = possibleEnemyCount;
+    }
+
+    private void SpawningTrap(int total)
+    {
+
+
+        switch(total)
+        {
+            case 1:
+
+                break;
+
+            case 2:
+
+                break;
+
+            case 3:
+
+                break;
+        }
     }
 
     protected virtual void Update()
@@ -260,7 +283,10 @@ public class LevelManager : MonoBehaviour
 
     private void LateUpdate()
     {
-
+        if (enemiesLeft == 0)
+        {
+            _endingGate.SetActive(true);
+        }
     }
 
     private void RemoveDeathEnemy()
@@ -288,8 +314,6 @@ public class LevelManager : MonoBehaviour
     virtual public bool WinCondition()
     {
         return false;
-
-        return enemiesLeft == 0;
     }
 
     virtual public bool LoseCondition()

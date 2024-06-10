@@ -443,10 +443,10 @@ public class Grid : MonoBehaviour
         _patrolScopes = new List<PatrolScope>();
 
         var largestArea = _grounds[_grounds.Count - 1];
-        int startRandom = largestArea.Count / 10;
+        int startRandom = largestArea.Count / 5;
         //int endRandom = largestArea.Count - largestArea.Count / 10;
 
-        for (int i = 1; i <= 10; i++)
+        for (int i = 2; i <= 5; i++)
         {
             var patrolScope = new PatrolScope();
 

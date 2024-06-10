@@ -60,7 +60,7 @@
         <defender>0</defender>
         <suicide>0</suicide>
         <rocket>0</rocket>
-        <trap>1</trap>
+        <trap>2</trap>
 	</Level>
 
     <Level Id = "8">
@@ -69,7 +69,7 @@
         <defender>0</defender>
         <suicide>0</suicide>
         <rocket>0</rocket>
-        <trap>1</trap>
+        <trap>2</trap>
 	</Level>
 
     <Level Id = "9">
@@ -87,7 +87,7 @@
         <defender>0</defender>
         <suicide>0</suicide>
         <rocket>0</rocket>
-        <trap>2</trap>
+        <trap>3</trap>
 	</Level>
 
 	<Level Id = "11">
@@ -150,7 +150,7 @@
 		<defender>4</defender>
 		<suicide>0</suicide>
 		<rocket>0</rocket>
-		<trap>1</trap>
+		<trap>2</trap>
 	</Level>
 
 	<Level Id = "18">
@@ -159,7 +159,7 @@
 		<defender>3</defender>
 		<suicide>0</suicide>
 		<rocket>0</rocket>
-		<trap>1</trap>
+		<trap>2</trap>
 	</Level>
 
 	<Level Id = "19">
@@ -168,7 +168,7 @@
 		<defender>3</defender>
 		<suicide>0</suicide>
 		<rocket>0</rocket>
-		<trap>1</trap>
+		<trap>2</trap>
 	</Level>
 
 	<Level Id = "20">
@@ -177,7 +177,7 @@
 		<defender>4</defender>
 		<suicide>0</suicide>
 		<rocket>0</rocket>
-		<trap>2</trap>
+		<trap>3</trap>
 	</Level>
 
 	<Level Id = "21">
@@ -240,7 +240,7 @@
 		<defender>2</defender>
 		<suicide>3</suicide>
 		<rocket>0</rocket>
-		<trap>1</trap>
+		<trap>2</trap>
 	</Level>
 
 	<Level Id = "28">
@@ -249,7 +249,7 @@
 		<defender>2</defender>
 		<suicide>4</suicide>
 		<rocket>0</rocket>
-		<trap>1</trap>
+		<trap>2</trap>
 	</Level>
 
 	<Level Id = "29">
@@ -258,7 +258,7 @@
 		<defender>2</defender>
 		<suicide>4</suicide>
 		<rocket>0</rocket>
-		<trap>1</trap>
+		<trap>2</trap>
 	</Level>
 
 	<Level Id = "30">
@@ -267,7 +267,7 @@
 		<defender>2</defender>
 		<suicide>4</suicide>
 		<rocket>0</rocket>
-		<trap>2</trap>
+		<trap>3</trap>
 	</Level>
 
 	<Level Id = "31">
@@ -330,7 +330,7 @@
 		<defender>2</defender>
 		<suicide>2</suicide>
 		<rocket>2</rocket>
-		<trap>1</trap>
+		<trap>2</trap>
 	</Level>
 
 	<Level Id = "38">
@@ -339,7 +339,7 @@
 		<defender>2</defender>
 		<suicide>2</suicide>
 		<rocket>2</rocket>
-		<trap>1</trap>
+		<trap>2</trap>
 	</Level>
 
 	<Level Id = "39">
@@ -348,7 +348,7 @@
 		<defender>2</defender>
 		<suicide>2</suicide>
 		<rocket>2</rocket>
-		<trap>1</trap>
+		<trap>2</trap>
 	</Level>
 
 	<Level Id = "40">
@@ -357,7 +357,7 @@
 		<defender>3</defender>
 		<suicide>3</suicide>
 		<rocket>3</rocket>
-		<trap>2</trap>
+		<trap>3</trap>
 	</Level>
 
 

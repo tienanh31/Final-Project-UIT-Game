@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: 7294292102370799269}
   - component: {fileID: 4025199761455906229}
   - component: {fileID: 2675829329381956289}
+  - component: {fileID: 9198824981966192916}
   m_Layer: 0
   m_Name: Iceberg
   m_TagString: Untagged
@@ -148,3 +149,19 @@ MonoBehaviour:
   _speed: 10
   StartPosition: {x: 0, y: 0, z: 0}
   EndPosition: {x: 1, y: 1, z: 1}
+--- !u!208 &9198824981966192916
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7294292102370799265}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 0.5, z: 1.81}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5

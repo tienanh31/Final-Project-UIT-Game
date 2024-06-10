@@ -1,10 +1,11 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 
 public class FlameThrower : Trap
 {
-    [SerializeField] ParticleSystem _flameParticle;
+    [SerializeField] List<ParticleSystem> _flameParticles;
     [SerializeField] float _flameDuration = 6f;
     [SerializeField] float _chargingTime = 2f;
 
@@ -13,8 +14,12 @@ public class FlameThrower : Trap
 
     private void Start()
     {
-        var main = _flameParticle.main;
-        main.duration = _flameDuration;
+        foreach(var flameParticle in _flameParticles)
+        {
+            var main = flameParticle.main;
+            main.duration = _flameDuration;
+            main.loop = false;
+        }
 
         StartCoroutine(IE_Flaming());
     }
@@ -59,7 +64,11 @@ public class FlameThrower : Trap
         while (true)
         {
             Debug.Log("Flaming");
-            _flameParticle.Play();
+
+            foreach (var flameParticle in _flameParticles)
+            {
+                flameParticle.Play();
+            }
 
             _damable = true;
             yield return new WaitForSeconds(_flameDuration);

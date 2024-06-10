@@ -187,6 +187,14 @@ public class GameManager : MonoBehaviour
         return enemy;
     }
 
+    public Trap SpawingTrap(string type, Vector3 position)
+    {
+        Trap trap = Instantiate(Resources.Load<Trap>("_Prefabs/Trap/" + type),
+            position, new Quaternion());
+
+        return trap;
+    }
+
     public Dictionary<GameConfig.ENEMY, int> GetEnemiesCurrentLevel()
     {
         return _myXmlData.GetEnemiesAtLevel(_level);
