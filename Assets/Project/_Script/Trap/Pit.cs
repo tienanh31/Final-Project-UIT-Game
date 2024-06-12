@@ -13,7 +13,7 @@ public class Pit : Trap
 
     public override void Initialize()
     {
-        base.Initialize();
+        //base.Initialize();
 
     }
 

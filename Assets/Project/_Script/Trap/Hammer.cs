@@ -30,6 +30,20 @@ public class Hammer : Trap
     {
         base.Initialize();
 
+        Vector3 position = transform.position;
+        position.y -= _direction.transform.position.y;
+        transform.position = position;
+        
+        if (!_isXDirection)
+        {
+            Vector3 angle = transform.eulerAngles;
+            angle.y = 90;
+            transform.eulerAngles = angle;
+
+
+        }
+        StartCoroutine(IE_Rotate());
+
     }
 
     private void OnCollisionEnter(Collision collision)

@@ -18,7 +18,7 @@ public class MyXMLReader
         _data.LoadXml(xmlData.text);
 
         var items = _data.SelectNodes("/Data/Level");
-        Debug.Log(items[0].ChildNodes.Count);
+        //Debug.Log(items[0].ChildNodes.Count);
     }
 
     public Dictionary<GameConfig.ENEMY, int> GetEnemiesAtLevel(int level)
