@@ -295,6 +295,11 @@ public class Enemy : MonoBehaviour, IDamageable
 			return;
 		}
 
+		if (target != null)
+        {
+			return;
+        }
+
 		if (CurrentDestination == Vector3.zero)
 		{
 			CurrentDestination = _patrolScope.GetRandomDestination(transform.position);
@@ -302,39 +307,11 @@ public class Enemy : MonoBehaviour, IDamageable
 
 		enemyAgent.SetDestination(CurrentDestination);
 
-		//if (target != null)
-		//{
-		//	if (Vector3.Distance(target.position, transform.position) <= _attackRange)
-		//	{
-		//		enemyAgent.SetDestination(transform.position);
-		//	}
-		//	else if (target.GetComponent<IDamageable>().IsInPatrolScope)
-		//	{
-		//		enemyAgent.SetDestination(target.transform.position);
-		//	}
-		//	else
-  //          {
-		//		target = null;
-  //          }
-		//	return;
-		//}
 		if (enemyAgent.remainingDistance < 1f)
 		{
 			StartCoroutine(IE_StopAwhile());
 			CurrentDestination = _patrolScope.GetRandomDestination(enemyAgent.destination);
 		}
-		else
-        {
-			//int x = Mathf.FloorToInt(enemyAgent.destination.x);
-			//int z = Mathf.FloorToInt(enemyAgent.destination.z);
-
-			//if (!GameManager.Instance.MapGenerator.IsGround(x, z))
-   //         {
-			//	enemyAgent.SetDestination(enemyAgent.transform.position);
-			//	StartCoroutine(IE_StopAwhile());
-			//	CurrentDestination = _patrolScope.GetRandomDestination(enemyAgent.destination);
-			//}
-        }
 	}
 
 	protected IEnumerator IE_StopAwhile()

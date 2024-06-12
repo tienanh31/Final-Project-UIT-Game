@@ -140,7 +140,10 @@ public class LevelManager : MonoBehaviour
         //audioSource.loop = true;
         //audioSource.Play();
 
-        _endingGate.transform.position = GameManager.Instance.MapGenerator.EndPointCell.GetPosition();
+        Vector3 position = GameManager.Instance.MapGenerator.EndPointCell.GetPosition();
+        position.y += _endingGate.transform.lossyScale.y / 2f;
+
+        _endingGate.transform.position = position;
         _endingGate.transform.forward = Vector3.Normalize(character.transform.position - _endingGate.transform.position);
     
     }
@@ -167,7 +170,7 @@ public class LevelManager : MonoBehaviour
         var enemyTypes = GameManager.Instance.GetEnemiesCurrentLevel();
 
         int total = enemyTypes.Sum(e => e.Value);
-        Debug.Log("Total enemy: " + total);
+        //Debug.Log("Total enemy: " + total);
 
         foreach (var enemyType in enemyTypes)
         {
@@ -213,10 +216,43 @@ public class LevelManager : MonoBehaviour
 
     private void SpawningTrap(int total)
     {
+        var falloffs = GameManager.Instance.MapGenerator.Falloffs;
+        var largestArea = GameManager.Instance.MapGenerator.LargestArea;
 
+        int mapType = GameManager.Instance.GetMapType();
 
-        switch(total)
+        switch(mapType)
         {
+            case 0:
+                if (total >= 1)
+                {
+                    Vector3 position = Vector3.zero;
+                    position = largestArea[UnityEngine.Random.Range(0, largestArea.Count)].GetPosition();
+
+                    Mud mud = GameManager.Instance.SpawingTrap(typeof(Mud).Name, position) as Mud;
+                    mud.Initialize();
+                }
+                if (total >= 2)
+                {
+                    var falloff = falloffs[UnityEngine.Random.Range(0, falloffs.Count)];
+                    foreach (var cell in falloff)
+                    {
+                        Pit pit = GameManager.Instance.SpawingTrap(typeof(Pit).Name, cell.GetPosition()) as Pit;
+                        pit.Initialize();
+                    }
+
+                }
+                if (total >= 3)
+                {
+                    Vector3 position = Vector3.zero;
+
+
+                    position = largestArea[UnityEngine.Random.Range(0, largestArea.Count)].GetPosition();
+                    Hammer hammer = GameManager.Instance.SpawingTrap(typeof(Hammer).Name, position) as Hammer;
+                    hammer.Initialize();
+                }
+                break;
+
             case 1:
 
                 break;

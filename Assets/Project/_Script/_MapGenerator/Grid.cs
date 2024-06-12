@@ -9,15 +9,13 @@ public class Grid : MonoBehaviour
     [SerializeField] Button _btnRandom;
 
     [SerializeField] bool _isGenerateEnemy = true;
-    int _numberOfCorners = 7;
+    int _numberOfCorners = 10;
 
     [SerializeField] GameObject[] _treePrefabs;
-    [SerializeField] float _treeNoiseScale = .005f;
-    [SerializeField] float _treeDensity = .5f;
+    [SerializeField] float _treeNoiseScale = .5f;
 
     [SerializeField] GameObject[] _grassPrefabs;
-    [SerializeField] float _grassNoiseScale = .01f;
-    [SerializeField] float _grassDensity = .5f;
+    [SerializeField] float _grassNoiseScale = .1f;
 
     [SerializeField] List<Material> _terrainMaterials;
     [SerializeField] Material _edgeMaterial;
@@ -34,7 +32,24 @@ public class Grid : MonoBehaviour
     public Cell StartPointCell;
     public Cell EndPointCell;
     public List<Cell> EnemiesPosition;
+    public List<List<Cell>> Falloffs;
+    public List<Cell> LargestArea
+    {
+        get
+        {
+            var size = _grounds.Count;
+            if (size > 0)
+            {
+                return _grounds[size - 1];
+            }
 
+            return null;
+        }
+
+        private set { }
+    }
+
+    [HideInInspector]
     public float MaxNoiseValue = 0f;
 
     private List<PatrolScope> _patrolScopes;
@@ -192,6 +207,18 @@ public class Grid : MonoBehaviour
                 EndPointCell = largestArea[Random.Range(n - n / 10, n)];
             }
 
+            Falloffs = Utility.FindWatersInGround(_grid, _grounds[size - 1]);
+            Debug.Log(Falloffs.Count);
+            foreach (var w in Falloffs)
+            {
+                string debug = "";
+                foreach (var c in w)
+                {
+                    debug += c.Id + " || ";
+                }
+
+                Debug.Log(debug);
+            }
         }
     }
 
@@ -395,48 +422,6 @@ public class Grid : MonoBehaviour
         //_texture2Ds.Add(texture);
     }
 
-    //void GenerateEnemies(Cell[,] grid)
-    //{
-    //    EnemiesPosition = new List<Cell>();
-
-    //    //random enemies'pos in map
-    //    EnemiesPosition.Add(EndPointCell);
-
-    //    var largestArea = _grounds[_grounds.Count - 1];
-    //    int startRandom = largestArea.Count / 10;
-    //    int endRandom = largestArea.Count - largestArea.Count / 10;
-
-    //    while (EnemiesPosition.Count < _numberOfCorners)
-    //    {
-    //        var randomCell = largestArea[Random.Range(startRandom, endRandom)];
-
-
-    //        if (EnemiesPosition.FindIndex(e => e.Equals(randomCell)) == -1)
-    //        {
-    //            if (!randomCell.IsContainTree
-    //                && !randomCell.IsContainEnemy)
-    //            {
-    //                EnemiesPosition.Add(randomCell);
-    //                randomCell.IsContainEnemy = true;
-    //            }
-    //        }
-    //    }
-
-    //    EnemiesPosition.Sort((e1, e2) => (e1.Distance(StartPointCell)).CompareTo(e2.Distance(StartPointCell)));
-
-    //    // Create random enemies in map 
-    //    //foreach (var cell in EnemiesPosition)
-    //    //{
-    //    //    //GameObject randomEnemyPrefab = _enemyPrefabs[Random.Range(0, _enemyPrefabs.Length)];
-    //    //    //GameObject randomEnemy = Instantiate(randomEnemyPrefab, transform);
-    //    //    //randomEnemy.transform.position = new Vector3(cell.Id.x, 0f, cell.Id.y);
-
-    //    //    //_gameObjects.Add(randomEnemy);
-
-    //    //    //Debug.LogWarning(cell.Id);
-    //    //}
-    //}
-
     // new version
     void GenerateEnemies(Cell[,] grid)
     {
@@ -481,7 +466,7 @@ public class Grid : MonoBehaviour
                 Cell cell = grid[x, y];
                 if (cell.Type == CellType.Ground)
                 {
-                    float v = Random.Range(0f, _treeDensity);
+                    float v = Random.Range(0f, _treeNoiseScale);
                     if (grid[x, y].NoiseValue < v 
                         && grid[x, y] != EndPointCell
                         && grid[x, y] != StartPointCell)
@@ -511,7 +496,7 @@ public class Grid : MonoBehaviour
                 Cell cell = grid[x, y];
                 if (cell.Type == CellType.Ground)
                 {
-                    float v = Random.Range(0f, _grassDensity);
+                    float v = Random.Range(0f, _grassNoiseScale);
                     if (grid[x, y].NoiseValue < v)
                     {
                         GameObject prefab = _grassPrefabs[Random.Range(0, _grassPrefabs.Length)];

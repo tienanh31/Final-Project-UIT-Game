@@ -18,7 +18,7 @@ public class Cell
 
     private Vector2Int _id;
 
-    public Vector3 GetPosition() => new Vector3(_id.x, 0.6f, _id.y);
+    public Vector3 GetPosition() => new Vector3(_id.x, 0f, _id.y);
 
     public Cell(CellType type, float noiseValue, Vector2Int id)
     {

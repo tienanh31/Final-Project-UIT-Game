@@ -191,7 +191,6 @@ public class GameManager : MonoBehaviour
     {
         Trap trap = Instantiate(Resources.Load<Trap>("_Prefabs/Trap/" + type),
             position, new Quaternion());
-
         return trap;
     }
 

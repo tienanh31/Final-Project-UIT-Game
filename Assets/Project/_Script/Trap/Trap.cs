@@ -10,7 +10,12 @@ public class Trap : MonoBehaviour
 
     public virtual void Initialize()
     {
+        Vector3 position = transform.position;
 
+        float scaleY = transform.lossyScale.y;
+        position.y += scaleY / 2f;
+
+        transform.position = position;
     }
 
     protected virtual void TriggerEnter(Character character)
