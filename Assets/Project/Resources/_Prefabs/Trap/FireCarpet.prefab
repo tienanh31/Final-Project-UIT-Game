@@ -108,7 +108,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7294292102370799269}
   - component: {fileID: 2737300751543754532}
-  - component: {fileID: 1905804044558119588}
+  - component: {fileID: 5712011384704917131}
   m_Layer: 0
   m_Name: FireCarpet
   m_TagString: Untagged
@@ -146,10 +146,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damage: 25
-  _resetTime: 0.8
+  _resetTime: 0.5
   _stunTime: 0
---- !u!135 &1905804044558119588
-SphereCollider:
+--- !u!65 &5712011384704917131
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -159,7 +159,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 10
+  m_Size: {x: 20, y: 1, z: 9.52}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1901101685570358432
 PrefabInstance:
@@ -190,7 +190,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 79ea71ffadab038428d7002939ad9077, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 79ea71ffadab038428d7002939ad9077, type: 3}
       propertyPath: m_LocalPosition.z
@@ -249,8 +249,28 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 19800002, guid: 79ea71ffadab038428d7002939ad9077, type: 3}
+      propertyPath: VelocityModule.x.scalar
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800002, guid: 79ea71ffadab038428d7002939ad9077, type: 3}
+      propertyPath: VelocityModule.y.scalar
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800002, guid: 79ea71ffadab038428d7002939ad9077, type: 3}
+      propertyPath: VelocityModule.z.scalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800002, guid: 79ea71ffadab038428d7002939ad9077, type: 3}
       propertyPath: InitialModule.rotation3D
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800002, guid: 79ea71ffadab038428d7002939ad9077, type: 3}
+      propertyPath: VelocityModule.x.minScalar
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800002, guid: 79ea71ffadab038428d7002939ad9077, type: 3}
+      propertyPath: VelocityModule.z.minScalar
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 19800002, guid: 79ea71ffadab038428d7002939ad9077, type: 3}
       propertyPath: EmissionModule.m_BurstCount
@@ -258,7 +278,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19800002, guid: 79ea71ffadab038428d7002939ad9077, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 12.5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 19800002, guid: 79ea71ffadab038428d7002939ad9077, type: 3}
       propertyPath: InitialModule.startSizeY.scalar
@@ -274,7 +294,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19800002, guid: 79ea71ffadab038428d7002939ad9077, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
-      value: 100
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 19800002, guid: 79ea71ffadab038428d7002939ad9077, type: 3}
       propertyPath: InitialModule.startColor.maxColor.b

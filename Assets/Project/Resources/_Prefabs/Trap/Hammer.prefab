@@ -96,7 +96,7 @@ MonoBehaviour:
   _resetTime: 1
   _stunTime: 2
   _pivot: {fileID: 9186686803101248435}
-  _rotateSpeed: 200
+  _rotateSpeed: 150
   _maxAngle: 90
   _direction: {fileID: 4314374050429085528}
   _repelForce: 1000

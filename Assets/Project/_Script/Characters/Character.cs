@@ -248,7 +248,6 @@ public class Character : MonoBehaviour, IDamageable
 		movementEnable = true;
     }
 
-
 	public void TakenSlowEffect(float ratio)
 	{
 		IsSlow = true;
@@ -274,6 +273,11 @@ public class Character : MonoBehaviour, IDamageable
 		Debug.Log("repel");
 		characterRigidbody.AddForce(force, ForceMode.Impulse);
     }
+
+	public void Falling(float force = 200)
+    {
+		characterRigidbody.AddForce(Vector3.down * force, ForceMode.Impulse);
+	}
     #endregion
     public void TakenBuff(GameConfig.BUFF buff, float statBuff)
 	{

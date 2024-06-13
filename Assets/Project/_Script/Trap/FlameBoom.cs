@@ -9,9 +9,9 @@ public class FlameBoom : Trap
         base.Initialize();
     }
 
-    protected override void TriggerEnter(Character character)
+    protected override void CollisionEnter(Character character)
     {
-        base.TriggerEnter(character);
+        base.CollisionEnter(character);
 
         character.TakenDamage(_damage);
         var flameExplosion = Flame.Create(character.transform);
@@ -19,15 +19,4 @@ public class FlameBoom : Trap
 
         Destroy(gameObject);
     }
-
-    protected override void TriggerStay(Character character)
-    {
-        base.TriggerStay(character);
-    }
-
-    protected override void TriggerExit(Character character)
-    {
-        base.TriggerExit(character);
-    }
-
 }

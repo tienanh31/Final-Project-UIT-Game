@@ -49,7 +49,6 @@ MonoBehaviour:
   _damage: 15
   _resetTime: 0.5
   _stunTime: 0
-  _isSlow: 0
   _flameParticle: {fileID: 3777950229279350499}
 --- !u!65 &8537093423762180126
 BoxCollider:
@@ -137,7 +136,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19800002, guid: 79ea71ffadab038428d7002939ad9077, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 79ea71ffadab038428d7002939ad9077, type: 3}

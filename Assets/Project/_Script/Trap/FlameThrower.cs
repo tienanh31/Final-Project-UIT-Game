@@ -29,6 +29,11 @@ public class FlameThrower : Trap
         base.Initialize();
     }
 
+    public void SetData(Vector3 direction)
+    {
+        transform.rotation = Quaternion.LookRotation(direction);
+    }
+
     protected override void TriggerEnter(Character character)
     {
         base.TriggerEnter(character);

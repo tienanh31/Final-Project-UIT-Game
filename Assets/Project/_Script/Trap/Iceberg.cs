@@ -14,9 +14,23 @@ public class Iceberg : Trap
         StartCoroutine(IE_Move());
     }
 
+    public void SetData(Vector3 start, Vector3 end)
+    {
+        StartPosition = start;
+        EndPosition = end;
+
+        transform.rotation = Quaternion.LookRotation((end - start).normalized);
+    }
+
     public override void Initialize()
     {
         base.Initialize();
+    }
+
+    protected override void TriggerStay(Character character)
+    {
+        base.TriggerStay(character);
+        character.Falling();
     }
 
     IEnumerator IE_Move()

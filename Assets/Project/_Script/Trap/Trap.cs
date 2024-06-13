@@ -18,6 +18,20 @@ public class Trap : MonoBehaviour
         transform.position = position;
     }
 
+    protected virtual void CollisionEnter(Character character)
+    {
+
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        var character = collision.gameObject.GetComponent<Character>();
+        if (character)
+        {
+            CollisionEnter(character);
+        }
+    }
+
     protected virtual void TriggerEnter(Character character)
     {
 

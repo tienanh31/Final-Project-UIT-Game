@@ -8,9 +8,9 @@ public class IceBoom : Trap
         base.Initialize();
     }
 
-    protected override void TriggerEnter(Character character)
+    protected override void CollisionEnter(Character character)
     {
-        base.TriggerEnter(character);
+        base.CollisionEnter(character);
 
         character.TakenDamage(_damage);
         var ice = Ice.Create(character.transform);

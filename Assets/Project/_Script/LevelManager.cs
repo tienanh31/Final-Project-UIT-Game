@@ -224,46 +224,257 @@ public class LevelManager : MonoBehaviour
         switch(mapType)
         {
             case 0:
-                if (total >= 1)
                 {
-                    Vector3 position = Vector3.zero;
-                    position = largestArea[UnityEngine.Random.Range(0, largestArea.Count)].GetPosition();
-
-                    Mud mud = GameManager.Instance.SpawingTrap(typeof(Mud).Name, position) as Mud;
-                    mud.Initialize();
-                }
-                if (total >= 2)
-                {
-                    var falloff = falloffs[UnityEngine.Random.Range(0, falloffs.Count)];
-                    foreach (var cell in falloff)
+                    if (total >= 1)
                     {
-                        Pit pit = GameManager.Instance.SpawingTrap(typeof(Pit).Name, cell.GetPosition()) as Pit;
-                        pit.Initialize();
+                        Vector3 position = Vector3.zero;
+                        position = largestArea[UnityEngine.Random.Range(0, largestArea.Count)].GetPosition();
+
+                        Mud mud = GameManager.Instance.SpawingTrap(typeof(Mud).Name, position) as Mud;
+                        mud.Initialize();
                     }
 
-                }
-                if (total >= 3)
-                {
-                    Vector3 position = Vector3.zero;
+                    int random = UnityEngine.Random.Range(0, falloffs.Count);
+                    if (total >= 2)
+                    {
+                        var falloff = falloffs[random];
+                        foreach (var cell in falloff)
+                        {
+                            Pit pit = GameManager.Instance.SpawingTrap(typeof(Pit).Name, cell.GetPosition()) as Pit;
+                            pit.Initialize();
+                        }
+
+                    }
+                    if (total >= 3)
+                    {
+                        if (falloffs.Count > 1)
+                        {
+                            int newRandom = UnityEngine.Random.Range(0, falloffs.Count);
+                            while (newRandom == random)
+                            {
+                                newRandom = UnityEngine.Random.Range(0, falloffs.Count);
+                            }
+
+                            var falloff = falloffs[newRandom];
+                            foreach (var cell in falloff)
+                            {
+                                Pit pit = GameManager.Instance.SpawingTrap(typeof(Pit).Name, cell.GetPosition()) as Pit;
+                                pit.Initialize();
+                            }
+                        }
+
+                        Vector3 position = Vector3.zero;
 
 
-                    position = largestArea[UnityEngine.Random.Range(0, largestArea.Count)].GetPosition();
-                    Hammer hammer = GameManager.Instance.SpawingTrap(typeof(Hammer).Name, position) as Hammer;
-                    hammer.Initialize();
+                        position = largestArea[UnityEngine.Random.Range(0, largestArea.Count)].GetPosition();
+                        Hammer hammer = GameManager.Instance.SpawingTrap(typeof(Hammer).Name, position) as Hammer;
+                        hammer.Initialize();
+                    }
                 }
                 break;
 
             case 1:
+                {
+                    if (total >= 1)
+                    {
+                        Vector3 position = Vector3.zero;
+                        position = largestArea[UnityEngine.Random.Range(0, largestArea.Count)].GetPosition();
 
+                        Mud mud = GameManager.Instance.SpawingTrap(typeof(Mud).Name, position) as Mud;
+                        mud.Initialize();
+                    }
+
+                    int random = UnityEngine.Random.Range(0, falloffs.Count);
+                    if (total >= 2)
+                    {
+                        var falloff = falloffs[random];
+                        foreach (var cell in falloff)
+                        {
+                            Pit pit = GameManager.Instance.SpawingTrap(typeof(Pit).Name, cell.GetPosition()) as Pit;
+                            pit.Initialize();
+                        }
+
+                    }
+                    if (total >= 3)
+                    {
+                        if (falloffs.Count > 1)
+                        {
+                            int newRandom = UnityEngine.Random.Range(0, falloffs.Count);
+                            while (newRandom == random)
+                            {
+                                newRandom = UnityEngine.Random.Range(0, falloffs.Count);
+                            }
+
+                            var falloff = falloffs[newRandom];
+                            foreach (var cell in falloff)
+                            {
+                                Pit pit = GameManager.Instance.SpawingTrap(typeof(Pit).Name, cell.GetPosition()) as Pit;
+                                pit.Initialize();
+                            }
+                        }
+
+                        Vector3 position = Vector3.zero;
+
+                        position = largestArea[UnityEngine.Random.Range(0, largestArea.Count)].GetPosition();
+                        Hammer hammer = GameManager.Instance.SpawingTrap(typeof(Hammer).Name, position) as Hammer;
+                        hammer.Initialize();
+                    }
+                }
                 break;
 
             case 2:
+                {
+                    if (total >= 1)
+                    {
+                        Vector3 position = Vector3.zero;
+                        position = largestArea[UnityEngine.Random.Range(0, largestArea.Count)].GetPosition();
 
+                        IceBoom iceBoom = GameManager.Instance.SpawingTrap(typeof(IceBoom).Name, position) as IceBoom;
+                        iceBoom.Initialize();
+                    }
+
+                    if (total >= 2)
+                    {
+                        if (falloffs.Count > 1)
+                        {
+                            Vector3 start = falloffs[0][falloffs[0].Count - 1].GetPosition();
+                            Vector3 end = falloffs[1][0].GetPosition();
+
+                            Iceberg iceberg = GameManager.Instance.SpawingTrap(typeof(Iceberg).Name, start) as Iceberg;
+                            iceberg.Initialize();
+                            iceberg.SetData(start, end);
+
+                        }
+                    }
+                    if (total >= 3)
+                    {
+                        if (falloffs.Count > 2)
+                        {
+                            Vector3 start = falloffs[1][falloffs[1].Count - 1].GetPosition();
+                            Vector3 end = falloffs[2][0].GetPosition();
+
+                            Iceberg iceberg = GameManager.Instance.SpawingTrap(typeof(Iceberg).Name, start) as Iceberg;
+                            iceberg.Initialize();
+                            iceberg.SetData(start, end);
+                        }
+
+                        StartCoroutine(IE_IceRain(1, largestArea));
+                    }
+                }
                 break;
 
             case 3:
+                {
+                    if (total >= 1)
+                    {
+                        Vector3 position = Vector3.zero;
+                        position = largestArea[UnityEngine.Random.Range(0, largestArea.Count)].GetPosition();
 
+                        FlameBoom flameBoom = GameManager.Instance.SpawingTrap(typeof(FlameBoom).Name, position) as FlameBoom;
+                        flameBoom.Initialize();
+                    }
+
+                    if (total >= 2)
+                    {
+                        if (falloffs.Count > 0)
+                        {
+                            Vector3 start = falloffs[0][0].GetPosition();
+                            Vector3 end = falloffs[0][1].GetPosition();
+                            if (end.x > start.x)
+                            {
+                                end.x = start.x - 1;
+                            }
+                            else if (end.x < start.x)
+                            {
+                                end.x = start.x + 1;
+                            }
+                            else
+                            {
+                                if (end.z > start.z)
+                                {
+                                    end.z = start.z - 1;
+                                }
+                                else
+                                {
+                                    end.z = start.z + 1;
+                                }
+                            }
+                            
+
+
+                            FlameThrower flameThrower = GameManager.Instance.SpawingTrap(typeof(FlameThrower).Name, start) as FlameThrower;
+                            flameThrower.Initialize();
+                            flameThrower.SetData((end - start).normalized);
+                        }
+                    }
+                    if (total >= 3)
+                    {
+                        if (falloffs.Count > 1)
+                        {
+                            Vector3 start = falloffs[1][0].GetPosition();
+                            Vector3 end = falloffs[1][1].GetPosition();
+                            if (end.x > start.x)
+                            {
+                                end.x = start.x - 1;
+                            }
+                            else if (end.x < start.x)
+                            {
+                                end.x = start.x + 1;
+                            }
+                            else
+                            {
+                                if (end.z > start.z)
+                                {
+                                    end.z = start.z - 1;
+                                }
+                                else
+                                {
+                                    end.z = start.z + 1;
+                                }
+                            }
+
+                            FlameThrower flameThrower = GameManager.Instance.SpawingTrap(typeof(FlameThrower).Name, start) as FlameThrower;
+                            flameThrower.Initialize();
+                            flameThrower.SetData((end - start).normalized);
+                        }
+
+                        var endPoint = GameManager.Instance.MapGenerator.EndPointCell.GetPosition();
+
+                        float minDistance = Vector3.Distance(falloffs[0][0].GetPosition(), endPoint);
+                        List<Cell> closetFalloff = falloffs[0];
+                        foreach (var falloff in falloffs)
+                        {
+                            float distance = Vector3.Distance(falloff[0].GetPosition(), endPoint);
+                            if (distance < minDistance)
+                            {
+                                closetFalloff = falloff;
+                                minDistance = distance;
+                            }
+                        }
+
+                        Vector3 position = (endPoint + closetFalloff[0].GetPosition()) / 2f;
+
+                        FireCarpet fireCarpet = GameManager.Instance.SpawingTrap(typeof(FireCarpet).Name, position) as FireCarpet;
+                        fireCarpet.Initialize();
+                    }
+                }
                 break;
+        }
+    }
+
+    protected IEnumerator IE_IceRain(float time = 1f, List<Cell> largestArea = null)
+    {
+        while (true)
+        {
+            Vector3 startPosition = largestArea[UnityEngine.Random.Range(0, largestArea.Count)].GetPosition();
+            startPosition.y = UnityEngine.Random.Range(5, 10);
+            Vector3 endPosition = largestArea[UnityEngine.Random.Range(0, largestArea.Count)].GetPosition();
+
+            IceRain iceRain = GameManager.Instance.SpawingTrap(typeof(IceRain).Name, startPosition) as IceRain;
+            iceRain.Initialize();
+            iceRain.Direction = (endPosition - startPosition).normalized;
+
+            yield return new WaitForSeconds(time);
         }
     }
 

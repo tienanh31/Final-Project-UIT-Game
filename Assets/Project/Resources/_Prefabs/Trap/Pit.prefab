@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damage: 0
-  _resetTime: 4
+  _resetTime: 5
   _stunTime: 0
   _fallAcceleration: 5
-  _waitingTime: 0.3
+  _waitingTime: 0.7
