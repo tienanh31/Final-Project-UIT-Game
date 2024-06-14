@@ -52,6 +52,8 @@ public class VictoryScreen : MonoBehaviour, IUserInterface
         _hP.onClick.AddListener(() => StatBonusHandler(0));
         _moveSpeed.onClick.AddListener(() => StatBonusHandler(1));
         _attack.onClick.AddListener(() => StatBonusHandler(2));
+
+        _hP.onClick.Invoke();
     }
 
     private void StatBonusHandler(int type)

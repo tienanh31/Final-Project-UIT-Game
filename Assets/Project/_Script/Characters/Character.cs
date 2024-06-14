@@ -95,7 +95,6 @@ public class Character : MonoBehaviour, IDamageable
 		_bulletChange = inGameUI.BulletChange;
 		_weaponChange = inGameUI.WeaponChange;
 
-
 		foreach (IWeapon w in GetComponentsInChildren<IWeapon>())
 		{
 			//DicWeapon dw = new DicWeapon();
@@ -127,6 +126,8 @@ public class Character : MonoBehaviour, IDamageable
         }
 
 		_healthChange?.Invoke(_HP);
+
+		InitEffect();
 	}
 
 	public virtual void UpdateUI()
@@ -233,11 +234,25 @@ public class Character : MonoBehaviour, IDamageable
 	}
 
 	#region Effect
+	[SerializeField] ParticleSystem _stunEffect;
 	[HideInInspector] public bool IsSlow = false;
+
+	private void InitEffect()
+    {
+		_stunEffect = Instantiate<ParticleSystem>(_stunEffect);
+		_stunEffect.transform.position = transform.position;
+		_stunEffect.transform.SetParent(transform);
+	}
 
     public void TakenStunEffect(float time)
     {
-		Debug.Log("stun");
+		Debug.Log("stun");	
+
+		_stunEffect.gameObject.SetActive(true);
+		var main = _stunEffect.main;
+		main.duration = time;
+		_stunEffect.Play();
+
 		StartCoroutine(IE_Stun(time));
     }
 
@@ -246,6 +261,8 @@ public class Character : MonoBehaviour, IDamageable
 		movementEnable = false;
 		yield return new WaitForSeconds(time);
 		movementEnable = true;
+
+		_stunEffect.gameObject.SetActive(false);
     }
 
 	public void TakenSlowEffect(float ratio)

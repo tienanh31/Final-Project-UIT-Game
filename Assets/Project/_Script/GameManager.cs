@@ -99,7 +99,8 @@ public class GameManager : MonoBehaviour
         {
             if (_level < 41)
             {
-                NextLevel();
+                LevelManager.Instance.Win();
+                //NextLevel();
             }
         }
     }

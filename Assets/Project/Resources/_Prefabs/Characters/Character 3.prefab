@@ -150,6 +150,8 @@ MonoBehaviour:
   dashForce: 2000
   dashTime: 0.1
   dashCoolDown: 1
+  _stunEffect: {fileID: 2319384772025575332, guid: 98c4704d0fd7211449bcf5c451095a60, type: 3}
+  IsSlow: 0
 --- !u!81 &8689386173044176155
 AudioListener:
   m_ObjectHideFlags: 0

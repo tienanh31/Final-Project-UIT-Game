@@ -221,64 +221,16 @@ public class LevelManager : MonoBehaviour
 
         int mapType = GameManager.Instance.GetMapType();
 
+        int size = largestArea.Count;
         switch(mapType)
         {
             case 0:
-                {
-                    if (total >= 1)
-                    {
-                        Vector3 position = Vector3.zero;
-                        position = largestArea[UnityEngine.Random.Range(0, largestArea.Count)].GetPosition();
-
-                        Mud mud = GameManager.Instance.SpawingTrap(typeof(Mud).Name, position) as Mud;
-                        mud.Initialize();
-                    }
-
-                    int random = UnityEngine.Random.Range(0, falloffs.Count);
-                    if (total >= 2)
-                    {
-                        var falloff = falloffs[random];
-                        foreach (var cell in falloff)
-                        {
-                            Pit pit = GameManager.Instance.SpawingTrap(typeof(Pit).Name, cell.GetPosition()) as Pit;
-                            pit.Initialize();
-                        }
-
-                    }
-                    if (total >= 3)
-                    {
-                        if (falloffs.Count > 1)
-                        {
-                            int newRandom = UnityEngine.Random.Range(0, falloffs.Count);
-                            while (newRandom == random)
-                            {
-                                newRandom = UnityEngine.Random.Range(0, falloffs.Count);
-                            }
-
-                            var falloff = falloffs[newRandom];
-                            foreach (var cell in falloff)
-                            {
-                                Pit pit = GameManager.Instance.SpawingTrap(typeof(Pit).Name, cell.GetPosition()) as Pit;
-                                pit.Initialize();
-                            }
-                        }
-
-                        Vector3 position = Vector3.zero;
-
-
-                        position = largestArea[UnityEngine.Random.Range(0, largestArea.Count)].GetPosition();
-                        Hammer hammer = GameManager.Instance.SpawingTrap(typeof(Hammer).Name, position) as Hammer;
-                        hammer.Initialize();
-                    }
-                }
-                break;
-
             case 1:
                 {
                     if (total >= 1)
                     {
                         Vector3 position = Vector3.zero;
-                        position = largestArea[UnityEngine.Random.Range(0, largestArea.Count)].GetPosition();
+                        position = largestArea[UnityEngine.Random.Range(size / 5, size / 7)].GetPosition();
 
                         Mud mud = GameManager.Instance.SpawingTrap(typeof(Mud).Name, position) as Mud;
                         mud.Initialize();
@@ -315,7 +267,8 @@ public class LevelManager : MonoBehaviour
 
                         Vector3 position = Vector3.zero;
 
-                        position = largestArea[UnityEngine.Random.Range(0, largestArea.Count)].GetPosition();
+
+                        position = largestArea[UnityEngine.Random.Range(size / 4, size / 5)].GetPosition();
                         Hammer hammer = GameManager.Instance.SpawingTrap(typeof(Hammer).Name, position) as Hammer;
                         hammer.Initialize();
                     }
@@ -327,7 +280,7 @@ public class LevelManager : MonoBehaviour
                     if (total >= 1)
                     {
                         Vector3 position = Vector3.zero;
-                        position = largestArea[UnityEngine.Random.Range(0, largestArea.Count)].GetPosition();
+                        position = largestArea[UnityEngine.Random.Range(size / 5, size / 6)].GetPosition();
 
                         IceBoom iceBoom = GameManager.Instance.SpawingTrap(typeof(IceBoom).Name, position) as IceBoom;
                         iceBoom.Initialize();
@@ -368,7 +321,7 @@ public class LevelManager : MonoBehaviour
                     if (total >= 1)
                     {
                         Vector3 position = Vector3.zero;
-                        position = largestArea[UnityEngine.Random.Range(0, largestArea.Count)].GetPosition();
+                        position = largestArea[UnityEngine.Random.Range(size / 5, size / 6)].GetPosition();
 
                         FlameBoom flameBoom = GameManager.Instance.SpawingTrap(typeof(FlameBoom).Name, position) as FlameBoom;
                         flameBoom.Initialize();
