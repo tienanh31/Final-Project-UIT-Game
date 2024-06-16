@@ -38,7 +38,7 @@ public class FileDataHandler
                         dataLoad = reader.ReadToEnd();
                     }
                 }
-                //Debug.Log(dataLoad);
+                Debug.Log(dataLoad);
                 data = Newtonsoft.Json.JsonConvert.DeserializeObject<GameData>(dataLoad);
             }
             catch (Exception e)

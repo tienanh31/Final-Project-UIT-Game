@@ -105,7 +105,7 @@ public class Enemy : MonoBehaviour, IDamageable
 			//enemyAgent.SetDestination(CurrentDestination);
 		}
 
-		var statBonus = GameManager.Instance.EnemyBonusStat;
+		var statBonus = GameManager.Instance.EnemiesBonusStat;
 		_HP += statBonus.HP;
 		_moveSpeed += statBonus.MOVE_SPEED;
 		weapon.AddDamageBonus(statBonus.ATTACK_BONUS);

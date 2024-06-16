@@ -115,6 +115,7 @@ public class VictoryScreen : MonoBehaviour, IUserInterface
         //GameManager.Instance.LoadScene(nextLevel);
 
         GameManager.Instance.AddBuffStat(_buffType);
+        GameManager.Instance.SaveData();
         GameManager.Instance.NextLevel();
         UIManager.Instance.ResumeGame();
     }
@@ -136,6 +137,6 @@ public class VictoryScreen : MonoBehaviour, IUserInterface
     {
         public float HP = 8;
         public float MOVE_SPEED = 0.9f;
-        public float ATTACK_BONUS = 5f;
+        public float ATTACK_BONUS = 7f;
     }    
 }

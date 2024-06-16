@@ -208,7 +208,7 @@ public class Grid : MonoBehaviour
             }
 
             Falloffs = Utility.FindWatersInGround(_grid, _grounds[size - 1]);
-            Debug.Log(Falloffs.Count);
+            //Debug.Log(Falloffs.Count);
             foreach (var w in Falloffs)
             {
                 string debug = "";
@@ -217,7 +217,7 @@ public class Grid : MonoBehaviour
                     debug += c.Id + " || ";
                 }
 
-                Debug.Log(debug);
+               //Debug.Log(debug);
             }
         }
     }

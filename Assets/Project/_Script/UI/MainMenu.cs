@@ -18,6 +18,7 @@ public class MainMenu : MonoBehaviour, IUserInterface
     [SerializeField] TMP_Dropdown _characterSelecting;
     [SerializeField] TMP_Dropdown _levelSelecting;
     [SerializeField] Button _startGame;
+    [SerializeField] Button _continue;
     [SerializeField] Button _option;
     [SerializeField] Button _quit;
     [SerializeField] TMP_Text _description;
@@ -68,6 +69,7 @@ public class MainMenu : MonoBehaviour, IUserInterface
         _levelSelecting.AddOptions(levels);
 
         _startGame.onClick.AddListener(Begin);
+        _continue.onClick.AddListener(OnClickContinueButtonHandler);
         _option.onClick.AddListener(OpenOption);
         _quit.onClick.AddListener(Quit);
 	}
@@ -125,6 +127,11 @@ public class MainMenu : MonoBehaviour, IUserInterface
         GameManager.Instance.LoadScene(SceneName.PlayScene);
     }
 
+    private void OnClickContinueButtonHandler()
+    {
+        GameManager.Instance.ContinueGame();
+    }
+
     private void OpenOption()
     {
         var option = Option.Create();
@@ -142,6 +149,7 @@ public class MainMenu : MonoBehaviour, IUserInterface
 	{
         _characterSelecting.onValueChanged.RemoveListener(SetCharacter);
         _startGame.onClick.RemoveListener(Begin);
+        _continue.onClick.RemoveListener(OnClickContinueButtonHandler);
         _option.onClick.RemoveListener(OpenOption);
         _quit.onClick.RemoveListener(Quit);
         UIManager.Instance.UserInterfaces.Remove(this);

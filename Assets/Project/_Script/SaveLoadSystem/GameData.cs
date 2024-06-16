@@ -8,7 +8,11 @@ using System.Threading.Tasks;
 public class GameData
 {
 	#region Fields & Properties
-	public Keyboard Keyboard;
+	public int Level;
+
+	public VictoryScreen.BuffStat PlayerBuffStat;
+
+	public VictoryScreen.BuffStat EnemiesBuffStat;
 
 	#endregion
 
@@ -16,8 +20,27 @@ public class GameData
 
 	public GameData()
 	{
-		Keyboard = new Keyboard();
+		Level = 1;
+		PlayerBuffStat = new VictoryScreen.BuffStat()
+		{
+			HP = 0,
+			MOVE_SPEED = 0,
+			ATTACK_BONUS = 0,
+		};
+		EnemiesBuffStat = new VictoryScreen.BuffStat()
+		{
+			HP = 0,
+			MOVE_SPEED = 0,
+			ATTACK_BONUS = 0,
+		};
 	}
+
+	public void SetData(int level, VictoryScreen.BuffStat player, VictoryScreen.BuffStat enemies)
+    {
+		Level = level;
+		PlayerBuffStat = player;
+		EnemiesBuffStat = enemies;
+    }
 
 	public void ClearData()
 	{

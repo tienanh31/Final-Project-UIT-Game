@@ -138,7 +138,8 @@ public class Character : MonoBehaviour, IDamageable
 	public virtual void UpdateCharacter(List<Enemy> enemies = null)
 	{
 		KeyboardController();
-		if (Input.GetKeyDown((KeyCode)DataPersistenceManager.Instance.GameData.Keyboard.Keyboards[KeyboardHandler.Dash]))
+		//if (Input.GetKeyDown((KeyCode)DataPersistenceManager.Instance.GameData.Keyboard.Keyboards[KeyboardHandler.Dash]))
+		if (Input.GetKeyDown(KeyCode.Space))
 		{
 			if (_dashable)
 			{
@@ -417,7 +418,8 @@ public class Character : MonoBehaviour, IDamageable
 	public virtual void SwapWeapon()
 	{
 		// Main Weapon
-		if(Input.GetKeyDown((KeyCode)DataPersistenceManager.Instance.GameData.Keyboard.Keyboards[KeyboardHandler.Weapon1]))
+		//if(Input.GetKeyDown((KeyCode)DataPersistenceManager.Instance.GameData.Keyboard.Keyboards[KeyboardHandler.Weapon1]))
+		if (Input.GetKeyDown(KeyCode.Alpha1))
 		{
 			if (currentWeapon != 0)
 			{
@@ -430,7 +432,8 @@ public class Character : MonoBehaviour, IDamageable
 		}
 
 		// Grenade
-		if (Input.GetKeyDown((KeyCode)DataPersistenceManager.Instance.GameData.Keyboard.Keyboards[KeyboardHandler.Weapon2]))
+		//if (Input.GetKeyDown((KeyCode)DataPersistenceManager.Instance.GameData.Keyboard.Keyboards[KeyboardHandler.Weapon2]))
+		if (Input.GetKeyDown(KeyCode.Alpha2))
 		{
 			if(weapons.Count > 1 && currentWeapon != 1)
 			{

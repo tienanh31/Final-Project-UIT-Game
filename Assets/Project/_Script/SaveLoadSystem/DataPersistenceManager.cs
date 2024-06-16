@@ -29,6 +29,7 @@ public class DataPersistenceManager
     {
         this._dataHandler = new FileDataHandler(Application.persistentDataPath, _fileName);
 
+        Debug.Log(Application.persistentDataPath);
         LoadData();
         if (GameData == null)
 		{

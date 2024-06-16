@@ -58,6 +58,7 @@ public class PauseMenu: MonoBehaviour, IUserInterface
     private void SaveGame()
 	{
         Debug.Log("Save");
+        GameManager.Instance.SaveData();
 	}
 
     private void OnDisable()

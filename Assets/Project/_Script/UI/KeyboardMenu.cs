@@ -113,15 +113,15 @@ public class KeyboardMenu: MonoBehaviour, IUserInterface
 			new TMP_Dropdown.OptionData(KeyCode.LeftAlt.ToString()),
 		});
 
-		Keyboard keyboard = DataPersistenceManager.Instance.GameData.Keyboard;
-		if(keyboard.Keyboards.Count > 0)
-		{
-			for(int i = 0; i < _keyboard.Count; i++)
-			{
-				_keyboard[i].Dropdown.value = 
-					_keyboard[i].Dropdown.options.FindIndex(element => element.text == ((KeyCode)keyboard.Keyboards[_keyboard[i].Type]).ToString());
-			}
-		}
+		//Keyboard keyboard = DataPersistenceManager.Instance.GameData.Keyboard;
+		//if(keyboard.Keyboards.Count > 0)
+		//{
+		//	for(int i = 0; i < _keyboard.Count; i++)
+		//	{
+		//		_keyboard[i].Dropdown.value = 
+		//			_keyboard[i].Dropdown.options.FindIndex(element => element.text == ((KeyCode)keyboard.Keyboards[_keyboard[i].Type]).ToString());
+		//	}
+		//}
 
 	}
 
@@ -146,14 +146,14 @@ public class KeyboardMenu: MonoBehaviour, IUserInterface
 	{
 		Debug.Log($"{_keyboard[index].Type}: select {_keyboard[index].Dropdown.value} : {_keyboard[index].Dropdown.captionText.text}");
 
-		var keyboards = DataPersistenceManager.Instance.GameData.Keyboard;
-		keyboards.Keyboards[_keyboard[index].Type] = (int)Enum.Parse(typeof(KeyCode), _keyboard[index].Dropdown.captionText.text);
+		//var keyboards = DataPersistenceManager.Instance.GameData.Keyboard;
+		//keyboards.Keyboards[_keyboard[index].Type] = (int)Enum.Parse(typeof(KeyCode), _keyboard[index].Dropdown.captionText.text);
 		//change and later save to local
 	}
 
 	private void Save()
 	{
-		DataPersistenceManager.Instance.SaveData();
+		//DataPersistenceManager.Instance.SaveData();
 	}
 
     private void Back()

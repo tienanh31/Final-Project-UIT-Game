@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
 
     public NavMeshSurface NavMesh => _navMesh;
     public VictoryScreen.BuffStat PlayerBonusStat;
-    public VictoryScreen.BuffStat EnemyBonusStat;
+    public VictoryScreen.BuffStat EnemiesBonusStat;
 
     public GameConfig.CHARACTER SelectedCharacter = GameConfig.CHARACTER.CHARACTER_DEFAULT;
 
@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
             ATTACK_BONUS = 0
         };
 
-        EnemyBonusStat = new VictoryScreen.BuffStat()
+        EnemiesBonusStat = new VictoryScreen.BuffStat()
         {
             HP = 0,
             MOVE_SPEED = 0,
@@ -110,6 +110,18 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(levelname);
     }
 
+    public void ContinueGame()
+    {
+        DataPersistenceManager.Instance.LoadData();
+        GameData data = DataPersistenceManager.Instance.GameData;
+
+        _level = data.Level;
+        PlayerBonusStat = data.PlayerBuffStat;
+        EnemiesBonusStat = data.EnemiesBuffStat;
+
+        LoadCurrentLevel();
+    }
+
     public void AddBuffStat(int type)
     {
         switch(type)
@@ -131,27 +143,33 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
+    private void LoadCurrentLevel()
+    {
+        LoadScene(SceneName.PlayScene);
+        UIManager.Instance.ResumeGame();
+    }
+
     public void LoadPlaySceneWithLevel(int level)
     {
         _level = level;
         if (level <= 10)
         {
-            EnemyBonusStat.HP += 10;
+            EnemiesBonusStat.HP += 10;
         }
         else if (level <= 20)
         {
-            EnemyBonusStat.HP += 10;
-            EnemyBonusStat.ATTACK_BONUS += 3;
+            EnemiesBonusStat.HP += 10;
+            EnemiesBonusStat.ATTACK_BONUS += 3;
         }
         else if (level <= 30)
         {
-            EnemyBonusStat.HP += 12;
-            EnemyBonusStat.MOVE_SPEED += 0.8f;
+            EnemiesBonusStat.HP += 12;
+            EnemiesBonusStat.MOVE_SPEED += 0.8f;
         }
         else
         {
-            EnemyBonusStat.HP += 12;
-            EnemyBonusStat.ATTACK_BONUS += 5;
+            EnemiesBonusStat.HP += 12;
+            EnemiesBonusStat.ATTACK_BONUS += 5;
         }
 
         LoadScene(SceneName.PlayScene);
@@ -178,7 +196,18 @@ public class GameManager : MonoBehaviour
 
     public bool IsInPlayScene() => SceneManager.GetActiveScene().buildIndex != 0;
 
-    public void QuitGame() => Application.Quit();
+    public void SaveData()
+    {
+        DataPersistenceManager.Instance.GameData.SetData(_level, PlayerBonusStat, EnemiesBonusStat);
+        DataPersistenceManager.Instance.SaveData();
+    }
+
+    public void QuitGame()
+    {
+        SaveData();
+
+        Application.Quit();
+    }
 
     public Enemy SpawningEnemy(GameConfig.ENEMY enemyType, Vector3 position)
     {
