@@ -119,7 +119,13 @@ public class MainMenu : MonoBehaviour, IUserInterface
                 break;
         }
 
-        _model.transform.position = _modelPlace;
+        Vector3 position = _modelPlace;
+        if (indexSelecting != 0)
+        {
+            position.y -= 1f;
+        }
+
+        _model.transform.position = position;
     }
 
     private void Begin()

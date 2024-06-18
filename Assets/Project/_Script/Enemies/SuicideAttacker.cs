@@ -21,6 +21,8 @@ public class SuicideAttacker : Enemy
 
 	public override void UpdateEnemy()
 	{
+		_animator.SetInteger("State", 1);
+
 		if (target != null)
 		{
 			var player = target.GetComponent<Character>();
@@ -32,6 +34,7 @@ public class SuicideAttacker : Enemy
 				//stop walking and start attacking.
 				RotateWeapon(target.position);
 				Explode();
+				_animator.SetInteger("State", 2);
 			}
 			else if (distance <= _detectRange)
 			{

@@ -19,6 +19,13 @@ public class EnemyShield : Enemy
 
     public override void UpdateEnemy()
     {
+        if (IsDead)
+        {
+            return;
+        }
+
+        _animator.SetInteger("State", 1);
+
         _patrolScope.Debug();
         if (target != null)
         {
@@ -37,6 +44,7 @@ public class EnemyShield : Enemy
                     StartCoroutine(Skill());
                 }
                 weapon.AttemptAttack();
+                _animator.SetInteger("State", 2);
             }
             else if (distance <= _detectRange)
             {

@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 179549275727554784, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
       propertyPath: m_Height
-      value: 1.8
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 179549275727554784, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
       propertyPath: m_Radius
@@ -21,11 +21,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 179549275727554784, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
       propertyPath: m_BaseOffset
-      value: 0.85
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 857433392673631869, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
       propertyPath: m_TagString
       value: ENEMY
+      objectReference: {fileID: 0}
+    - target: {fileID: 1260267003649026896, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1260267003649026896, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4180480237279032928, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
       propertyPath: m_Mesh
@@ -100,7 +108,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 8712cc7bcb28e22439ea287aac115986, type: 2}
     m_RemovedComponents:
-    - {fileID: 4180480237279032930, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
     - {fileID: 4180480237279032931, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
 --- !u!114 &3673557062036434975 stripped
@@ -119,20 +126,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4180480237279032941, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
   m_PrefabInstance: {fileID: 1039250616464864821}
   m_PrefabAsset: {fileID: 0}
---- !u!136 &2041875180
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3776308203356209240}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2041875179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -145,12 +138,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f1d303531f11be4381b04ad81804513, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterRigidbody: {fileID: 0}
+  characterRigidbody: {fileID: 3776308203356209241}
   weapon: {fileID: 3673557062036434975}
   soStats: {fileID: 11400000, guid: 06d49bb22de11d9479870c01b2a4a095, type: 2}
   path: {fileID: 0}
   stoppingDistance: 1
   deleteUponDeath: 1
+  _animator: {fileID: 8708572309529377113}
   _initialized: 0
   OnDeathEvent:
     m_PersistentCalls:
@@ -160,3 +154,13 @@ MonoBehaviour:
   _skillDuration: Infinity
   wallHP: 200
   wallDimension: {x: 5, y: 2, z: 0.1}
+--- !u!54 &3776308203356209241 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: 4180480237279032940, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
+  m_PrefabInstance: {fileID: 1039250616464864821}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &8708572309529377113 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 8554368198956502892, guid: 75b4d6cf2a742104a96b6b35bfcf6f02, type: 3}
+  m_PrefabInstance: {fileID: 1039250616464864821}
+  m_PrefabAsset: {fileID: 0}

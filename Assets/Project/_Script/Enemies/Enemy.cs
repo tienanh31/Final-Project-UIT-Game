@@ -33,6 +33,8 @@ public class Enemy : MonoBehaviour, IDamageable
 	public bool IsInPatrolScope { get; set; }
 
 	[Header("_~* 	Movement & control")]
+	[SerializeField] protected Animator _animator;
+
 	protected float _moveSpeed;
 	protected float _HP;
 	public bool HP { get { return HP; } }
@@ -114,7 +116,14 @@ public class Enemy : MonoBehaviour, IDamageable
 
 	public virtual void UpdateEnemy()
 	{
+		if (IsDead)
+        {
+			return;
+        }
+
 		_patrolScope.Debug();
+
+		_animator.SetInteger("State", 1);
 
 		if (target != null)
 		{
@@ -128,6 +137,7 @@ public class Enemy : MonoBehaviour, IDamageable
 				enemyAgent.SetDestination(transform.position);
 				RotateWeapon(target.position);
 				weapon.AttemptAttack();
+				_animator.SetInteger("State", 2);
 			}
 			else if (distance <= _detectRange)
             {
@@ -162,19 +172,6 @@ public class Enemy : MonoBehaviour, IDamageable
 
 	public virtual void TakenDamage(Damage damage)
 	{
-		//Alert(damage.damageSource);
-		//switch (alertType)
-		//{
-		//	case AlertType.SamePath:
-		//		AlertSamePathEnemies(damage.damageSource);
-		//		break;
-		//	case AlertType.All:
-		//		AlertAllEnemies(damage.damageSource);
-		//		break;
-		//	default:
-		//		AlertNearbyEnemies(damage.damageSource);
-		//		break;
-		//}
 		if (IsDead)
 		{
 			return;
@@ -230,7 +227,14 @@ public class Enemy : MonoBehaviour, IDamageable
 				Item.CreateItem(transform.position, weapon);
 			}
 
-			Destroy(gameObject);
+			_animator.SetInteger("State", 3);
+
+			if (this.GetType() == typeof(SuicideAttacker))
+            {
+				Destroy(gameObject);
+				return;
+            }
+			Destroy(gameObject, 1f);
 		}
 	}
 
@@ -320,6 +324,7 @@ public class Enemy : MonoBehaviour, IDamageable
 	protected IEnumerator IE_StopAwhile()
 	{
 		_patrolable = false;
+		_animator.SetInteger("State", 0);
 		yield return new WaitForSeconds(GameConfig.TIME_STOP_AFTER_PATROLLING);
 		_patrolable = true;
 	}

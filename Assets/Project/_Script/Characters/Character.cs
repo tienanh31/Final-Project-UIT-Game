@@ -37,6 +37,9 @@ public class Character : MonoBehaviour, IDamageable
 	[SerializeField] bool alignWithCamera = true;
 	[SerializeField] float acceleration = 50f, deAcceleration = 50f, drag, dashForce = 50f, dashTime = 0.1f, dashCoolDown = 1f;
 
+	[SerializeField]
+	protected Animator _animator;
+
 	bool _dashable = true;
 	int currentWeapon = 0;
 
@@ -137,6 +140,11 @@ public class Character : MonoBehaviour, IDamageable
 
 	public virtual void UpdateCharacter(List<Enemy> enemies = null)
 	{
+		if (IsDead)
+        {
+			return;
+        }
+
 		KeyboardController();
 		//if (Input.GetKeyDown((KeyCode)DataPersistenceManager.Instance.GameData.Keyboard.Keyboards[KeyboardHandler.Dash]))
 		if (Input.GetKeyDown(KeyCode.Space))
@@ -181,6 +189,7 @@ public class Character : MonoBehaviour, IDamageable
 
 			if (Input.GetMouseButton(0))
 			{
+				_animator.SetInteger("State", 2);
 				weapons[currentWeapon].AttemptAttack();
 			}
 		}
@@ -343,6 +352,8 @@ public class Character : MonoBehaviour, IDamageable
 
 	private void CharacterMovement()
 	{
+		_animator.SetInteger("State", 0);
+
 		Vector3 movementInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
 		Vector3 movementInputAligned = movementInput.normalized;
 		if (alignWithCamera)
@@ -355,7 +366,9 @@ public class Character : MonoBehaviour, IDamageable
 		if (movementEnable)
 		{
 			if (Input.GetAxisRaw("Horizontal") != 0)
-			{   //Use deAcceleration when changing moving direction (currently disabled)
+			{
+				_animator.SetInteger("State", 1);
+				//Use deAcceleration when changing moving direction (currently disabled)
 				// if (speedX / Input.GetAxisRaw("Horizontal") > 0)
 				// 	speedX += acceleration * Input.GetAxisRaw("Horizontal") * Time.deltaTime;
 				// else
@@ -366,7 +379,9 @@ public class Character : MonoBehaviour, IDamageable
 			else
 				speedX = Mathf.MoveTowards(speedX, 0, deAcceleration * Time.deltaTime);
 			if (Input.GetAxisRaw("Vertical") != 0)
-			{   //Use deAcceleration when changing moving direction (currently disabled)
+			{
+				_animator.SetInteger("State", 1);
+				//Use deAcceleration when changing moving direction (currently disabled)
 				// if (speedX / Input.GetAxisRaw("Horizontal") > 0)
 				// 	speedZ += acceleration * Input.GetAxisRaw("Vertical") * Time.deltaTime;
 				// else
@@ -410,6 +425,7 @@ public class Character : MonoBehaviour, IDamageable
 
 	public virtual void OnDeath()
 	{
+		_animator.SetInteger("State", 3);
 		LevelManager.Instance.damageables.Remove(this);
 		StopAllCoroutines();
 		IsDead = true;
@@ -505,6 +521,7 @@ public class Character : MonoBehaviour, IDamageable
 
 	private IEnumerator WorldTextHandle(string str, float time)
 	{
+		Debug.Log("Reload Time: " + time);
 		worldText.SetText(str);
 		yield return new WaitForSeconds(time);
 		worldText.SetText("");
