@@ -136,7 +136,7 @@ public class Grid : MonoBehaviour
                 float xv = x / (float)_size * 2 - 1;
                 float yv = y / (float)_size * 2 - 1;
                 float v = Mathf.Max(Mathf.Abs(xv), Mathf.Abs(yv));
-                falloffMap[x, y] = Mathf.Pow(v, 3f) / (Mathf.Pow(v, 3f) + Mathf.Pow(2.2f - 2.2f * v, 3f));
+                falloffMap[x, y] = Mathf.Pow(v, 3f) / (Mathf.Pow(v, 3f) + Mathf.Pow(1.5f - 1.5f * v, 3f));//Mathf.Pow(2.2f - 2.2f * v, 3f));
             }
         }
 
