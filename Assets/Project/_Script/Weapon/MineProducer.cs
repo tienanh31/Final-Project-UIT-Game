@@ -56,13 +56,12 @@ public class MineProducer : IWeapon
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray, out hit, Mathf.Infinity))
 			{
-				Vector3 l = hit.point;
+				Vector3 location = hit.point;
 				if (Vector3.Distance(hit.point, this.transform.position) < _attackRange)
 				{
-					l = (Vector3)(hit.point - this.transform.position).normalized * _attackRange;
+					location.y += 0.1f;
+					StartCoroutine(Attack(location));
 				}
-				l.y += 0.1f;
-				StartCoroutine(Attack(l));
 			}
 				
 		}

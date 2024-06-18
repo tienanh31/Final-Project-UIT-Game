@@ -328,7 +328,14 @@ MonoBehaviour:
   _weaponUI: {fileID: 2211014662421269056}
   _bullet: {fileID: 5274599997926913431}
   _healthPoint: {fileID: 198833793295780805}
-  _weaponImage: []
+  _weaponImage:
+  - {fileID: 2800000, guid: b1deea1feaadfdb4cba5eb94dd4d3465, type: 3}
+  - {fileID: 2800000, guid: bbaa3021f5f89cc4287413379416bfd4, type: 3}
+  - {fileID: 2800000, guid: bbaa3021f5f89cc4287413379416bfd4, type: 3}
+  - {fileID: 2800000, guid: ae2662cefc9d51843ae9d760efcc6317, type: 3}
+  - {fileID: 2800000, guid: 4d9a4b0c08a02524eb35f496db0bb0b3, type: 3}
+  - {fileID: 2800000, guid: b3742130d9c5a1745a50e0b10f07f4cf, type: 3}
+  - {fileID: 2800000, guid: b3742130d9c5a1745a50e0b10f07f4cf, type: 3}
 --- !u!1 &6244439463519139623
 GameObject:
   m_ObjectHideFlags: 0

@@ -21,6 +21,9 @@ public class Character2 : Character
 	public override void Initialize()
 	{
 		base.Initialize();
+
+		weapons[0].SetType(GameConfig.WEAPON.SNIPER);
+		_weaponChange?.Invoke(GameConfig.WEAPON.SNIPER);
 	}
 
 	public override void UpdateCharacter(List<Enemy> enemies = null)

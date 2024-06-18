@@ -17,6 +17,8 @@ public class IWeapon : MonoBehaviour
 
     public virtual void AddDamageBonus(float dame) { }
 
+    public void SetType(GameConfig.WEAPON type) => Type = type;
+
     protected void OnDestroy()
     {
         StopAllCoroutines();

@@ -59,7 +59,7 @@ public class Character : MonoBehaviour, IDamageable
 
 	private Action<float> _healthChange;
 	private Action<int> _bulletChange;
-	private Action<GameConfig.WEAPON> _weaponChange;
+	protected Action<GameConfig.WEAPON> _weaponChange;
 
 	protected Healthbar healthbar;
 

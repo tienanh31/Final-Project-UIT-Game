@@ -180,7 +180,10 @@ public class Enemy : MonoBehaviour, IDamageable
 			return;
 		}
 
-		target = damage.damageSource?.transform;
+		if (damage != null && damage.damageSource != null)
+		{
+			target = damage.damageSource?.transform;
+		}			
 
 		Debug.LogWarning($"Source damage: {target}");
 

@@ -45,6 +45,7 @@ public class GameConfig
 		BULLETPROOF_WALL = 3,
 		SHOTGUN = 4,
 		SWORD = 5,
+		SNIPER
 	}
 
 	public enum CHARACTER
