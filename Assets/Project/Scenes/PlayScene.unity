@@ -254,10 +254,8 @@ MonoBehaviour:
   - {fileID: 2636820298107493410, guid: a2bd798ea40c7e341aa61ad124d95342, type: 3}
   _treeNoiseScale: 0.5
   _grassPrefabs:
-  - {fileID: 7570405467501425085, guid: 0ab22827d0f3f0b40a97e9430d684283, type: 3}
-  - {fileID: 8954726919292774957, guid: eae42a57b046b1a42a79ae6319bccca3, type: 3}
-  - {fileID: 7749838506462483410, guid: d354c41a99993964baca0254487708d1, type: 3}
-  - {fileID: 3318689441606926373, guid: d3ee913ed32937344b0587e70dc777a2, type: 3}
+  - {fileID: 3271242772926742552, guid: fa55f06ac5a0f15439dc00b98cc142df, type: 3}
+  - {fileID: 3271242772926742552, guid: 571b6b2311025d8498d03e1ca8fe44a2, type: 3}
   _grassNoiseScale: 0.5
   _terrainMaterials:
   - {fileID: 2100000, guid: 5fe0b106a8899f745965ecd9e7ae496e, type: 2}
