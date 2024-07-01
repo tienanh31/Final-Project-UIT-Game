@@ -24,7 +24,10 @@ public class EnemyShield : Enemy
             return;
         }
 
-        _animator.SetInteger("State", 1);
+        if (enemyAgent.remainingDistance > 1f)
+        {
+            _animator.SetInteger("State", 1);
+        }
 
         _patrolScope.Debug();
         if (target != null)

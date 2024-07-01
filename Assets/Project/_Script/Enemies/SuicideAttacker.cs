@@ -21,7 +21,10 @@ public class SuicideAttacker : Enemy
 
 	public override void UpdateEnemy()
 	{
-		_animator.SetInteger("State", 1);
+		if (enemyAgent.remainingDistance > 1f)
+		{
+			_animator.SetInteger("State", 1);
+		}
 
 		if (target != null)
 		{

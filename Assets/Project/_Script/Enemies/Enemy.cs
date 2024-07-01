@@ -121,9 +121,13 @@ public class Enemy : MonoBehaviour, IDamageable
 			return;
         }
 
-		_patrolScope.Debug();
+		Debug.Log(enemyAgent.remainingDistance);
+		if (enemyAgent.remainingDistance > 1f)
+        {
+			_animator.SetInteger("State", 1);
+		}
 
-		_animator.SetInteger("State", 1);
+		_patrolScope.Debug();
 
 		if (target != null)
 		{
