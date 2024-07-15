@@ -18,6 +18,16 @@ public class Trap : MonoBehaviour
         transform.position = position;
     }
 
+    public virtual void Initialize(TrapData trapData)
+    {
+        Vector3 position = transform.position;
+
+        float scaleY = transform.lossyScale.y;
+        position.y += scaleY / 2f;
+
+        transform.position = position;
+    }
+
     protected virtual void CollisionEnter(Character character)
     {
 

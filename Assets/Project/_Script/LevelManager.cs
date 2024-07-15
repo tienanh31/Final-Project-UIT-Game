@@ -74,12 +74,11 @@ public class LevelManager : MonoBehaviour
         //audioSource = this.GetComponent<AudioSource>();
     }
 
-    public virtual void Initialize()
+    public virtual void Initialize(Vector3 playerPosition, Vector3 gatePosition)
     {
         _endingGate.SetActive(false);
 
-        var characterSpawner = GameManager.Instance.MapGenerator.StartPointCell.GetPosition();
-        characterSpawner.y = GameManager.Instance.MapGenerator.MaxNoiseValue;
+        var characterSpawner = playerPosition;
 
         character = GameObject.FindObjectOfType<Character>();
         if (character == null)
@@ -140,7 +139,7 @@ public class LevelManager : MonoBehaviour
         //audioSource.loop = true;
         //audioSource.Play();
 
-        Vector3 position = GameManager.Instance.MapGenerator.EndPointCell.GetPosition();
+        Vector3 position = gatePosition;
         position.y += _endingGate.transform.lossyScale.y / 2f;
 
         _endingGate.transform.position = position;
@@ -148,272 +147,304 @@ public class LevelManager : MonoBehaviour
     
     }
 
-    public void SpawningEnemies(List<Cell> positions)
-    {
-        var enemyTypes = GameManager.Instance.GetEnemiesCurrentLevel();
+    //public void SpawningEnemies(List<Cell> positions)
+    //{
+    //    var enemyTypes = GameManager.Instance.GetEnemiesCurrentLevel();
 
-        for (int i = 0; i < positions.Count; i++)
+    //    for (int i = 0; i < positions.Count; i++)
+    //    {
+    //        var enemy = GameManager.Instance.SpawningEnemy((GameConfig.ENEMY)UnityEngine.Random.Range(0, 5),
+    //            positions[i].GetPosition());
+    //        enemy.Initialize();
+
+    //        enemies.Add(enemy);
+    //    }
+
+    //    possibleEnemyCount = enemies.Count;
+    //    enemiesLeft = possibleEnemyCount;
+    //}
+
+    //public void SpawningEnemies(List<PatrolScope> patrolScopes)
+    //{
+    //    var enemyTypes = GameManager.Instance.GetEnemiesCurrentLevel();
+        
+    //    int total = enemyTypes.Sum(e => e.Value);
+    //    //Debug.Log("Total enemy: " + total);
+
+    //    foreach (var enemyType in enemyTypes)
+    //    {
+    //        if (enemyType.Key == GameConfig.ENEMY.TRAP)
+    //        {
+    //            SpawningTrap(enemyType.Value);
+    //            continue;
+    //        }
+
+    //        int value = enemyType.Value;
+    //        int size = patrolScopes.Count - 1;
+    //        while (value > 0)
+    //        {
+    //            var enemy = GameManager.Instance.SpawningEnemy(enemyType.Key, patrolScopes[size].Corners[0]);
+    //            enemy.Initialize(patrolScopes[size]);
+
+    //            enemies.Add(enemy);
+
+    //            value--;
+    //            size--;
+    //            if (size < 0)
+    //            {
+    //                size = patrolScopes.Count - 1;
+    //            }
+    //        }
+    //    }
+
+    //    //for (int i = patrolScopes.Count - 1; i >= 0; i--)
+    //    //{
+    //    //    var enemy = GameManager.Instance.SpawningEnemy((GameConfig.ENEMY)UnityEngine.Random.Range(0, 5),
+    //    //        patrolScopes[i].Corners[0]);
+    //    //    enemy.Initialize(patrolScopes[i]);
+
+    //    //    enemies.Add(enemy);
+
+    //    //    Debug.Log(patrolScopes[i].Corners.Count);
+    //    //}
+
+
+    //    possibleEnemyCount = enemies.Count;
+    //    enemiesLeft = possibleEnemyCount;
+    //}
+
+    public void SpawningEnemies(List<EnemyData> enemyDatas)
+    {
+        foreach(var enemyData in enemyDatas)
         {
-            var enemy = GameManager.Instance.SpawningEnemy((GameConfig.ENEMY)UnityEngine.Random.Range(0, 5),
-                positions[i].GetPosition());
-            enemy.Initialize();
+            var enemy = GameManager.Instance.SpawningEnemy((GameConfig.ENEMY)enemyData.Type,
+                enemyData.Position);
+            enemy.Initialize(enemyData.PatrolScope);
 
             enemies.Add(enemy);
         }
 
-        possibleEnemyCount = enemies.Count;
+        possibleEnemyCount = enemyDatas.Count;
         enemiesLeft = possibleEnemyCount;
     }
 
-    public void SpawningEnemies(List<PatrolScope> patrolScopes)
+    public void SpawningTraps(List<TrapData> trapDatas, List<Cell> largestArea)
     {
-        var enemyTypes = GameManager.Instance.GetEnemiesCurrentLevel();
-
-        int total = enemyTypes.Sum(e => e.Value);
-        //Debug.Log("Total enemy: " + total);
-
-        foreach (var enemyType in enemyTypes)
+        foreach(var trapData in trapDatas)
         {
-            if (enemyType.Key == GameConfig.ENEMY.TRAP)
+            Trap trap = GameManager.Instance.SpawingTrap(trapData.Name, trapData.StartPosition);
+            trap.Initialize();
+
+            IceRain icerain = trap as IceRain;
+            if (icerain)
             {
-                SpawningTrap(enemyType.Value);
-                continue;
+                StartCoroutine(IE_IceRain(1.5f, largestArea));
             }
 
-            int value = enemyType.Value;
-            int size = patrolScopes.Count - 1;
-            while (value > 0)
-            {
-                var enemy = GameManager.Instance.SpawningEnemy(enemyType.Key, patrolScopes[size].Corners[0]);
-                enemy.Initialize(patrolScopes[size]);
 
-                enemies.Add(enemy);
-
-                value--;
-                size--;
-                if (size < 0)
-                {
-                    size = patrolScopes.Count - 1;
-                }
-            }
         }
-
-        //for (int i = patrolScopes.Count - 1; i >= 0; i--)
-        //{
-        //    var enemy = GameManager.Instance.SpawningEnemy((GameConfig.ENEMY)UnityEngine.Random.Range(0, 5),
-        //        patrolScopes[i].Corners[0]);
-        //    enemy.Initialize(patrolScopes[i]);
-
-        //    enemies.Add(enemy);
-
-        //    Debug.Log(patrolScopes[i].Corners.Count);
-        //}
-
-
-        possibleEnemyCount = enemies.Count;
-        enemiesLeft = possibleEnemyCount;
     }
 
-    private void SpawningTrap(int total)
-    {
-        var falloffs = GameManager.Instance.MapGenerator.Falloffs;
-        var largestArea = GameManager.Instance.MapGenerator.LargestArea;
+    //private void SpawningTrap(int total)
+    //{
+    //    var falloffs = GameManager.Instance.MapGenerator.Falloffs;
+    //    var largestArea = GameManager.Instance.MapGenerator.LargestArea;
 
-        int mapType = GameManager.Instance.GetMapType();
+    //    int mapType = GameManager.Instance.GetMapType();
 
-        int size = largestArea.Count;
-        switch(mapType)
-        {
-            case 0:
-            case 1:
-                {
-                    if (total >= 1)
-                    {
-                        Vector3 position = Vector3.zero;
-                        position = largestArea[UnityEngine.Random.Range(size / 5, size / 7)].GetPosition();
+    //    int size = largestArea.Count;
+    //    switch(mapType)
+    //    {
+    //        case 0:
+    //        case 1:
+    //            {
+    //                if (total >= 1)
+    //                {
+    //                    Vector3 position = Vector3.zero;
+    //                    position = largestArea[UnityEngine.Random.Range(size / 5, size / 7)].GetPosition();
 
-                        Mud mud = GameManager.Instance.SpawingTrap(typeof(Mud).Name, position) as Mud;
-                        mud.Initialize();
-                    }
+    //                    Mud mud = GameManager.Instance.SpawingTrap(typeof(Mud).Name, position) as Mud;
+    //                    mud.Initialize();
+    //                }
 
-                    int random = UnityEngine.Random.Range(0, falloffs.Count);
-                    if (total >= 2)
-                    {
-                        var falloff = falloffs[random];
-                        foreach (var cell in falloff)
-                        {
-                            Pit pit = GameManager.Instance.SpawingTrap(typeof(Pit).Name, cell.GetPosition()) as Pit;
-                            pit.Initialize();
-                        }
+    //                int random = UnityEngine.Random.Range(0, falloffs.Count);
+    //                if (total >= 2)
+    //                {
+    //                    var falloff = falloffs[random];
+    //                    foreach (var cell in falloff)
+    //                    {
+    //                        Pit pit = GameManager.Instance.SpawingTrap(typeof(Pit).Name, cell.GetPosition()) as Pit;
+    //                        pit.Initialize();
+    //                    }
 
-                    }
-                    if (total >= 3)
-                    {
-                        if (falloffs.Count > 1)
-                        {
-                            int newRandom = UnityEngine.Random.Range(0, falloffs.Count);
-                            while (newRandom == random)
-                            {
-                                newRandom = UnityEngine.Random.Range(0, falloffs.Count);
-                            }
+    //                }
+    //                if (total >= 3)
+    //                {
+    //                    if (falloffs.Count > 1)
+    //                    {
+    //                        int newRandom = UnityEngine.Random.Range(0, falloffs.Count);
+    //                        while (newRandom == random)
+    //                        {
+    //                            newRandom = UnityEngine.Random.Range(0, falloffs.Count);
+    //                        }
 
-                            var falloff = falloffs[newRandom];
-                            foreach (var cell in falloff)
-                            {
-                                Pit pit = GameManager.Instance.SpawingTrap(typeof(Pit).Name, cell.GetPosition()) as Pit;
-                                pit.Initialize();
-                            }
-                        }
+    //                        var falloff = falloffs[newRandom];
+    //                        foreach (var cell in falloff)
+    //                        {
+    //                            Pit pit = GameManager.Instance.SpawingTrap(typeof(Pit).Name, cell.GetPosition()) as Pit;
+    //                            pit.Initialize();
+    //                        }
+    //                    }
 
-                        Vector3 position = Vector3.zero;
+    //                    Vector3 position = Vector3.zero;
 
 
-                        position = largestArea[UnityEngine.Random.Range(size / 4, size / 5)].GetPosition();
-                        Hammer hammer = GameManager.Instance.SpawingTrap(typeof(Hammer).Name, position) as Hammer;
-                        hammer.Initialize();
-                    }
-                }
-                break;
+    //                    position = largestArea[UnityEngine.Random.Range(size / 4, size / 5)].GetPosition();
+    //                    Hammer hammer = GameManager.Instance.SpawingTrap(typeof(Hammer).Name, position) as Hammer;
+    //                    hammer.Initialize();
+    //                }
+    //            }
+    //            break;
 
-            case 2:
-                {
-                    if (total >= 1)
-                    {
-                        Vector3 position = Vector3.zero;
-                        position = largestArea[UnityEngine.Random.Range(size / 5, size / 6)].GetPosition();
+    //        case 2:
+    //            {
+    //                if (total >= 1)
+    //                {
+    //                    Vector3 position = Vector3.zero;
+    //                    position = largestArea[UnityEngine.Random.Range(size / 5, size / 6)].GetPosition();
 
-                        IceBoom iceBoom = GameManager.Instance.SpawingTrap(typeof(IceBoom).Name, position) as IceBoom;
-                        iceBoom.Initialize();
-                    }
+    //                    IceBoom iceBoom = GameManager.Instance.SpawingTrap(typeof(IceBoom).Name, position) as IceBoom;
+    //                    iceBoom.Initialize();
+    //                }
 
-                    if (total >= 2)
-                    {
-                        if (falloffs.Count > 1)
-                        {
-                            Vector3 start = falloffs[0][falloffs[0].Count - 1].GetPosition();
-                            Vector3 end = falloffs[1][0].GetPosition();
+    //                if (total >= 2)
+    //                {
+    //                    if (falloffs.Count > 1)
+    //                    {
+    //                        Vector3 start = falloffs[0][falloffs[0].Count - 1].GetPosition();
+    //                        Vector3 end = falloffs[1][0].GetPosition();
 
-                            Iceberg iceberg = GameManager.Instance.SpawingTrap(typeof(Iceberg).Name, start) as Iceberg;
-                            iceberg.Initialize();
-                            iceberg.SetData(start, end);
+    //                        Iceberg iceberg = GameManager.Instance.SpawingTrap(typeof(Iceberg).Name, start) as Iceberg;
+    //                        iceberg.Initialize();
+    //                        iceberg.SetData(start, end);
 
-                        }
-                    }
-                    if (total >= 3)
-                    {
-                        if (falloffs.Count > 2)
-                        {
-                            Vector3 start = falloffs[1][falloffs[1].Count - 1].GetPosition();
-                            Vector3 end = falloffs[2][0].GetPosition();
+    //                    }
+    //                }
+    //                if (total >= 3)
+    //                {
+    //                    if (falloffs.Count > 2)
+    //                    {
+    //                        Vector3 start = falloffs[1][falloffs[1].Count - 1].GetPosition();
+    //                        Vector3 end = falloffs[2][0].GetPosition();
 
-                            Iceberg iceberg = GameManager.Instance.SpawingTrap(typeof(Iceberg).Name, start) as Iceberg;
-                            iceberg.Initialize();
-                            iceberg.SetData(start, end);
-                        }
+    //                        Iceberg iceberg = GameManager.Instance.SpawingTrap(typeof(Iceberg).Name, start) as Iceberg;
+    //                        iceberg.Initialize();
+    //                        iceberg.SetData(start, end);
+    //                    }
 
-                        StartCoroutine(IE_IceRain(1, largestArea));
-                    }
-                }
-                break;
+    //                    StartCoroutine(IE_IceRain(1, largestArea));
+    //                }
+    //            }
+    //            break;
 
-            case 3:
-                {
-                    if (total >= 1)
-                    {
-                        Vector3 position = Vector3.zero;
-                        position = largestArea[UnityEngine.Random.Range(size / 5, size / 6)].GetPosition();
+    //        case 3:
+    //            {
+    //                if (total >= 1)
+    //                {
+    //                    Vector3 position = Vector3.zero;
+    //                    position = largestArea[UnityEngine.Random.Range(size / 5, size / 6)].GetPosition();
 
-                        FlameBoom flameBoom = GameManager.Instance.SpawingTrap(typeof(FlameBoom).Name, position) as FlameBoom;
-                        flameBoom.Initialize();
-                    }
+    //                    FlameBoom flameBoom = GameManager.Instance.SpawingTrap(typeof(FlameBoom).Name, position) as FlameBoom;
+    //                    flameBoom.Initialize();
+    //                }
 
-                    if (total >= 2)
-                    {
-                        if (falloffs.Count > 0)
-                        {
-                            Vector3 start = falloffs[0][0].GetPosition();
-                            Vector3 end = falloffs[0][1].GetPosition();
-                            if (end.x > start.x)
-                            {
-                                end.x = start.x - 1;
-                            }
-                            else if (end.x < start.x)
-                            {
-                                end.x = start.x + 1;
-                            }
-                            else
-                            {
-                                if (end.z > start.z)
-                                {
-                                    end.z = start.z - 1;
-                                }
-                                else
-                                {
-                                    end.z = start.z + 1;
-                                }
-                            }
+    //                if (total >= 2)
+    //                {
+    //                    if (falloffs.Count > 0)
+    //                    {
+    //                        Vector3 start = falloffs[0][0].GetPosition();
+    //                        Vector3 end = falloffs[0][1].GetPosition();
+    //                        if (end.x > start.x)
+    //                        {
+    //                            end.x = start.x - 1;
+    //                        }
+    //                        else if (end.x < start.x)
+    //                        {
+    //                            end.x = start.x + 1;
+    //                        }
+    //                        else
+    //                        {
+    //                            if (end.z > start.z)
+    //                            {
+    //                                end.z = start.z - 1;
+    //                            }
+    //                            else
+    //                            {
+    //                                end.z = start.z + 1;
+    //                            }
+    //                        }
                             
 
 
-                            FlameThrower flameThrower = GameManager.Instance.SpawingTrap(typeof(FlameThrower).Name, start) as FlameThrower;
-                            flameThrower.Initialize();
-                            flameThrower.SetData((end - start).normalized);
-                        }
-                    }
-                    if (total >= 3)
-                    {
-                        if (falloffs.Count > 1)
-                        {
-                            Vector3 start = falloffs[1][0].GetPosition();
-                            Vector3 end = falloffs[1][1].GetPosition();
-                            if (end.x > start.x)
-                            {
-                                end.x = start.x - 1;
-                            }
-                            else if (end.x < start.x)
-                            {
-                                end.x = start.x + 1;
-                            }
-                            else
-                            {
-                                if (end.z > start.z)
-                                {
-                                    end.z = start.z - 1;
-                                }
-                                else
-                                {
-                                    end.z = start.z + 1;
-                                }
-                            }
+    //                        FlameThrower flameThrower = GameManager.Instance.SpawingTrap(typeof(FlameThrower).Name, start) as FlameThrower;
+    //                        flameThrower.Initialize();
+    //                        flameThrower.SetData((end - start).normalized);
+    //                    }
+    //                }
+    //                if (total >= 3)
+    //                {
+    //                    if (falloffs.Count > 1)
+    //                    {
+    //                        Vector3 start = falloffs[1][0].GetPosition();
+    //                        Vector3 end = falloffs[1][1].GetPosition();
+    //                        if (end.x > start.x)
+    //                        {
+    //                            end.x = start.x - 1;
+    //                        }
+    //                        else if (end.x < start.x)
+    //                        {
+    //                            end.x = start.x + 1;
+    //                        }
+    //                        else
+    //                        {
+    //                            if (end.z > start.z)
+    //                            {
+    //                                end.z = start.z - 1;
+    //                            }
+    //                            else
+    //                            {
+    //                                end.z = start.z + 1;
+    //                            }
+    //                        }
 
-                            FlameThrower flameThrower = GameManager.Instance.SpawingTrap(typeof(FlameThrower).Name, start) as FlameThrower;
-                            flameThrower.Initialize();
-                            flameThrower.SetData((end - start).normalized);
-                        }
+    //                        FlameThrower flameThrower = GameManager.Instance.SpawingTrap(typeof(FlameThrower).Name, start) as FlameThrower;
+    //                        flameThrower.Initialize();
+    //                        flameThrower.SetData((end - start).normalized);
+    //                    }
 
-                        var endPoint = GameManager.Instance.MapGenerator.EndPointCell.GetPosition();
+    //                    var endPoint = GameManager.Instance.MapGenerator.EndPointCell.GetPosition();
 
-                        float minDistance = Vector3.Distance(falloffs[0][0].GetPosition(), endPoint);
-                        List<Cell> closetFalloff = falloffs[0];
-                        foreach (var falloff in falloffs)
-                        {
-                            float distance = Vector3.Distance(falloff[0].GetPosition(), endPoint);
-                            if (distance < minDistance)
-                            {
-                                closetFalloff = falloff;
-                                minDistance = distance;
-                            }
-                        }
+    //                    float minDistance = Vector3.Distance(falloffs[0][0].GetPosition(), endPoint);
+    //                    List<Cell> closetFalloff = falloffs[0];
+    //                    foreach (var falloff in falloffs)
+    //                    {
+    //                        float distance = Vector3.Distance(falloff[0].GetPosition(), endPoint);
+    //                        if (distance < minDistance)
+    //                        {
+    //                            closetFalloff = falloff;
+    //                            minDistance = distance;
+    //                        }
+    //                    }
 
-                        Vector3 position = (endPoint + closetFalloff[0].GetPosition()) / 2f;
+    //                    Vector3 position = (endPoint + closetFalloff[0].GetPosition()) / 2f;
 
-                        FireCarpet fireCarpet = GameManager.Instance.SpawingTrap(typeof(FireCarpet).Name, position) as FireCarpet;
-                        fireCarpet.Initialize();
-                    }
-                }
-                break;
-        }
-    }
+    //                    FireCarpet fireCarpet = GameManager.Instance.SpawingTrap(typeof(FireCarpet).Name, position) as FireCarpet;
+    //                    fireCarpet.Initialize();
+    //                }
+    //            }
+    //            break;
+    //    }
+    //}
 
     protected IEnumerator IE_IceRain(float time = 1f, List<Cell> largestArea = null)
     {
@@ -523,7 +554,7 @@ public class LevelManager : MonoBehaviour
             default:
                 {
                     return character.IsDead 
-                        || character.transform.position.y < GameManager.Instance.MapGenerator.transform.position.y - 1f;
+                        || character.transform.position.y < GameManager.Instance.Grid.transform.position.y - 1f;
                 }
         }
     }

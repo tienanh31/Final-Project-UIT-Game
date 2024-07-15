@@ -29,6 +29,13 @@ public class FlameThrower : Trap
         base.Initialize();
     }
 
+    public override void Initialize(TrapData trapData)
+    {
+        base.Initialize(trapData);
+
+        SetData((trapData.EndPosition - trapData.StartPosition).normalized);
+    }
+
     public void SetData(Vector3 direction)
     {
         transform.rotation = Quaternion.LookRotation(direction);

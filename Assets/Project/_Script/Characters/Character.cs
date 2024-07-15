@@ -189,7 +189,7 @@ public class Character : MonoBehaviour, IDamageable
 
 			if (Input.GetMouseButton(0))
 			{
-				_animator.SetInteger("State", 2);
+				_animator?.SetInteger("State", 2);
 				weapons[currentWeapon].AttemptAttack();
 			}
 		}
@@ -352,7 +352,7 @@ public class Character : MonoBehaviour, IDamageable
 
 	private void CharacterMovement()
 	{
-		_animator.SetInteger("State", 0);
+		_animator?.SetInteger("State", 0);
 
 		Vector3 movementInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
 		Vector3 movementInputAligned = movementInput.normalized;
@@ -367,7 +367,7 @@ public class Character : MonoBehaviour, IDamageable
 		{
 			if (Input.GetAxisRaw("Horizontal") != 0)
 			{
-				_animator.SetInteger("State", 1);
+				_animator?.SetInteger("State", 1);
 				//Use deAcceleration when changing moving direction (currently disabled)
 				// if (speedX / Input.GetAxisRaw("Horizontal") > 0)
 				// 	speedX += acceleration * Input.GetAxisRaw("Horizontal") * Time.deltaTime;
@@ -380,7 +380,7 @@ public class Character : MonoBehaviour, IDamageable
 				speedX = Mathf.MoveTowards(speedX, 0, deAcceleration * Time.deltaTime);
 			if (Input.GetAxisRaw("Vertical") != 0)
 			{
-				_animator.SetInteger("State", 1);
+				_animator?.SetInteger("State", 1);
 				//Use deAcceleration when changing moving direction (currently disabled)
 				// if (speedX / Input.GetAxisRaw("Horizontal") > 0)
 				// 	speedZ += acceleration * Input.GetAxisRaw("Vertical") * Time.deltaTime;
@@ -425,7 +425,7 @@ public class Character : MonoBehaviour, IDamageable
 
 	public virtual void OnDeath()
 	{
-		_animator.SetInteger("State", 3);
+		_animator?.SetInteger("State", 3);
 		LevelManager.Instance.damageables.Remove(this);
 		StopAllCoroutines();
 		IsDead = true;

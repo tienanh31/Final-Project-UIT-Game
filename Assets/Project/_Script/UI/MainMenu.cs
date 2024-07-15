@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class MainMenu : MonoBehaviour, IUserInterface
 {
     #region Description
-    const string CHARACTER = "Default character, use for demo and debug only.";
     const string CHARACTER1 = "Character1, he has a powerful Shotgun and Grenade, can summon a drone.";
     const string CHARACTER2 = "Character2, he has a Resolver and Grenade, can summon a turret.";
     const string CHARACTER3 = "Character3, he has a Rifle and can lay Mine, can also summon a turret.";
@@ -49,7 +48,7 @@ public class MainMenu : MonoBehaviour, IUserInterface
         _characterSelecting.ClearOptions();
         _characterSelecting.AddOptions(new List<TMP_Dropdown.OptionData>()
         {
-            new TMP_Dropdown.OptionData(typeof(Character).Name),
+            //new TMP_Dropdown.OptionData(typeof(Character).Name),
             new TMP_Dropdown.OptionData(typeof(Character1).Name),
             new TMP_Dropdown.OptionData(typeof(Character2).Name),
             new TMP_Dropdown.OptionData(typeof(Character3).Name),
@@ -84,7 +83,7 @@ public class MainMenu : MonoBehaviour, IUserInterface
 
 	private void SetCharacter(int indexSelecting)
     {
-        GameManager.Instance.SelectedCharacter = (GameConfig.CHARACTER)indexSelecting;
+        GameManager.Instance.SelectedCharacter = (GameConfig.CHARACTER)indexSelecting + 1;
 
         if (_model != null)
 		{
@@ -93,37 +92,35 @@ public class MainMenu : MonoBehaviour, IUserInterface
 
         switch(indexSelecting)
 		{
-            case 0:
-                _description.text = CHARACTER;
-                _model = Instantiate(Resources.Load("_Prefabs/UI/Models/Character"), this.transform) as GameObject;
-                break;
+            //case 0:
+            //    //_description.text = CHARACTER;
+            //    //_model = Instantiate(Resources.Load("_Prefabs/UI/Models/Character"), this.transform) as GameObject;
+            //    break;
 
-            case 1:
+            case 0:
                 _description.text = CHARACTER1;
                 _model = Instantiate(Resources.Load("_Prefabs/UI/Models/Character 1"), this.transform) as GameObject;
                 break;
 
-            case 2:
+            case 1:
                 _description.text = CHARACTER2;
                 _model = Instantiate(Resources.Load("_Prefabs/UI/Models/Character 2"), this.transform) as GameObject;
                 break;
 
-            case 3:
+            case 2:
                 _description.text = CHARACTER3;
                 _model = Instantiate(Resources.Load("_Prefabs/UI/Models/Character 3"), this.transform) as GameObject;
                 break;
 
-            case 4:
+            case 3:
                 _description.text = CHARACTER4;
                 _model = Instantiate(Resources.Load("_Prefabs/UI/Models/Character 4"), this.transform) as GameObject;
                 break;
         }
 
         Vector3 position = _modelPlace;
-        if (indexSelecting != 0)
-        {
-            position.y -= 1f;
-        }
+
+        position.y -= 1f;
 
         _model.transform.position = position;
     }

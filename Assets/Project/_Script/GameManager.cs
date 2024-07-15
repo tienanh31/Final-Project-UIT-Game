@@ -8,7 +8,7 @@ using UnityEngine.AI;
 public class GameManager : MonoBehaviour
 {
     #region Fields & Properties
-    [SerializeField] Grid _mapGenerator;
+    [SerializeField] Grid _grid;
     [SerializeField] NavMeshSurface _navMesh;
 
     public NavMeshSurface NavMesh => _navMesh;
@@ -17,12 +17,12 @@ public class GameManager : MonoBehaviour
 
     public GameConfig.CHARACTER SelectedCharacter = GameConfig.CHARACTER.CHARACTER_DEFAULT;
 
-    public Grid MapGenerator
+    public Grid Grid
     {
-        get => _mapGenerator;
+        get => _grid;
         set
         {
-            _mapGenerator = value;
+            _grid = value;
         }
     }
 
@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     private List<VictoryScreen.BuffStat> _buffStats;
     private MyXMLReader _myXmlData;
 
+    private MapGenerator _mapGenerator;
     #endregion
 
     #region Methods
@@ -103,6 +104,20 @@ public class GameManager : MonoBehaviour
                 //NextLevel();
             }
         }
+    }
+
+    public void InitMapGenerator()
+    {
+        _mapGenerator = new MapGenerator();
+        var mapData = _mapGenerator.GenerateMap(100, GetMapType(), GetEnemiesCurrentLevel());
+
+        _grid.ReadMapData(mapData);
+
+        LevelManager.Instance.Initialize(mapData.PlayerPosition, mapData.GatePosition);
+        LevelManager.Instance.SpawningEnemies(mapData.EnemieDatas);
+        LevelManager.Instance.SpawningTraps(mapData.TrapDatas, mapData.LargestArea);
+
+        Debug.Log("Level: " + _level);
     }
 
     public void BeginLevel(string levelname)

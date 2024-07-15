@@ -121,7 +121,7 @@ public class Enemy : MonoBehaviour, IDamageable
 			return;
         }
 
-		Debug.Log(enemyAgent.remainingDistance);
+		//Debug.Log(enemyAgent.remainingDistance);
 		if (enemyAgent.remainingDistance > 1f)
         {
 			_animator.SetInteger("State", 1);

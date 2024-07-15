@@ -9,8 +9,8 @@ public class Level2Manager : LevelManager
         return false;
     }
 
-    public override void Initialize()
-    {
-        base.Initialize();
-    }
+    //public override void Initialize()
+    //{
+    //    base.Initialize();
+    //}
 }

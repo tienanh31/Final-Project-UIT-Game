@@ -27,6 +27,13 @@ public class Iceberg : Trap
         base.Initialize();
     }
 
+    public override void Initialize(TrapData trapData)
+    {
+        base.Initialize(trapData);
+
+        SetData(trapData.StartPosition, trapData.EndPosition);
+    }
+
     protected override void TriggerStay(Character character)
     {
         base.TriggerStay(character);
