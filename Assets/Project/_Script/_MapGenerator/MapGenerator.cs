@@ -12,7 +12,7 @@ public class MapGenerator
 
     float _grassNoiseScale = 0.5f;
 
-    float _waterLevel = 0.4f;
+    float _waterLevel = 0.5f;
     float _scale = 0.1f;
     int _size = 100;
 
@@ -22,6 +22,9 @@ public class MapGenerator
 
     private Vector3 _playerPosition;
     private Vector3 _gatePosition;
+
+    private Cell _start;
+    private Cell _end;
 
     private List<EnemyData> _enemies;
     private List<TrapData> _traps;
@@ -142,6 +145,7 @@ public class MapGenerator
                 startPointCell = largestArea[Random.Range(0, n / 10)];
             }
 
+            _start = startPointCell;
             _playerPosition = startPointCell.GetPosition();
             _playerPosition.y = MaxNoiseValue;
 
@@ -150,7 +154,7 @@ public class MapGenerator
             {
                 endPointCell = largestArea[Random.Range(n - n / 10, n)];
             }
-
+            _end = endPointCell;
             _gatePosition = endPointCell.GetPosition();
 
             _fallOffs = Utility.FindWatersInGround(_grid, _grounds[size - 1]);
@@ -238,6 +242,15 @@ public class MapGenerator
 
     private void GenerateTrap(int total)
     {
+        var shortest = Utility.BfsShortestPath(_grid, _start, _end);
+        string debug = "";
+        foreach(var cell in shortest)
+        {
+            debug += cell.Id + "\n";
+        }
+
+        Debug.Log(debug);
+
         _traps = new List<TrapData>();
 
         var falloffs = _fallOffs;
@@ -245,6 +258,7 @@ public class MapGenerator
         var largestArea = _grounds[_grounds.Count - 1];
 
         int size = largestArea.Count;
+
         switch (_mapType)
         {
             case 0:
@@ -252,7 +266,32 @@ public class MapGenerator
                 {
                     if (total >= 1)
                     {
-                        Vector3 position = largestArea[UnityEngine.Random.Range(size / 5, size / 7)].GetPosition();
+                        Vector3 position = Vector3.zero;
+
+                        var cell = Utility.FindPointFarAway(shortest, 10, _playerPosition);
+                        if (cell != null)
+                        {
+                            int currentIndex = shortest.FindIndex(e => e.Id == cell.Id);
+                            while (!Utility.IsGoodToPlace(cell, 4.5f, _grid))
+                            {
+                                currentIndex++;
+                                if (currentIndex < shortest.Count)
+                                {
+                                    cell = shortest[currentIndex];
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+
+                            if (!Utility.IsGoodToPlace(cell, 4.5f, _grid))
+                            {
+                                Debug.Log("Not match condition");
+                            }
+
+                            position = cell.GetPosition();
+                        }
 
                         TrapData trap = new TrapData();
                         trap.StartPosition = position;
@@ -261,10 +300,12 @@ public class MapGenerator
                         _traps.Add(trap);
                     }
 
-                    int random = UnityEngine.Random.Range(0, falloffs.Count);
+                    int old = 0;
                     if (total >= 2)
                     {
-                        var falloff = falloffs[random];
+                        var falloff = Utility.ClosestPond(_playerPosition, _gatePosition, falloffs);
+                        old = falloffs.FindIndex(e => e[0].Id == falloff[0].Id);
+
                         foreach (var cell in falloff)
                         {
                             TrapData trap = new TrapData();
@@ -279,25 +320,28 @@ public class MapGenerator
                     {
                         if (falloffs.Count > 1)
                         {
-                            int newRandom = UnityEngine.Random.Range(0, falloffs.Count);
-                            while (newRandom == random)
-                            {
-                                newRandom = UnityEngine.Random.Range(0, falloffs.Count);
-                            }
-
-                            var falloff = falloffs[newRandom];
-                            foreach (var cell in falloff)
+                            var falloff = Utility.ClosestPondToPond(_playerPosition,
+                                _gatePosition, falloffs, falloffs[old]);
+                            foreach (var c in falloff)
                             {
                                 TrapData trap = new TrapData();
-                                trap.StartPosition = cell.GetPosition();
+                                trap.StartPosition = c.GetPosition();
                                 trap.Name = typeof(Pit).Name;
 
                                 _traps.Add(trap);
                             }
                         }
 
-                        Vector3 position = largestArea[UnityEngine.Random.Range(size / 4, size / 5)].GetPosition();
 
+                        Vector3 position = Vector3.zero;
+
+                        var cell = Utility.FindPointClosetTo(shortest, 10, _gatePosition);
+                        if (cell != null)
+                        {
+                            position = cell.GetPosition();
+                        }
+
+                        Debug.Log("Hammer pos: " + position);
                         _traps.Add(new TrapData()
                         {
                             StartPosition = position,
@@ -311,7 +355,13 @@ public class MapGenerator
                 {
                     if (total >= 1)
                     {
-                        Vector3 position = largestArea[UnityEngine.Random.Range(size / 5, size / 6)].GetPosition();
+                        Vector3 position = Vector3.zero;
+
+                        var cell = Utility.FindPointFarAway(shortest, 10, _playerPosition);
+                        if (cell != null)
+                        {
+                            position = cell.GetPosition();
+                        }
 
                         _traps.Add(new TrapData()
                         {
@@ -324,9 +374,49 @@ public class MapGenerator
                     {
                         if (falloffs.Count > 1)
                         {
-                            Vector3 start = falloffs[0][falloffs[0].Count - 1].GetPosition();
-                            Vector3 end = falloffs[1][0].GetPosition();
+                            var falloff = Utility.ClosestPond(_playerPosition, _gatePosition, falloffs);
+                            int old = falloffs.FindIndex(e => e[0].Id == falloff[0].Id);
 
+                            var nextFalloff = Utility.ClosestPondToPond(_playerPosition,
+                                    _gatePosition, falloffs, falloffs[old]);
+
+                            Vector3 start = falloff[0].GetPosition();
+                            Vector3 end = nextFalloff[0].GetPosition();
+
+                            Debug.Log($"Start: {start}, End: {end}");
+                            _traps.Add(new TrapData()
+                            {
+                                StartPosition = start,
+                                EndPosition = end,
+                                Name = typeof(Iceberg).Name
+                            });
+                        }
+                        else if (falloffs.Count == 1)
+                        {
+                            var falloff = Utility.ClosestPond(_playerPosition, _gatePosition, falloffs);
+
+                            Vector3 start = falloff[0].GetPosition();
+
+                            Vector3 end = Utility.FindClosetWater(_grid, falloff[0].Id.x, falloff[0].Id.y).GetPosition();
+
+                            Debug.Log($"Start: {start}, End: {end}");
+                            _traps.Add(new TrapData()
+                            {
+                                StartPosition = start,
+                                EndPosition = end,
+                                Name = typeof(Iceberg).Name
+                            });
+                        }
+                        else
+                        {
+                            Cell cell = shortest[shortest.Count / 3];
+
+                            Cell cellStart = Utility.FindClosetWater(_grid, cell.Id.x, cell.Id.y);
+                            Vector3 start = cellStart.GetPosition();
+
+                            Vector3 end = Utility.FindClosetWater(_grid, cellStart.Id.x, cellStart.Id.y).GetPosition();
+
+                            Debug.Log($"Start: {start}, End: {end}");
                             _traps.Add(new TrapData()
                             {
                                 StartPosition = start,
@@ -337,18 +427,19 @@ public class MapGenerator
                     }
                     if (total >= 3)
                     {
-                        if (falloffs.Count > 2)
-                        {
-                            Vector3 start = falloffs[1][falloffs[1].Count - 1].GetPosition();
-                            Vector3 end = falloffs[2][0].GetPosition();
+                        Vector3 position = Vector3.zero;
 
-                            _traps.Add(new TrapData()
-                            {
-                                StartPosition = start,
-                                EndPosition = end,
-                                Name = typeof(Iceberg).Name
-                            });
+                        var cell = Utility.FindPointClosetTo(shortest, 10, _gatePosition);
+                        if (cell != null)
+                        {
+                            position = cell.GetPosition();
                         }
+
+                        _traps.Add(new TrapData()
+                        {
+                            StartPosition = position,
+                            Name = typeof(IceBoom).Name
+                        });
 
                         _traps.Add(new TrapData()
                         {
@@ -364,7 +455,13 @@ public class MapGenerator
                 {
                     if (total >= 1)
                     {
-                        Vector3 position = largestArea[UnityEngine.Random.Range(size / 5, size / 6)].GetPosition();
+                        Vector3 position = Vector3.zero;
+
+                        var cell = Utility.FindPointFarAway(shortest, 10, _playerPosition);
+                        if (cell != null)
+                        {
+                            position = cell.GetPosition();
+                        }
 
                         _traps.Add(new TrapData()
                         {
@@ -377,26 +474,28 @@ public class MapGenerator
                     {
                         if (falloffs.Count > 0)
                         {
-                            Vector3 start = falloffs[0][0].GetPosition();
-                            Vector3 end = falloffs[0][1].GetPosition();
-                            if (end.x > start.x)
+                            var falloff = Utility.ClosestPond(_playerPosition, _gatePosition, falloffs);
+
+                            Vector3 start = falloff[0].GetPosition();
+                            Vector3 end = start;
+
+                            int x = falloff[0].Id.x;
+                            int y = falloff[0].Id.y;
+                            if (_grid[x - 1, y].Type == CellType.Ground)
                             {
-                                end.x = start.x - 1;
+                                end = _grid[x - 1, y].GetPosition();
                             }
-                            else if (end.x < start.x)
+                            else if (_grid[x + 1, y].Type == CellType.Ground)
                             {
-                                end.x = start.x + 1;
+                                end = _grid[x + 1, y].GetPosition();
+                            }
+                            else if (_grid[x, y - 1].Type == CellType.Ground)
+                            {
+                                end = _grid[x, y - 1].GetPosition();
                             }
                             else
                             {
-                                if (end.z > start.z)
-                                {
-                                    end.z = start.z - 1;
-                                }
-                                else
-                                {
-                                    end.z = start.z + 1;
-                                }
+                                end = _grid[x, y + 1].GetPosition();
                             }
 
                             _traps.Add(new TrapData()
@@ -409,53 +508,27 @@ public class MapGenerator
                     }
                     if (total >= 3)
                     {
-                        if (falloffs.Count > 1)
-                        {
-                            Vector3 start = falloffs[1][0].GetPosition();
-                            Vector3 end = falloffs[1][1].GetPosition();
-                            if (end.x > start.x)
-                            {
-                                end.x = start.x - 1;
-                            }
-                            else if (end.x < start.x)
-                            {
-                                end.x = start.x + 1;
-                            }
-                            else
-                            {
-                                if (end.z > start.z)
-                                {
-                                    end.z = start.z - 1;
-                                }
-                                else
-                                {
-                                    end.z = start.z + 1;
-                                }
-                            }
+                        Vector3 position = Vector3.zero;
 
-                            _traps.Add(new TrapData()
-                            {
-                                StartPosition = start,
-                                EndPosition = end,
-                                Name = typeof(FlameThrower).Name
-                            });
+                        var cell = Utility.FindPointClosetTo(shortest, 10, _gatePosition);
+                        if (cell != null)
+                        {
+                            position = cell.GetPosition();
                         }
+
+                        _traps.Add(new TrapData()
+                        {
+                            StartPosition = position,
+                            Name = typeof(FlameBoom).Name
+                        });
 
                         var endPoint = _gatePosition;
 
                         float minDistance = Vector3.Distance(falloffs[0][0].GetPosition(), endPoint);
-                        List<Cell> closetFalloff = falloffs[0];
-                        foreach (var falloff in falloffs)
-                        {
-                            float distance = Vector3.Distance(falloff[0].GetPosition(), endPoint);
-                            if (distance < minDistance)
-                            {
-                                closetFalloff = falloff;
-                                minDistance = distance;
-                            }
-                        }
 
-                        Vector3 position = (endPoint + closetFalloff[0].GetPosition()) / 2f;
+                        cell = Utility.FindPointClosetTo(shortest, 20, endPoint);
+
+                        position = cell.GetPosition();
 
                         _traps.Add(new TrapData()
                         {
@@ -466,6 +539,236 @@ public class MapGenerator
                 }
                 break;
         }
+
+        #region Old Version
+        //var falloffs = _fallOffs;
+
+        //var largestArea = _grounds[_grounds.Count - 1];
+
+        //int size = largestArea.Count;
+
+        //switch (_mapType)
+        //{
+        //    case 0:
+        //    case 1:
+        //        {
+        //            if (total >= 1)
+        //            {
+        //                Vector3 position = largestArea[UnityEngine.Random.Range(size / 5, size / 7)].GetPosition();
+
+        //                TrapData trap = new TrapData();
+        //                trap.StartPosition = position;
+        //                trap.Name = typeof(Mud).Name;
+
+        //                _traps.Add(trap);
+        //            }
+
+        //            int random = UnityEngine.Random.Range(0, falloffs.Count);
+        //            if (total >= 2)
+        //            {
+        //                var falloff = falloffs[random];
+        //                foreach (var cell in falloff)
+        //                {
+        //                    TrapData trap = new TrapData();
+        //                    trap.StartPosition = cell.GetPosition();
+        //                    trap.Name = typeof(Pit).Name;
+
+        //                    _traps.Add(trap);
+        //                }
+
+        //            }
+        //            if (total >= 3)
+        //            {
+        //                if (falloffs.Count > 1)
+        //                {
+        //                    int newRandom = UnityEngine.Random.Range(0, falloffs.Count);
+        //                    while (newRandom == random)
+        //                    {
+        //                        newRandom = UnityEngine.Random.Range(0, falloffs.Count);
+        //                    }
+
+        //                    var falloff = falloffs[newRandom];
+        //                    foreach (var cell in falloff)
+        //                    {
+        //                        TrapData trap = new TrapData();
+        //                        trap.StartPosition = cell.GetPosition();
+        //                        trap.Name = typeof(Pit).Name;
+
+        //                        _traps.Add(trap);
+        //                    }
+        //                }
+
+        //                Vector3 position = largestArea[UnityEngine.Random.Range(size / 4, size / 5)].GetPosition();
+
+        //                _traps.Add(new TrapData()
+        //                {
+        //                    StartPosition = position,
+        //                    Name = typeof(Hammer).Name
+        //                });
+        //            }
+        //        }
+        //        break;
+
+        //    case 2:
+        //        {
+        //            if (total >= 1)
+        //            {
+        //                Vector3 position = largestArea[UnityEngine.Random.Range(size / 5, size / 6)].GetPosition();
+
+        //                _traps.Add(new TrapData()
+        //                {
+        //                    StartPosition = position,
+        //                    Name = typeof(IceBoom).Name
+        //                });
+        //            }
+
+        //            if (total >= 2)
+        //            {
+        //                if (falloffs.Count > 1)
+        //                {
+        //                    Vector3 start = falloffs[0][falloffs[0].Count - 1].GetPosition();
+        //                    Vector3 end = falloffs[1][0].GetPosition();
+
+        //                    _traps.Add(new TrapData()
+        //                    {
+        //                        StartPosition = start,
+        //                        EndPosition = end,
+        //                        Name = typeof(Iceberg).Name
+        //                    });
+        //                }
+        //            }
+        //            if (total >= 3)
+        //            {
+        //                if (falloffs.Count > 2)
+        //                {
+        //                    Vector3 start = falloffs[1][falloffs[1].Count - 1].GetPosition();
+        //                    Vector3 end = falloffs[2][0].GetPosition();
+
+        //                    _traps.Add(new TrapData()
+        //                    {
+        //                        StartPosition = start,
+        //                        EndPosition = end,
+        //                        Name = typeof(Iceberg).Name
+        //                    });
+        //                }
+
+        //                _traps.Add(new TrapData()
+        //                {
+        //                    StartPosition = Vector3.zero,
+        //                    EndPosition = Vector3.zero,
+        //                    Name = typeof(IceRain).Name
+        //                });
+        //            }
+        //        }
+        //        break;
+
+        //    case 3:
+        //        {
+        //            if (total >= 1)
+        //            {
+        //                Vector3 position = largestArea[UnityEngine.Random.Range(size / 5, size / 6)].GetPosition();
+
+        //                _traps.Add(new TrapData()
+        //                {
+        //                    StartPosition = position,
+        //                    Name = typeof(FlameBoom).Name
+        //                });
+        //            }
+
+        //            if (total >= 2)
+        //            {
+        //                if (falloffs.Count > 0)
+        //                {
+        //                    Vector3 start = falloffs[0][0].GetPosition();
+        //                    Vector3 end = falloffs[0][1].GetPosition();
+        //                    if (end.x > start.x)
+        //                    {
+        //                        end.x = start.x - 1;
+        //                    }
+        //                    else if (end.x < start.x)
+        //                    {
+        //                        end.x = start.x + 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        if (end.z > start.z)
+        //                        {
+        //                            end.z = start.z - 1;
+        //                        }
+        //                        else
+        //                        {
+        //                            end.z = start.z + 1;
+        //                        }
+        //                    }
+
+        //                    _traps.Add(new TrapData()
+        //                    {
+        //                        StartPosition = start,
+        //                        EndPosition = end,
+        //                        Name = typeof(FlameThrower).Name
+        //                    });
+        //                }
+        //            }
+        //            if (total >= 3)
+        //            {
+        //                if (falloffs.Count > 1)
+        //                {
+        //                    Vector3 start = falloffs[1][0].GetPosition();
+        //                    Vector3 end = falloffs[1][1].GetPosition();
+        //                    if (end.x > start.x)
+        //                    {
+        //                        end.x = start.x - 1;
+        //                    }
+        //                    else if (end.x < start.x)
+        //                    {
+        //                        end.x = start.x + 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        if (end.z > start.z)
+        //                        {
+        //                            end.z = start.z - 1;
+        //                        }
+        //                        else
+        //                        {
+        //                            end.z = start.z + 1;
+        //                        }
+        //                    }
+
+        //                    _traps.Add(new TrapData()
+        //                    {
+        //                        StartPosition = start,
+        //                        EndPosition = end,
+        //                        Name = typeof(FlameThrower).Name
+        //                    });
+        //                }
+
+        //                var endPoint = _gatePosition;
+
+        //                float minDistance = Vector3.Distance(falloffs[0][0].GetPosition(), endPoint);
+        //                List<Cell> closetFalloff = falloffs[0];
+        //                foreach (var falloff in falloffs)
+        //                {
+        //                    float distance = Vector3.Distance(falloff[0].GetPosition(), endPoint);
+        //                    if (distance < minDistance)
+        //                    {
+        //                        closetFalloff = falloff;
+        //                        minDistance = distance;
+        //                    }
+        //                }
+
+        //                Vector3 position = (endPoint + closetFalloff[0].GetPosition()) / 2f;
+
+        //                _traps.Add(new TrapData()
+        //                {
+        //                    StartPosition = position,
+        //                    Name = typeof(FireCarpet).Name
+        //                });
+        //            }
+        //        }
+        //        break;
+        //}
+        #endregion
     }
 
 }

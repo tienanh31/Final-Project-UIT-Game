@@ -241,7 +241,17 @@ public class LevelManager : MonoBehaviour
                 StartCoroutine(IE_IceRain(1.5f, largestArea));
             }
 
+            Iceberg iceberg = trap as Iceberg;
+            if (iceberg)
+            {
+                iceberg.Initialize(trapData);
+            }
 
+            FlameThrower flame = trap as FlameThrower;
+            if (flame)
+            {
+                flame.Initialize(trapData);
+            }
         }
     }
 

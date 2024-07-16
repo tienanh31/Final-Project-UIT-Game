@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Utility
 {
@@ -65,7 +66,7 @@ public class Utility
             for (int j = minY; j <= maxY; j++)
             {
                 var value = BFSWithLimit(ref mark, grid, CellType.Water, maxX, maxY, i, j, minX, minY);
-                if (value.Count > 1 
+                if (value.Count > 1
                     && CheckIsPond(grid, value, minX, minY, maxX, maxY))
                 {
                     value.Sort((e1, e2) => e1.Compare(e2));
@@ -101,8 +102,8 @@ public class Utility
             //top
             int p1 = x;
             int p2 = y - 1;
-            if (IsContain(n, m, p1, p2) 
-                && mark[p1, p2] != 1 
+            if (IsContain(n, m, p1, p2)
+                && mark[p1, p2] != 1
                 && grid[p1, p2].Type == type)
             {
                 mark[p1, p2] = 1;
@@ -113,7 +114,7 @@ public class Utility
             //bot
             p1 = x;
             p2 = y + 1;
-            if (IsContain(n, m, p1, p2) 
+            if (IsContain(n, m, p1, p2)
                 && mark[p1, p2] != 1
                 && grid[p1, p2].Type == type)
             {
@@ -125,7 +126,7 @@ public class Utility
             //left
             p1 = x - 1;
             p2 = y;
-            if (IsContain(n, m, p1, p2) 
+            if (IsContain(n, m, p1, p2)
                 && mark[p1, p2] != 1
                 && grid[p1, p2].Type == type)
             {
@@ -137,7 +138,7 @@ public class Utility
             //right
             p1 = x + 1;
             p2 = y;
-            if (IsContain(n, m, p1, p2) 
+            if (IsContain(n, m, p1, p2)
                 && mark[p1, p2] != 1
                 && grid[p1, p2].Type == type)
             {
@@ -225,6 +226,225 @@ public class Utility
         }
 
         return result;
+    }
+
+    public static List<Cell> BfsShortestPath(Cell[,] grid, Cell start, Cell end)
+    {
+        int cols = grid.GetLength(0);
+        int rows = grid.GetLength(1);
+        bool[,] visited = new bool[cols, rows];
+        Queue<(Cell, List<Cell>)> queue = new Queue<(Cell, List<Cell>)>();
+        visited[start.Id.x, start.Id.y] = true;
+        queue.Enqueue((start, new List<Cell> { start }));
+
+        while (queue.Count > 0)
+        {
+            var (current, path) = queue.Dequeue();
+            if (current == end)
+            {
+                return path;
+            }
+
+            int[][] directions = { new[] { -1, 0 }, new[] { 1, 0 }, new[] { 0, -1 }, new[] { 0, 1 } };
+            foreach (var direction in directions)
+            {
+                int nextRow = current.Id.x + direction[0];
+                int nextCol = current.Id.y + direction[1];
+                if (nextRow >= 0 && nextRow < rows && nextCol >= 0 && nextCol < cols &&
+                    grid[nextRow, nextCol].Type == CellType.Ground && !visited[nextRow, nextCol])
+                {
+                    visited[nextRow, nextCol] = true;
+                    var newPath = new List<Cell>(path) { grid[nextRow, nextCol] };
+                    queue.Enqueue((grid[nextRow, nextCol], newPath));
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public static Vector3 FindPointOnLine(Vector3 point, Vector3 start, Vector3 end)
+    {
+        Vector3 result = Vector3.zero;
+
+        var lineVector = end - start;
+        var pointVector = point - start;
+
+        var dot = Vector3.Dot(pointVector, lineVector);
+        var lengthSqr = lineVector.sqrMagnitude;
+
+        var param = Mathf.Clamp01(dot / lengthSqr);
+
+        result = start + lineVector * param;
+
+        return result;
+    }
+
+    public static bool IsGoodToPlace(Cell position, float radius, Cell[,] grid)
+    {
+        int x = position.Id.x;
+        int y = position.Id.y;
+
+        int n = grid.GetLength(0);
+        int m = grid.GetLength(1);
+
+        for (int i = 0; i < Mathf.Ceil(radius); i++)
+        {
+            // top
+            if (y - i < 0 || grid[x, y - i].Type != CellType.Ground)
+            {
+                return false;
+            }
+
+            // bot
+            if (y + i >= m || grid[x, y + i].Type != CellType.Ground)
+            {
+                return false;
+            }
+
+            // left
+            if (x - i < 0 || grid[x - i, y].Type != CellType.Ground)
+            {
+                return false;
+            }
+
+            // right
+            if (x + i >= n || grid[x + i, y].Type != CellType.Ground)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static Cell FindPointFarAway(List<Cell> list, float distance, Vector3 point)
+    {
+        foreach (var cell in list)
+        {
+            if (Vector3.Distance(cell.GetPosition(), point) > distance
+                && cell.Type == CellType.Ground)
+            {
+                return cell;
+            }
+        }
+
+        return null;
+    }
+
+    public static Cell FindPointClosetTo(List<Cell> list, float distance, Vector3 point)
+    {
+        for (int i = list.Count - 1; i >= 0; i--)
+        {
+            if (Vector3.Distance(list[i].GetPosition(), point) > distance
+                && list[i].Type == CellType.Ground)
+            {
+                return list[i];
+            }
+        }
+
+        return null;
+    }
+
+    public static Cell FindClosetWater(Cell[,] grid, int x, int y)
+    {
+        if (grid[x - 1, y].Type == CellType.Ground)
+        {
+            for (int i = x - 1; i >= 0; i--)
+            {
+                if (grid[i, y].Type == CellType.Water)
+                {
+                    return grid[i, y];
+                }
+            }
+        }
+        else if (grid[x + 1, y].Type == CellType.Ground)
+        {
+            for (int i = x + 1; i < grid.GetLength(0); i++)
+            {
+                if (grid[i, y].Type == CellType.Water)
+                {
+                    return grid[i, y];
+                }
+            }
+        }
+        else if (grid[x, y - 1].Type == CellType.Ground)
+        {
+            for (int i = y - 1; i >= 0; i--)
+            {
+                if (grid[x, i].Type == CellType.Water)
+                {
+                    return grid[x, i];
+                }
+            }
+        }
+        else
+        {
+            for (int i = y + 1; i < grid.GetLength(1); i++)
+            {
+                if (grid[x, i].Type == CellType.Water)
+                {
+                    return grid[x, i];
+                }
+            }
+        } 
+            
+
+        return null;
+    }
+
+    public static List<Cell> ClosestPond(Vector3 start, Vector3 end, List<List<Cell>> fallOffs)
+    {
+        Vector3 position = fallOffs[0][0].GetPosition();
+        float minDistance = Vector3.Distance(position, 
+                            FindPointOnLine(position, start, end));
+
+        int min = 0;
+        for (int i = 1; i < fallOffs.Count; i++)
+        {
+            position = fallOffs[i][0].GetPosition();
+            float distance = Vector3.Distance(position, FindPointOnLine(position, start, end));
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                min = i;
+            }
+        }
+
+        return fallOffs[min];
+    }
+
+    public static List<Cell> ClosestPondToPond(Vector3 start, Vector3 end, List<List<Cell>> fallOffs, List<Cell> pond)
+    {
+        if (fallOffs.Count < 2)
+        {
+            return null;
+        }
+
+        int result = -1;
+        int index = fallOffs.FindIndex(e => e[0].Id == pond[0].Id);
+
+        for (int i = 0; i < fallOffs.Count; i++)
+        {
+            if (index == i)
+            {
+                continue;
+            }
+
+            if (result == -1)
+            {
+                result = i;
+                continue;
+            }
+
+            if (Vector3.Distance(fallOffs[index][0].GetPosition(), fallOffs[i][0].GetPosition()) 
+                < Vector3.Distance(fallOffs[index][0].GetPosition(), fallOffs[result][0].GetPosition()))
+            {
+                result = i;
+            }
+        }
+
+        return fallOffs[result];
     }
 
     public static bool CheckIsPond(Cell[,] grid, List<Cell> cells, int minX, int minY, int maxX, int maxY)
