@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance { get; protected set; }
 
-    private int _level = 40;
+    private int _level = 20;
     private List<VictoryScreen.BuffStat> _buffStats;
     private MyXMLReader _myXmlData;
 

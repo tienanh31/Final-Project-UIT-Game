@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Utility
@@ -228,6 +230,8 @@ public class Utility
         return result;
     }
 
+    #region Finding shortest path
+
     public static List<Cell> BfsShortestPath(Cell[,] grid, Cell start, Cell end)
     {
         int cols = grid.GetLength(0);
@@ -263,6 +267,71 @@ public class Utility
         return null;
     }
 
+    static int Heuristic(Cell a, Cell b)
+    {
+        return Math.Abs(a.Id.x - b.Id.x) + Math.Abs(a.Id.y - b.Id.y);
+    }
+
+    static List<Cell> ReconstructPath(Dictionary<Cell, Cell> cameFrom, Cell current)
+    {
+        var totalPath = new List<Cell> { current };
+        while (cameFrom.ContainsKey(current))
+        {
+            current = cameFrom[current];
+            totalPath.Insert(0, current);
+        }
+        return totalPath;
+    }
+
+    public static List<Cell> AStarSearch(Cell[,] matrix, Cell start, Cell end)
+    {
+        var openSet = new List<(int x, int y, int gScore, int fScore)> { (start.Id.x, start.Id.y, 0, Heuristic(start, end)) };
+        var cameFrom = new Dictionary<Cell, Cell>();
+        var gScore = new Dictionary<Cell, int> { [start] = 0 };
+
+        while (openSet.Count > 0)
+        {
+            var tempCurrent = openSet.OrderBy(item => item.fScore).First();
+            var current = matrix[tempCurrent.x, tempCurrent.y];
+
+            if (current.Id.x == end.Id.x && current.Id.y == end.Id.y)
+            {
+                return ReconstructPath(cameFrom, current);
+            }
+
+            openSet.Remove(tempCurrent);
+            var neighbors = new List<(int x, int y)>
+            {
+                (current.Id.x - 1, current.Id.y),
+                (current.Id.x + 1, current.Id.y),
+                (current.Id.x, current.Id.y - 1),
+                (current.Id.x, current.Id.y + 1)
+            }.Where(n =>
+                n.x >= 0 && n.x < matrix.GetLength(0) && n.y >= 0 && n.y < matrix.GetLength(1) &&
+                matrix[n.x, n.y].Type == CellType.Ground
+            );
+
+            foreach (var neighbor in neighbors)
+            {
+                Cell cell = matrix[neighbor.x, neighbor.y];
+
+                int tentativeGScore = gScore[current] + 1;
+                if (!gScore.ContainsKey(cell) 
+                    || tentativeGScore < gScore[cell])
+                {
+                    cameFrom[cell] = current;
+                    gScore[cell] = tentativeGScore;
+                    int fScore = tentativeGScore + Heuristic(cell, end);
+                    if (!openSet.Any(item => item.x == neighbor.x && item.y == neighbor.y))
+                    {
+                        openSet.Add((neighbor.x, neighbor.y, tentativeGScore, fScore));
+                    }
+                }
+            }
+        }
+        return null; // No path found
+    }
+    #endregion
     public static Vector3 FindPointOnLine(Vector3 point, Vector3 start, Vector3 end)
     {
         Vector3 result = Vector3.zero;

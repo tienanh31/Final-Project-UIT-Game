@@ -23,6 +23,8 @@ public class IceBoom : Trap
 
     protected IEnumerator IE_ChangePhysic()
     {
+        yield return new WaitForSeconds(1);
+
         while (true)
         {
             Vector3 oldPos = transform.position;

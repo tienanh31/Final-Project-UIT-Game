@@ -242,7 +242,8 @@ public class MapGenerator
 
     private void GenerateTrap(int total)
     {
-        var shortest = Utility.BfsShortestPath(_grid, _start, _end);
+        //var shortest = Utility.BfsShortestPath(_grid, _start, _end);
+        var shortest = Utility.AStarSearch(_grid, _start, _end);
         string debug = "";
         foreach(var cell in shortest)
         {
