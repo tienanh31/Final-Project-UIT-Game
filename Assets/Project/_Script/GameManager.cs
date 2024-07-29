@@ -29,11 +29,13 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance { get; protected set; }
 
-    private int _level = 20;
+    private int _level = 10;
     private List<VictoryScreen.BuffStat> _buffStats;
     private MyXMLReader _myXmlData;
 
     private MapGenerator _mapGenerator;
+
+    List<Cell> _shortestPath;
     #endregion
 
     #region Methods
@@ -119,6 +121,26 @@ public class GameManager : MonoBehaviour
         LevelManager.Instance.SpawningTraps(mapData.TrapDatas, mapData.LargestArea);
 
         Debug.Log("Level: " + _level);
+
+        _shortestPath = Utility.AStarSearch(mapData.ArrayNoiseValue, _mapGenerator._start, _mapGenerator._end);
+    }
+
+    public void OnDrawGizmos()
+    {
+        if (_shortestPath == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < _shortestPath.Count - 1; i++)
+        {
+            Vector3 start = _shortestPath[i].GetPosition();
+            Vector3 end = _shortestPath[i + 1].GetPosition();
+            start.y += 1;
+            end.y += 1;
+            Debug.DrawLine(start, end, Color.blue);
+            Debug.Log("Debug shortest path");
+        }
     }
 
     public void BeginLevel(string levelname)

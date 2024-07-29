@@ -111,16 +111,14 @@ public class PatrolScope
             return;
         }
 
-        Gizmos.color = new Color(1f, 0f, 0f, 0.5f);
         for (int i = 2; i < Corners.Count; i++)
         {
-            UnityEngine.Debug.DrawLine(Corners[i - 2], Corners[i - 1]);
-            UnityEngine.Debug.DrawLine(Corners[i - 2], Corners[i]);
-            UnityEngine.Debug.DrawLine(Corners[i - 1], Corners[i]);
+            //UnityEngine.Debug.DrawLine(Corners[i - 2], Corners[i - 1], Color.red);
+            //UnityEngine.Debug.DrawLine(Corners[i - 2], Corners[i], Color.red);
+            //UnityEngine.Debug.DrawLine(Corners[i - 1], Corners[i], Color.red);
         }
     }
 
-    [ExecuteInEditMode]
     public void OnDrawGizmos()
     {
         if (Corners == null || Corners.Count < 2)

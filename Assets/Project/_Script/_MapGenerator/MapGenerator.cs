@@ -23,8 +23,8 @@ public class MapGenerator
     private Vector3 _playerPosition;
     private Vector3 _gatePosition;
 
-    private Cell _start;
-    private Cell _end;
+    public Cell _start;
+    public Cell _end;
 
     private List<EnemyData> _enemies;
     private List<TrapData> _traps;
@@ -58,6 +58,7 @@ public class MapGenerator
             for (int x = 0; x < _size; x++)
             {
                 float noiseValue = Mathf.PerlinNoise(x * _scale + xOffset, y * _scale + yOffset) * 2f;
+                //float noiseValue = PerlinNoise2D.Instance.Noise(x * _scale + xOffset, y * _scale + yOffset) * 2f;
                 noiseMap[x, y] = noiseValue;
                 if (noiseValue > MaxNoiseValue)
                 {
@@ -243,7 +244,7 @@ public class MapGenerator
     private void GenerateTrap(int total)
     {
         //var shortest = Utility.BfsShortestPath(_grid, _start, _end);
-        var shortest = Utility.AStarSearch(_grid, _start, _end);
+        var shortest = Utility.AStarSearch(_grid, _start, _end);   
         string debug = "";
         foreach(var cell in shortest)
         {
@@ -302,7 +303,8 @@ public class MapGenerator
                     }
 
                     int old = 0;
-                    if (total >= 2)
+                    if (total >= 2 
+                        && falloffs.Count > 0)
                     {
                         var falloff = Utility.ClosestPond(_playerPosition, _gatePosition, falloffs);
                         old = falloffs.FindIndex(e => e[0].Id == falloff[0].Id);
